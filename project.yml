@@ -1,0 +1,40 @@
+## MARK: - Project Name
+name: HealthDiary
+
+
+## MARK: - Configs Section
+configs:
+    Dev Debug   : debug
+    Dev Release : release
+    STA Debug   : debug
+    STA Release : release
+    Prod Debug  : debug
+    Prod Release: release
+
+## MARK: - Option Section
+options:
+    bundleIdPrefix           : com.arifluthfiansyah.healthdiary
+    xcodeVersion             : '12.4'
+    deploymentTarget         : '13.0'
+    groupSortPosition        : top
+    generateEmptyDirectories : true
+    minimumXcodeGenVersion   : '2.18.0'
+    postGenCommand           : pod install
+
+## MARK: - Target Section
+targets:
+    HealthDiary:
+        type: application
+        platform: iOS
+        sources:
+            - path: HealthDiary
+        settings:
+            INFOPLIST_FILE: HealthDiary/Resources/Info.plist
+            PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+    HealthDiaryTests:
+        type: bundle.unit-test
+        platform: iOS
+        sources:
+            - path: HealthDiaryTests
+        settings:
+            INFOPLIST_FILE: HealthDiaryTests/Info.plist
