@@ -11,11 +11,26 @@ import CoreData
 public struct ActivityDomain {
     
     public let coreId: NSManagedObjectID?
-    public let createdAt: Date
-    public let updatedAt: Date
+    public let createdAt: Int64
+    public let updatedAt: Int64
     
+    public let icon: String
     public let notes: String
     public let title: String
+    
+    public init(coreId: NSManagedObjectID? = nil,
+                createdAt: Int64,
+                updatedAt: Int64,
+                icon: String,
+                notes: String,
+                title: String) {
+        self.coreId = coreId
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.icon = icon
+        self.notes = notes
+        self.title = title
+    }
     
 }
 

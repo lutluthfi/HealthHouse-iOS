@@ -23,3 +23,18 @@ extension AppDIContainer {
     }
     
 }
+
+extension AppDIContainer {
+    
+    public func makeLNWelcomeController(requestValue: LNWelcomeViewModelRequestValue,
+                                        route: LNWelcomeViewModelRoute) -> UIViewController {
+        let viewModel = self.makeLNWelcomeViewModel(requestValue: requestValue, route: route)
+        return LNWelcomeController.create(with: viewModel)
+    }
+    
+    private func makeLNWelcomeViewModel(requestValue: LNWelcomeViewModelRequestValue,
+                                        route: LNWelcomeViewModelRoute) -> LNWelcomeViewModel {
+        return DefaultLNWelcomeViewModel(requestValue: requestValue, route: route)
+    }
+    
+}

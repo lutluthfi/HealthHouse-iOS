@@ -13,6 +13,9 @@ import UIKit
 public protocol LaunchFlowCoordinatorFactory  {
     func makeLNPostController(requestValue: LNPostViewModelRequestValue,
                               route: LNPostViewModelRoute) -> UIViewController
+    
+    func makeLNWelcomeController(requestValue: LNWelcomeViewModelRequestValue,
+                                 route: LNWelcomeViewModelRoute) -> UIViewController
 }
 
 // MARK: LaunchFlowCoordinator
@@ -22,7 +25,10 @@ public protocol LaunchFlowCoordinator {
 
 // MARK: LaunchFlowCoordinatorInstructor
 public enum LaunchFlowCoordinatorInstructor {
-    case post
+    case presentPostUI(LNPostViewModelRequestValue)
+    case presentWelcomeUI(LNWelcomeViewModelRequestValue)
+    case pushToPostUI(LNPostViewModelRequestValue)
+    case pushToWelcomeUI(LNWelcomeViewModelRequestValue)
 }
 
 // MARK: DefaultLaunchFlowCoordinator
@@ -45,6 +51,43 @@ public final class DefaultLaunchFlowCoordinator {
 extension DefaultLaunchFlowCoordinator: LaunchFlowCoordinator {
     
     public func start(with instructor: LaunchFlowCoordinatorInstructor) {
+        switch instructor {
+        case .presentPostUI(let requestValue):
+            break
+        case .presentWelcomeUI(let requestValue):
+            self.presentWelcomeUI(requestValue: requestValue, properties: .standard)
+        case .pushToPostUI(let requestValue):
+            break
+        case .pushToWelcomeUI(let requestValue):
+            self.pushToWelcomeUI(requestValue: requestValue)
+        }
+    }
+    
+}
+
+extension DefaultLaunchFlowCoordinator {
+    
+    func makeWelcomeUI(requestValue: LNWelcomeViewModelRequestValue) -> UIViewController {
+        let route = LNWelcomeViewModelRoute()
+        let controller = self.controllerFactory.makeLNWelcomeController(requestValue: requestValue, route: route)
+        return controller
+    }
+    
+    func presentWelcomeUI(requestValue: LNWelcomeViewModelRequestValue, properties: UIPresentProperties) {
+        guaranteeMainThread {
+            let controller = self.makeWelcomeUI(requestValue: requestValue)
+            controller.isModalInPresentation = properties.isModalInPresentation
+            controller.modalPresentationStyle = properties.modalPresentationStyle
+            controller.modalTransitionStyle = properties.modalTransitionStyle
+            self.navigationController.topViewController?.present(controller, animated: true)
+        }
+    }
+    
+    func pushToWelcomeUI(requestValue: LNWelcomeViewModelRequestValue) {
+        guaranteeMainThread {
+            let controller = self.makeWelcomeUI(requestValue: requestValue)
+            self.navigationController.pushViewController(controller, animated: true)
+        }
     }
     
 }

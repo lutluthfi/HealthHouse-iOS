@@ -4,21 +4,21 @@ name: HealthDiary
 
 ## MARK: - Configs Section
 configs:
-    Dev Debug   : debug
-    Dev Release : release
-    STA Debug   : debug
-    STA Release : release
-    Prod Debug  : debug
-    Prod Release: release
+    DEV-Debug   : debug
+    DEV-Release : release
+    STA-Debug   : debug
+    STA-Release : release
+    PRO-Debug   : debug
+    PRO-Release : release
 
 ## MARK: - Option Section
 options:
-    bundleIdPrefix           : com.arifluthfiansyah.healthdiary
     xcodeVersion             : '12.4'
     deploymentTarget         : '13.0'
-    groupSortPosition        : top
+    groupSortPosition        : down
     generateEmptyDirectories : true
     minimumXcodeGenVersion   : '2.18.0'
+    preGenCommand            : ./pregencommand.sh
     postGenCommand           : pod install
 
 ## MARK: - Target Section
@@ -26,11 +26,62 @@ targets:
     HealthDiary:
         type: application
         platform: iOS
-        sources:
-            - path: HealthDiary
+        sources: HealthDiary
         settings:
-            INFOPLIST_FILE: HealthDiary/Resources/Info.plist
-            PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+            base:
+                CODE_SIGN_STYLE: Automatic
+                DEVELOPMENT_TEAM: 5NTQ9A32JY
+                EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
+                IPHONEOS_DEPLOYMENT_TARGET: 13.0
+                INFOPLIST_FILE: HealthDiary/Resources/Info.plist
+                TARGETED_DEVICE_FAMILY: 1
+            configs:
+                DEV-Debug:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.dev
+                    PRODUCT_NAME: DEV Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
+                DEV-Release:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.dev
+                    PRODUCT_NAME: DEV Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
+                STA-Debug:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.sta
+                    PRODUCT_NAME: STA Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
+                STA-Release:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.sta
+                    PRODUCT_NAME: STA Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
+                PRO-Debug:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+                    PRODUCT_NAME: Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
+                PRO-Release:
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+                    PRODUCT_NAME: Health Diary
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
+        info:
+            path: HealthDiary/Resources/Info.plist
+            properties:
+                CFBundleDevelopmentRegion: $(DEVELOPMENT_LANGUAGE)
+                CFBundleExecutable: $(EXECUTABLE_NAME)
+                CFBundleInfoDictionaryVersion: 6.0
+                CFBundlePackageType: $(PRODUCT_BUNDLE_PACKAGE_TYPE)
+                CFBundleShortVersionString: 1.0.0
+                CFBundleVersionString: 1.0
+                LSRequiresIPhoneOS: true
+                UIApplicationSceneManifest:
+                    UIApplicationSupportsMultipleScenes: false
+                    UISceneConfigurations:
+                        UIWindowSceneSessionRoleApplication:
+                            - UISceneConfigurationName: Default Configuration
+                              UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).SceneDelegate
+                              UISceneStoryboardFile: LaunchScreen
+                UIApplicationSupportsIndirectInputEvents: true
+                UILaunchStoryboardName: LaunchScreen
+                UIMainStoryboardFile: LaunchScreen
+                UIRequiredDeviceCapabilities: armv7
+                UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
     HealthDiaryTests:
         type: bundle.unit-test
         platform: iOS
@@ -38,3 +89,40 @@ targets:
             - path: HealthDiaryTests
         settings:
             INFOPLIST_FILE: HealthDiaryTests/Info.plist
+            TEST_TARGET_NAME: DEV-HealthDiary
+            TEST_HOST: true
+
+## MARK: - Scheme Section
+schemes:
+    DEV-HealthDiary:
+        build:
+            targets:
+                HealthDiary: [run, archive]
+        run:
+            config: DEV-Debug
+        test:
+            config: DEV-Debug
+        profile:
+            config: DEV-Release
+        analyze:
+            config: DEV-Debug
+        archive:
+            config: DEV-Release
+            customArchiveName: DEV HealthDiary
+            revealArchiveInOrganizer: true
+    PRO-HealthDiary:
+        build:
+            targets:
+                HealthDiary: [run, archive]
+        run:
+            config: PRO-Debug
+        test:
+            config: PRO-Debug
+        profile:
+            config: PRO-Release
+        analyze:
+            config: PRO-Debug
+        archive:
+            config: PRO-Release
+            customArchiveName: PRO HealthDiary
+            revealArchiveInOrganizer: true

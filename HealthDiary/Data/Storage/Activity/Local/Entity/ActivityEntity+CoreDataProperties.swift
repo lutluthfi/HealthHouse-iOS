@@ -16,10 +16,12 @@ extension ActivityEntity {
         return NSFetchRequest<ActivityEntity>(entityName: "ActivityEntity")
     }
 
-    @NSManaged public var createdAt: Date
-    @NSManaged public var updatedAt: Date
-    @NSManaged public var title: String
+    @NSManaged public var createdAt: Int64
+    @NSManaged public var updatedAt: Int64
+    
+    @NSManaged public var icon: String
     @NSManaged public var notes: String
+    @NSManaged public var title: String
 
 }
 

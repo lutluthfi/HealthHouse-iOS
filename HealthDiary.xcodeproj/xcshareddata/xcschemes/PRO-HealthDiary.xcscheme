@@ -7,15 +7,15 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4F645C3F2600E0D90081A3E2"
-               BuildableName = "HealthDiary.app"
+               BlueprintIdentifier = "52E192C7D85EF003D4D7B665"
+               BuildableName = "DEV Health Diary.app"
                BlueprintName = "HealthDiary"
                ReferencedContainer = "container:HealthDiary.xcodeproj">
             </BuildableReference>
@@ -23,35 +23,24 @@
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "PRO-Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "52E192C7D85EF003D4D7B665"
+            BuildableName = "DEV Health Diary.app"
+            BlueprintName = "HealthDiary"
+            ReferencedContainer = "container:HealthDiary.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4F645C582600E0DB0081A3E2"
-               BuildableName = "HealthDiaryTests.xctest"
-               BlueprintName = "HealthDiaryTests"
-               ReferencedContainer = "container:HealthDiary.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4F645C632600E0DB0081A3E2"
-               BuildableName = "HealthDiaryUITests.xctest"
-               BlueprintName = "HealthDiaryUITests"
-               ReferencedContainer = "container:HealthDiary.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "PRO-Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -64,15 +53,15 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4F645C3F2600E0D90081A3E2"
-            BuildableName = "HealthDiary.app"
+            BlueprintIdentifier = "52E192C7D85EF003D4D7B665"
+            BuildableName = "DEV Health Diary.app"
             BlueprintName = "HealthDiary"
             ReferencedContainer = "container:HealthDiary.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "PRO-Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -81,18 +70,19 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4F645C3F2600E0D90081A3E2"
-            BuildableName = "HealthDiary.app"
+            BlueprintIdentifier = "52E192C7D85EF003D4D7B665"
+            BuildableName = "DEV Health Diary.app"
             BlueprintName = "HealthDiary"
             ReferencedContainer = "container:HealthDiary.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
-      buildConfiguration = "Debug">
+      buildConfiguration = "PRO-Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "PRO-Release"
+      customArchiveName = "PRO HealthDiary"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

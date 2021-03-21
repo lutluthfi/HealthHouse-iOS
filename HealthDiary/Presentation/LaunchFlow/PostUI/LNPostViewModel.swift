@@ -4,10 +4,6 @@
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //  Copyright (c) 2021 All rights reserved.
-//
-//  Template:
-//  Modified by Arif Luthfiansyah
-//  Created by Oleh Kudinov
 
 import Foundation
 

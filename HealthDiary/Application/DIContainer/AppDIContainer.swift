@@ -14,6 +14,8 @@ public final class AppDIContainer {
  
     let navigationController: UINavigationController
     
+    lazy var coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared
+    
     public init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
