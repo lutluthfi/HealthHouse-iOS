@@ -1,3 +1,5 @@
 Pods
 Podfile.lock
 *.xcworkspace
+*.xcodeproj
+HealthDiary/Resources/Info.plist

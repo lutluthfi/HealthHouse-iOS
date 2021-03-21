@@ -14,7 +14,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     lazy var appDIContainer = AppDIContainer(navigationController: self.navigationController)
     lazy var appFlowCoordinator: AppFlowCoordinator = {
-        return DefaultAppFlowCoordinator(navigationController: self.navigationController)
+        return DefaultAppFlowCoordinator(navigationController: self.navigationController,
+                                         presentationFactory: self.appDIContainer)
     }()
     var window: UIWindow?
 
@@ -56,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        self.appDIContainer.coreDataStorage.saveContext()
     }
 
 

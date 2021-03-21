@@ -4,10 +4,6 @@
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //  Copyright (c) 2021 All rights reserved.
-//
-//  Template:
-//  Modified by Arif Luthfiansyah
-//  Created by Oleh Kudinov
 
 import UIKit
 
@@ -18,14 +14,12 @@ protocol LNPostViewDelegate: AnyObject {
 
 // MARK: LNPostViewFunction
 protocol LNPostViewFunction {
-    func viewWillAppear()
+    func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?)
     func viewWillDisappear()
 }
 
 // MARK: LNPostViewSubview
 protocol LNPostViewSubview {
-    var navigationBar: UINavigationBar? { get }
-    var navigationItem: UINavigationItem! { get }
 }
 
 // MARK: LNPostViewVariable
@@ -40,8 +34,6 @@ protocol LNPostView: LNPostViewFunction, LNPostViewSubview, LNPostViewVariable {
 final class DefaultLNPostView: UIView, LNPostView {
 
     // MARK: Subview Variable
-    weak var navigationBar: UINavigationBar?
-    weak var navigationItem: UINavigationItem!
 
     // MARK: DI Variable
     weak var delegate: LNPostViewDelegate?
@@ -51,12 +43,11 @@ final class DefaultLNPostView: UIView, LNPostView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    init(navigationBar: UINavigationBar?, navigationItem: UINavigationItem) {
-        self.navigationBar = navigationBar
-        self.navigationItem = navigationItem
+    init() {
         super.init(frame: UIScreen.main.fixedCoordinateSpace.bounds)
-        self.addSubviews()
-        self.makeConstraints()
+        self.subviewDidInit()
+        self.subviewConstraintDidInit()
+        self.viewDidInit()
     }
 
 }
@@ -64,10 +55,14 @@ final class DefaultLNPostView: UIView, LNPostView {
 // MARK: Internal Function
 extension DefaultLNPostView {
     
-    func addSubviews() {
+    func subviewDidInit() {
     }
     
-    func makeConstraints() {
+    func subviewConstraintDidInit() {
+    }
+    
+    func viewDidInit() {
+        
     }
     
 }
@@ -75,7 +70,7 @@ extension DefaultLNPostView {
 // MARK: Input Function
 extension DefaultLNPostView {
     
-    func viewWillAppear() {
+    func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?) {
         
     }
     

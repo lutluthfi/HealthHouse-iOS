@@ -24,10 +24,12 @@ final class DefaultAppFlowCoordinator {
 
     // MARK: DI Variable
     let navigationController: UINavigationController
+    let flowFactory: FlowCoordinatorFactory
 
     // MARK: Init Funciton
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, presentationFactory: PresentationFactory) {
         self.navigationController = navigationController
+        self.flowFactory = presentationFactory
     }
     
 }
@@ -37,7 +39,9 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
     func start(with instructor: AppFlowCoordinatorInstructor) {
         switch instructor {
         case .default:
-            break
+            let requestValue = LNWelcomeViewModelRequestValue()
+            let instructor = LaunchFlowCoordinatorInstructor.pushToWelcomeUI(requestValue)
+            self.flowFactory.makeLaunchFlowCoordinator().start(with: instructor)
         }
     }
     

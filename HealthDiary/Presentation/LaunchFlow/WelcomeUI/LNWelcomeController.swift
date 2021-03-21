@@ -1,29 +1,29 @@
 //
-//  LNPostController.swift
+//  LNWelcomeController.swift
 //  HealthDiary
 //
-//  Created by Arif Luthfiansyah on 17/03/21.
+//  Created by Arif Luthfiansyah on 20/03/21.
 //  Copyright (c) 2021 All rights reserved.
 
 import UIKit
 
-// MARK: LNPostController
-final class LNPostController: UIViewController {
+// MARK: LNWelcomeController
+final class LNWelcomeController: UIViewController {
 
     // MARK: DI Variable
-    lazy var _view: LNPostView = {
-        return DefaultLNPostView()
+    lazy var _view: LNWelcomeView = {
+        return DefaultLNWelcomeView()
     }()
-    var viewModel: LNPostViewModel!
+    var viewModel: LNWelcomeViewModel!
 
     // MARK: Common Variable
 
 
     // MARK: Create Function
-    class func create(with viewModel: LNPostViewModel) -> LNPostController {
-        let vc = LNPostController()
-        vc.viewModel = viewModel
-        return vc
+    class func create(with viewModel: LNWelcomeViewModel) -> LNWelcomeController {
+        let controller = LNWelcomeController()
+        controller.viewModel = viewModel
+        return controller
     }
 
     // MARK: UIViewController Function
@@ -43,36 +43,47 @@ final class LNPostController: UIViewController {
         self.setupViewWillAppear()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.setupViewDidAppear()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.setupViewWillDisappear()
     }
 
     // MARK: Bind ViewModel Function
-    private func bind(to viewModel: LNPostViewModel) {
+    private func bind(to viewModel: LNWelcomeViewModel) {
     }
 
     // MARK: SetupView By Lifecycle Function
-    private func setupViewDidLoad() {
+    func setupViewDidLoad() {
     }
     
-    private func setupViewWillAppear() {
+    func setupViewWillAppear() {
         self._view.viewWillAppear(navigationController: self.navigationController,
                                   tabBarController: self.tabBarController)
     }
     
-    private func setupViewWillDisappear() {
+    func setupViewDidAppear() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self._view.showContinueButton()
+        }
+    }
+    
+    func setupViewWillDisappear() {
         self._view.viewWillDisappear()
     }
     
 }
 
 // MARK: Observe ViewModel Function
-extension LNPostController {
+extension LNWelcomeController {
     
 }
 
-// MARK: LNPostViewDelegate
-extension LNPostController: LNPostViewDelegate {
+// MARK: LNWelcomeViewDelegate
+extension LNWelcomeController: LNWelcomeViewDelegate {
 
 }
