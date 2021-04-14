@@ -7,15 +7,32 @@
 import CoreData
 import Foundation
 
-public enum CoreDataStorageError: Error {
+public enum CoreDataStorageError {
     case readError(Error)
     case saveError(Error)
     case deleteError(Error)
 }
 
+extension CoreDataStorageError: LocalizedError {
+    
+    public var errorDescription: String? {
+        switch self {
+        case .deleteError(let error):
+            return "CoreDataStorageError [DELETE] -> \(error.localizedDescription)"
+        case .readError(let error):
+            return "CoreDataStorageError [READ] -> \(error.localizedDescription)"
+        case .saveError(let error):
+            return "CoreDataStorageError [SAVE] -> \(error.localizedDescription)"
+        }
+    }
+    
+}
+
 public protocol CoreDataStorageShared {
     
     var containerName: String { get }
+    
+    var context: NSManagedObjectContext { get }
     
     var fetchCollectionTimeout: TimeInterval { get }
     
@@ -30,8 +47,6 @@ public protocol CoreDataStorageShared {
     var removeElementTimeout: TimeInterval { get }
     
     func saveContext()
-    
-    func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void)
     
 }
 
@@ -57,6 +72,10 @@ extension CoreDataStorage: CoreDataStorageShared {
     
     public var containerName: String {
         return "CoreDataStorage"
+    }
+    
+    public var context: NSManagedObjectContext {
+        return self.persistentContainer.viewContext
     }
     
     public var fetchCollectionTimeout: TimeInterval {
@@ -85,16 +104,11 @@ extension CoreDataStorage: CoreDataStorageShared {
     
     public func saveContext() {
         let context = self.persistentContainer.viewContext
-        guard context.hasChanges else { return }
         do {
             try context.save()
         } catch {
-            debugPrint("CoreDataStorage Unresolved error \(error), \((error as NSError).userInfo)")
+            debugPrint("CoreDataStorage -> saveContext() unresolved error \(error), \((error as NSError).userInfo)")
         }
-    }
-    
-    public func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
-        self.persistentContainer.performBackgroundTask(block)
     }
     
 }

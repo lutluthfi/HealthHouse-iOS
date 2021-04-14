@@ -45,20 +45,29 @@ final class DefaultLNPostView: UIView, LNPostView {
 
     init() {
         super.init(frame: UIScreen.main.fixedCoordinateSpace.bounds)
-        self.subviewDidInit()
-        self.subviewConstraintDidInit()
+        self.subviewWillAdd()
+        self.subviewConstraintWillMake()
         self.viewDidInit()
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.subviewDidLayout()
+    }
+    
 }
 
 // MARK: Internal Function
 extension DefaultLNPostView {
     
-    func subviewDidInit() {
+    func subviewDidLayout() {
+        
     }
     
-    func subviewConstraintDidInit() {
+    func subviewWillAdd() {
+    }
+    
+    func subviewConstraintWillMake() {
     }
     
     func viewDidInit() {

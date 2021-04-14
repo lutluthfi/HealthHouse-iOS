@@ -9,6 +9,10 @@ import Foundation
 
 public protocol FlowCoordinatorFactory {
     
+    func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator
+    
     func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator
+    
+    func makeProfileFlowCoordinator() -> ProfileFlowCoordinator
     
 }

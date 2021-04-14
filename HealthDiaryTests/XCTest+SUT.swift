@@ -10,7 +10,7 @@ import RxTest
 import XCTest
 @testable import DEV_Health_Diary
 
-extension XCTest {
+public extension XCTest {
     
     func makeDisposeBag() -> DisposeBag {
         return DisposeBag()
@@ -18,19 +18,8 @@ extension XCTest {
     func makeSempahore() -> DispatchSemaphore {
         return DispatchSemaphore(value: 0)
     }
-    
-    // MARK: - CoreData
     func makeCoreDataStorageMock() -> CoreDataStorageSharedMock {
         return CoreDataStorageMock()
-    }
-    
-    // MARK: - Storage
-    typealias LocalActivityStorageSUT = (coreDataStorageMock: CoreDataStorageSharedMock,
-                                         localActivityStorage: LocalActivityStorage)
-    func makeLocalActivityStorageSUT() -> LocalActivityStorageSUT {
-        let coreDataStorageMock = self.makeCoreDataStorageMock()
-        let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorageMock)
-        return (coreDataStorageMock, localActivityStorage)
     }
     
 }

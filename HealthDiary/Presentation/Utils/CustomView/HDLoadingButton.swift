@@ -69,7 +69,7 @@ extension HDLoadingButton {
 extension HDLoadingButton {
     
     func showLoading() {
-        DispatchQueue.main.async {
+        guaranteeMainThread {
             self.isEnabled = false
             self._title = self.titleLabel?.text
             self.setTitle("", for: .normal)
@@ -78,7 +78,7 @@ extension HDLoadingButton {
     }
     
     func hideLoading() {
-        DispatchQueue.main.async {
+        guaranteeMainThread {
             self.isEnabled = true
             self.setTitle(self._title, for: .normal)
             self.activityIndicator.stopAnimating()

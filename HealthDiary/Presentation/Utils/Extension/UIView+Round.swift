@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIView {
+public extension UIView {
     
     @discardableResult
     func makeRound(borderColor: UIColor? = nil,

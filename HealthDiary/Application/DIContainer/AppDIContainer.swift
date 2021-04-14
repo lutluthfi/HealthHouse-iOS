@@ -8,13 +8,19 @@
 import UIKit
 
 public typealias PresentationFactory = FlowCoordinatorFactory&ControllerFactory
-public typealias ControllerFactory = LaunchFlowCoordinatorFactory
+public typealias ControllerFactory =
+    HealthDiaryFlowCoordinatorFactory&
+    LaunchFlowCoordinatorFactory&
+    ProfileFlowCoordinatorFactory
 
 public final class AppDIContainer {
  
     let navigationController: UINavigationController
     
     lazy var coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared
+    
+    lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage()
+    lazy var remoteCountryDialingCodeStorage: RemoteCountryDialingCodeStorage = DefaultRemoteCountryDialingCodeStorage()
     
     public init(navigationController: UINavigationController) {
         self.navigationController = navigationController

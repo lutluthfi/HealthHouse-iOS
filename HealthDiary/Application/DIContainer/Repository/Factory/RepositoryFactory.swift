@@ -9,4 +9,6 @@ import Foundation
 
 public protocol RepositoryFactory {
     
+    func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository
+    
 }

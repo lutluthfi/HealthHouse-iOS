@@ -7,17 +7,17 @@
 
 import UIKit
 
-struct UIPresentProperties {
+public struct UIPresentProperties {
     
-    static let standard = UIPresentProperties()
+    public static let standard = UIPresentProperties()
     
-    let isModalInPresentation: Bool
-    let modalPresentationStyle: UIModalPresentationStyle
-    let modalTransitionStyle: UIModalTransitionStyle
+    public let isModalInPresentation: Bool
+    public let modalPresentationStyle: UIModalPresentationStyle
+    public let modalTransitionStyle: UIModalTransitionStyle
     
-    init(isModalInPresentation: Bool = false,
-         modalPresentationStyle: UIModalPresentationStyle = .automatic,
-         modalTransitionStyle: UIModalTransitionStyle = .coverVertical) {
+    public init(isModalInPresentation: Bool = false,
+                modalPresentationStyle: UIModalPresentationStyle = .automatic,
+                modalTransitionStyle: UIModalTransitionStyle = .coverVertical) {
         self.isModalInPresentation = isModalInPresentation
         self.modalPresentationStyle = modalPresentationStyle
         self.modalTransitionStyle = modalTransitionStyle

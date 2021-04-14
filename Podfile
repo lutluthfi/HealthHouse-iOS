@@ -2,16 +2,23 @@ platform :ios, '13.0'
 
 target 'HealthDiary' do
   use_frameworks!
+
   pod 'RealmSwift'
+
   pod 'RxCocoa'
   pod 'RxDataSources'
+  pod 'RxGesture'
+  pod 'RxKeyboard'
   pod 'RxSwift'
+
   pod 'SnapKit'
+
   target 'HealthDiaryTests' do
     inherit! :search_paths
     pod 'RxBlocking'
     pod 'RxTest'
   end
+
   # target 'HealthDiaryUITests' do
   # end
 end

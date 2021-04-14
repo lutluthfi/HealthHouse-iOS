@@ -34,6 +34,7 @@ targets:
                 EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
                 IPHONEOS_DEPLOYMENT_TARGET: 13.0
                 INFOPLIST_FILE: HealthDiary/Resources/Info.plist
+                MOMC_NO_WARNINGS: true
                 TARGETED_DEVICE_FAMILY: 1
             configs:
                 DEV-Debug:
@@ -80,7 +81,8 @@ targets:
                 UIApplicationSupportsIndirectInputEvents: true
                 UILaunchStoryboardName: LaunchScreen
                 UIMainStoryboardFile: LaunchScreen
-                UIRequiredDeviceCapabilities: armv7
+                UIRequiredDeviceCapabilities:
+                    - armv7
                 UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
     HealthDiaryTests:
         type: bundle.unit-test
@@ -89,8 +91,8 @@ targets:
             - path: HealthDiaryTests
         settings:
             INFOPLIST_FILE: HealthDiaryTests/Info.plist
-            TEST_TARGET_NAME: DEV-HealthDiary
-            TEST_HOST: true
+            TEST_TARGET_NAME: HealthDiary
+            TEST_HOST: $(BUILT_PRODUCTS_DIR)/DEV Health Diary.app/DEV Health Diary
 
 ## MARK: - Scheme Section
 schemes:

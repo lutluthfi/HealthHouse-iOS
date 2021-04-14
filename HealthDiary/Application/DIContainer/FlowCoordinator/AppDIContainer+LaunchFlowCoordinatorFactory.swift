@@ -11,6 +11,21 @@ extension AppDIContainer: LaunchFlowCoordinatorFactory { }
 
 extension AppDIContainer {
     
+    public func makeLNPadController(requestValue: LNPadViewModelRequestValue,
+                                    route: LNPadViewModelRoute) -> UITabBarController {
+        let viewModel = self.makeLNPadViewModel(requestValue: requestValue, route: route)
+        return LNPadController.create(with: viewModel)
+    }
+    
+    private func makeLNPadViewModel(requestValue: LNPadViewModelRequestValue,
+                                    route: LNPadViewModelRoute) -> LNPadViewModel {
+        return DefaultLNPadViewModel(requestValue: requestValue, route: route)
+    }
+    
+}
+
+extension AppDIContainer {
+    
     public func makeLNPostController(requestValue: LNPostViewModelRequestValue,
                                      route: LNPostViewModelRoute) -> UIViewController {
         let viewModel = self.makeLNPostViewModel(requestValue: requestValue, route: route)

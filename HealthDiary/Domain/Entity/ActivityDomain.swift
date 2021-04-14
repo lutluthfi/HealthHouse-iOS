@@ -6,30 +6,26 @@
 //
 
 import Foundation
-import CoreData
 
-public struct ActivityDomain {
+public struct ActivityDomain: EntityDomain {
     
-    public let coreId: NSManagedObjectID?
+    public let coreID: CoreID?
     public let createdAt: Int64
     public let updatedAt: Int64
     
-    public let icon: String
-    public let notes: String
+    public let doDate: Int64
+    public let explanation: String
+    public let isArchived: Bool
+    public let isPinned: Bool
+    public let photoFileNames: [String]
     public let title: String
     
-    public init(coreId: NSManagedObjectID? = nil,
-                createdAt: Int64,
-                updatedAt: Int64,
-                icon: String,
-                notes: String,
-                title: String) {
-        self.coreId = coreId
-        self.createdAt = createdAt
-        self.updatedAt = updatedAt
-        self.icon = icon
-        self.notes = notes
-        self.title = title
+    public let profile: ProfileDomain
+    
+    public var photoFileUrls: [URL] {
+        let directoryURL = FileKit.local.localAttachmentsDirectoryURL
+        let urls = self.photoFileNames.map { directoryURL.appendingPathComponent($0, isDirectory: false) }
+        return urls
     }
     
 }
@@ -37,7 +33,7 @@ public struct ActivityDomain {
 extension ActivityDomain: Equatable {
     
     public static func == (lhs: ActivityDomain, rhs: ActivityDomain) -> Bool {
-        return lhs.coreId == rhs.coreId
+        return lhs.coreID == rhs.coreID
     }
     
 }

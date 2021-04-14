@@ -10,7 +10,10 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     lazy var navigationController: UINavigationController = {
-        return UINavigationController()
+        let controller = UINavigationController()
+        controller.view.backgroundColor = .white
+        controller.setNavigationBarHidden(true, animated: false)
+        return controller
     }()
     lazy var appDIContainer = AppDIContainer(navigationController: self.navigationController)
     lazy var appFlowCoordinator: AppFlowCoordinator = {
@@ -25,6 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         self.window?.rootViewController = self.navigationController
+        self.window?.backgroundColor = .white
         self.window?.makeKeyAndVisible()
         self.appFlowCoordinator.start(with: .default)
     }
@@ -57,7 +61,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        self.appDIContainer.coreDataStorage.saveContext()
     }
 
 

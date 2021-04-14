@@ -7,16 +7,13 @@
 
 import UIKit
 
-// MARK: LNWelcomeViewDelegate
-protocol LNWelcomeViewDelegate: AnyObject {
-    
-}
-
 // MARK: LNWelcomeViewFunction
 protocol LNWelcomeViewFunction {
-    func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?)
+    func viewWillAppear(navigationBar: UINavigationBar?,
+                        navigationItem: UINavigationItem,
+                        tabBarController: UITabBarController?)
     func viewWillDisappear()
-    func showContinueButton()
+    func showContinueButton(_ completion: @escaping (Bool) -> Void)
 }
 
 // MARK: LNWelcomeViewSubview
@@ -29,7 +26,6 @@ protocol LNWelcomeViewSubview {
 
 // MARK: LNWelcomeViewVariable
 protocol LNWelcomeViewVariable {
-    var delegate: LNWelcomeViewDelegate? { get }
 }
 
 // MARK: LNWelcomeView
@@ -51,7 +47,7 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
         return button
     }()
     lazy var logoImageView: UIImageView = {
-        let image = UIImage(systemName: "book.closed.fill")
+        let image = UIImage(systemName: "heart.text.square.fill")
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = image
@@ -60,7 +56,7 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
     }()
     lazy var headerLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 48, weight: .heavy)
+        label.font = .systemFont(ofSize: 52, weight: .heavy)
         let welcomeText = NSAttributedString(string: "Welcome to",
                                              attributes: [.foregroundColor: UIColor.black])
         let healthDiaryText = NSAttributedString(string: "\nHealth Diary",
@@ -74,8 +70,8 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
     }()
     lazy var subheaderLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.text = "Your personal health diary. Your health is the best of gratitude"
+        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.text = "Your personal health diary. Your health is the best of gratitude."
         label.numberOfLines = .zero
         return label
     }()
@@ -89,9 +85,6 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
         view.addArrangedSubview(self.subheaderLabel)
         return view
     }()
-
-    // MARK: DI Variable
-    weak var delegate: LNWelcomeViewDelegate?
     
     // MARK: Init Function
     required init?(coder: NSCoder) {
@@ -100,9 +93,14 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
 
     init() {
         super.init(frame: UIScreen.main.fixedCoordinateSpace.bounds)
-        self.subviewDidInit()
-        self.subviewConstraintDidInit()
+        self.subviewDidMake()
+        self.subviewConstraintWillMake()
         self.viewDidInit()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.subviewDidLayout()
     }
 
 }
@@ -110,13 +108,17 @@ final class DefaultLNWelcomeView: UIView, LNWelcomeView {
 // MARK: Internal Function
 extension DefaultLNWelcomeView {
     
-    func subviewDidInit() {
+    func subviewDidLayout() {
+        // do nothing
+    }
+    
+    func subviewDidMake() {
         self.addSubview(self.logoImageView)
         self.addSubview(self.headerStackView)
         self.addSubview(self.continueButton)
     }
     
-    func subviewConstraintDidInit() {
+    func subviewConstraintWillMake() {
         self.logoImageView.snp.makeConstraints { (make) in
             make.size.equalTo(44)
             make.leading.equalTo(self.headerStackView.snp.leading)
@@ -131,8 +133,6 @@ extension DefaultLNWelcomeView {
             make.top.equalTo(self.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(32)
         }
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
     }
     
     func viewDidInit() {
@@ -145,19 +145,21 @@ extension DefaultLNWelcomeView {
 // MARK: LNWelcomeViewFunction
 extension DefaultLNWelcomeView {
     
-    func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?) {
+    func viewWillAppear(navigationBar: UINavigationBar?,
+                        navigationItem: UINavigationItem,
+                        tabBarController: UITabBarController?) {
         guaranteeMainThread {
-            navigationController?.setNavigationBarHidden(true, animated: false)
+            navigationBar?.isHidden = true
         }
     }
     
     func viewWillDisappear() {
-        
+        // do nothing
     }
     
-    func showContinueButton() {
-        guaranteeMainThread {
-            UIView.animate(withDuration: 0.5) {
+    func showContinueButton(_ completion: @escaping (Bool) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.headerStackView.snp.remakeConstraints { (make) in
                     make.leading.trailing.equalToSuperview().inset(32)
                     make.bottom.equalTo(self.snp.centerY)
@@ -170,7 +172,7 @@ extension DefaultLNWelcomeView {
                 self.continueButton.isHidden = false
                 self.setNeedsLayout()
                 self.layoutIfNeeded()
-            }
+            }, completion: completion)
         }
     }
     

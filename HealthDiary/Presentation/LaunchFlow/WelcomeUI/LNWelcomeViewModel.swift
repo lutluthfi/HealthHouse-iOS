@@ -21,12 +21,17 @@ public struct LNWelcomeViewModelRequestValue {
 
 // MARK: LNWelcomeViewModelRoute
 public struct LNWelcomeViewModelRoute {
+    
+    var showLNPadUI: (() -> Void)?
+    var showPFPersonalizeUI: ((PFPersonalizeViewModelRequestValue) -> Void)?
+    
 }
 
 // MARK: LNWelcomeViewModelInput
 protocol LNWelcomeViewModelInput {
 
     func viewDidLoad()
+    func doContinue()
 
 }
 
@@ -70,6 +75,24 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
 extension DefaultLNWelcomeViewModel {
     
     func viewDidLoad() {
+    }
+    
+    func doContinue() {
+        self.showPFPersonalizeUI()
+//        self.showLNPadUI()
+    }
+    
+}
+
+extension DefaultLNWelcomeViewModel {
+    
+    func showLNPadUI() {
+        self.route.showLNPadUI?()
+    }
+    
+    func showPFPersonalizeUI() {
+        let requestValue = PFPersonalizeViewModelRequestValue()
+        self.route.showPFPersonalizeUI?(requestValue)
     }
     
 }
