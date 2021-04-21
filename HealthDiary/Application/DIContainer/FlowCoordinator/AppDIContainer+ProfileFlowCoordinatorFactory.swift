@@ -11,16 +11,17 @@ extension AppDIContainer: ProfileFlowCoordinatorFactory { }
 
 extension AppDIContainer {
     
-    public func makePFPersonalizeController(requestValue: PFPersonalizeViewModelRequestValue,
+    public func makePFPersonalizeController(request: PFPersonalizeViewModelRequest,
                                             route: PFPersonalizeViewModelRoute) -> UIViewController {
-        let viewModel = self.makePFPersonalizeViewModel(requestValue: requestValue, route: route)
+        let viewModel = self.makePFPersonalizeViewModel(request: request, route: route)
         return PFPersonalizeController.create(with: viewModel)
     }
     
-    private func makePFPersonalizeViewModel(requestValue: PFPersonalizeViewModelRequestValue,
+    private func makePFPersonalizeViewModel(request: PFPersonalizeViewModelRequest,
                                             route: PFPersonalizeViewModelRoute) -> PFPersonalizeViewModel {
-        return DefaultPFPersonalizeViewModel(requestValue: requestValue,
+        return DefaultPFPersonalizeViewModel(request: request,
                                              route: route,
+                                             createProfileUseCase: self.makeCreateProfileUseCase(),
                                              fetchCountryDialingCodeUseCase: self.makeFetchCountryDialingCodeUseCase())
     }
     
@@ -28,15 +29,15 @@ extension AppDIContainer {
 
 extension AppDIContainer {
     
-    public func makePFPreviewController(requestValue: PFPreviewViewModelRequestValue,
+    public func makePFPreviewController(request: PFPreviewViewModelRequest,
                                         route: PFPreviewViewModelRoute) -> UIViewController {
-        let viewModel = self.makePFPreviewViewModel(requestValue: requestValue, route: route)
+        let viewModel = self.makePFPreviewViewModel(request: request, route: route)
         return PFPreviewController.create(with: viewModel)
     }
     
-    private func makePFPreviewViewModel(requestValue: PFPreviewViewModelRequestValue,
+    private func makePFPreviewViewModel(request: PFPreviewViewModelRequest,
                                         route: PFPreviewViewModelRoute) -> PFPreviewViewModel {
-        return DefaultPFPreviewViewModel(requestValue: requestValue, route: route)
+        return DefaultPFPreviewViewModel(request: request, route: route)
     }
     
 }

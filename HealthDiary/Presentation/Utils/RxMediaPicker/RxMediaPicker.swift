@@ -133,7 +133,6 @@ public protocol RxMediaPickerDelegate: AnyObject {
         
         let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         observer.onNext((image, editedImage))
-        observer.onCompleted()
     }
     
     func processVideo(info: [UIImagePickerController.InfoKey: Any],
@@ -221,12 +220,5 @@ public protocol RxMediaPickerDelegate: AnyObject {
     
     open func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(picker)
-        
-        if let action = currentAction {
-            switch action {
-            case .photo(let observer): observer.on(.error(RxMediaPickerError.canceled))
-            case .video(let observer, _): observer.on(.error(RxMediaPickerError.canceled))
-            }
-        }
     }
 }

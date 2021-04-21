@@ -20,6 +20,7 @@ public final class AppDIContainer {
     lazy var coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared
     
     lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage()
+    lazy var localProfileStorage: LocalProfileStorage = DefaultLocalProfileStorage()
     lazy var remoteCountryDialingCodeStorage: RemoteCountryDialingCodeStorage = DefaultRemoteCountryDialingCodeStorage()
     
     public init(navigationController: UINavigationController) {

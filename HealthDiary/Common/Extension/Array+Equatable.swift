@@ -15,4 +15,15 @@ extension Array where Element: Equatable {
         self.remove(at: index)
     }
     
+    func index(of element: Element) -> Int? {
+        var res: Int?
+        for (index, _element) in self.enumerated() {
+            if element == _element {
+                res = index
+                break
+            }
+        }
+        return res
+    }
+    
 }

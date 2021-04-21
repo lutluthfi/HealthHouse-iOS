@@ -8,97 +8,139 @@
 import XCTest
 @testable import DEV_Health_Diary
 
+// MARK: StubCollection
 extension ActivityDomain {
     
-    static func stubCollection(coreDataStorage: CoreDataStorageSharedMock) -> [ActivityDomain] {
-        let insertedProfileEntity = ProfileEntity(.stubElement, insertInto: coreDataStorage.context)
-        coreDataStorage.saveContext()
-        let insertedProfileDomain = insertedProfileEntity.toDomain()
+    @discardableResult
+    static func stubCollectionCoreData(coreDataStorage: CoreDataStorageSharedMock) -> ([ActivityDomain], ProfileDomain) {
+        let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
-        return [ActivityDomain(coreID: nil,
-                               createdAt: now.toInt64(),
-                               updatedAt: now.toInt64(),
-                               doDate: now.toInt64(),
-                               explanation: "Activity Stub Collection 1",
-                               isArchived: false,
-                               isPinned: false,
-                               photoFileNames: [],
-                               title: "Activity Stub Collection 1",
-                               profile: insertedProfileDomain),
-                ActivityDomain(coreID: nil,
-                               createdAt: now.toInt64(),
-                               updatedAt: now.toInt64(),
-                               doDate: now.toInt64(),
-                               explanation: "Activity Stub Collection 2",
-                               isArchived: false,
-                               isPinned: false,
-                               photoFileNames: [],
-                               title: "Activity Stub Collection 2",
-                               profile: insertedProfileDomain),
-                ActivityDomain(coreID: nil,
-                               createdAt: now.toInt64(),
-                               updatedAt: now.toInt64(),
-                               doDate: now.toInt64(),
-                               explanation: "Activity Stub Collection 3",
-                               isArchived: false,
-                               isPinned: false,
-                               photoFileNames: [],
-                               title: "Activity Stub Collection 3",
-                               profile: insertedProfileDomain),
-                ActivityDomain(coreID: nil,
-                               createdAt: now.toInt64(),
-                               updatedAt: now.toInt64(),
-                               doDate: now.toInt64(),
-                               explanation: "Activity Stub Collection 4",
-                               isArchived: false,
-                               isPinned: false,
-                               photoFileNames: [],
-                               title: "Activity Stub Collection 4",
-                               profile: insertedProfileDomain),
-                ActivityDomain(coreID: nil,
-                               createdAt: now.toInt64(),
-                               updatedAt: now.toInt64(),
-                               doDate: now.toInt64(),
-                               explanation: "Activity Stub Collection 5",
-                               isArchived: false,
-                               isPinned: false,
-                               photoFileNames: [],
-                               title: "Activity Stub Collection 5",
-                               profile: insertedProfileDomain)]
+        let activities = [ActivityDomain(coreID: nil,
+                                         createdAt: now.toInt64(),
+                                         updatedAt: now.toInt64(),
+                                         doDate: now.toInt64(),
+                                         explanation: "Activity Stub Collection 1",
+                                         isArchived: false,
+                                         isPinned: false,
+                                         photoFileNames: [],
+                                         title: "Activity Stub Collection 1",
+                                         profile: profile),
+                          ActivityDomain(coreID: nil,
+                                         createdAt: now.toInt64(),
+                                         updatedAt: now.toInt64(),
+                                         doDate: now.toInt64(),
+                                         explanation: "Activity Stub Collection 2",
+                                         isArchived: false,
+                                         isPinned: false,
+                                         photoFileNames: [],
+                                         title: "Activity Stub Collection 2",
+                                         profile: profile),
+                          ActivityDomain(coreID: nil,
+                                         createdAt: now.toInt64(),
+                                         updatedAt: now.toInt64(),
+                                         doDate: now.toInt64(),
+                                         explanation: "Activity Stub Collection 3",
+                                         isArchived: false,
+                                         isPinned: false,
+                                         photoFileNames: [],
+                                         title: "Activity Stub Collection 3",
+                                         profile: profile),
+                          ActivityDomain(coreID: nil,
+                                         createdAt: now.toInt64(),
+                                         updatedAt: now.toInt64(),
+                                         doDate: now.toInt64(),
+                                         explanation: "Activity Stub Collection 4",
+                                         isArchived: false,
+                                         isPinned: false,
+                                         photoFileNames: [],
+                                         title: "Activity Stub Collection 4",
+                                         profile: profile),
+                          ActivityDomain(coreID: nil,
+                                         createdAt: now.toInt64(),
+                                         updatedAt: now.toInt64(),
+                                         doDate: now.toInt64(),
+                                         explanation: "Activity Stub Collection 5",
+                                         isArchived: false,
+                                         isPinned: false,
+                                         photoFileNames: [],
+                                         title: "Activity Stub Collection 5",
+                                         profile: profile)]
+        let activityEntities = activities.map { ActivityEntity($0, insertInto: coreDataStorage.context) }
+        coreDataStorage.saveContext()
+        let _activities = activityEntities
+            .map { $0.toDomain(context: coreDataStorage.context) }
+            .sorted(by: { $0.title < $1.title })
+        return (_activities, profile)
     }
     
-    static func stubRemoveElement(coreDataStorage: CoreDataStorageSharedMock) -> ActivityDomain {
-        let insertedProfileEntity = ProfileEntity(.stubElement, insertInto: coreDataStorage.context)
-        coreDataStorage.saveContext()
-        let insertedProfileDomain = insertedProfileEntity.toDomain()
+}
+
+// MARK: StubElement
+extension ActivityDomain {
+    
+    @discardableResult
+    static func stubElement(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+        let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
-        return ActivityDomain(coreID: nil,
-                              createdAt: now.toInt64(),
-                              updatedAt: now.toInt64(),
-                              doDate: now.toInt64(),
-                              explanation: "Activity Stub Remove Element",
-                              isArchived: false,
-                              isPinned: false,
-                              photoFileNames: [],
-                              title: "Activity Stub Remove Element",
-                              profile: insertedProfileDomain)
+        let activity = ActivityDomain(coreID: nil,
+                                      createdAt: now.toInt64(),
+                                      updatedAt: now.toInt64(),
+                                      doDate: now.toInt64(),
+                                      explanation: "Activity Stub Element",
+                                      isArchived: false,
+                                      isPinned: false,
+                                      photoFileNames: [],
+                                      title: "Activity Stub Element",
+                                      profile: profile)
+        return (activity, profile)
     }
     
-    static func stubElement(coreDataStorage: CoreDataStorageSharedMock) -> ActivityDomain {
-        let insertedProfileEntity = ProfileEntity(.stubElement, insertInto: coreDataStorage.context)
-        coreDataStorage.saveContext()
-        let insertedProfileDomain = insertedProfileEntity.toDomain()
+    @discardableResult
+    static func stubElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+        let context = coreDataStorage.context
+        let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
-        return ActivityDomain(coreID: nil,
-                              createdAt: now.toInt64(),
-                              updatedAt: now.toInt64(),
-                              doDate: now.toInt64(),
-                              explanation: "Activity Stub Element",
-                              isArchived: false,
-                              isPinned: false,
-                              photoFileNames: [],
-                              title: "Activity Stub Element",
-                              profile: insertedProfileDomain)
+        let activity = ActivityDomain(coreID: nil,
+                                      createdAt: now.toInt64(),
+                                      updatedAt: now.toInt64(),
+                                      doDate: now.toInt64(),
+                                      explanation: "Activity Stub Element",
+                                      isArchived: false,
+                                      isPinned: false,
+                                      photoFileNames: [],
+                                      title: "Activity Stub Element",
+                                      profile: profile)
+        let activityEntity = ActivityEntity(activity, insertInto: context)
+        coreDataStorage.saveContext()
+        let _activity = activityEntity.toDomain(context: context)
+        return (_activity, profile)
+    }
+    
+}
+
+// MARK: StubRemoveElement
+extension ActivityDomain {
+    
+    @discardableResult
+    static func stubRemoveElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+        let context = coreDataStorage.context
+        let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
+        let now = Date()
+        let activity = ActivityDomain(coreID: nil,
+                                      createdAt: now.toInt64(),
+                                      updatedAt: now.toInt64(),
+                                      doDate: now.toInt64(),
+                                      explanation: "Activity Stub Remove Element",
+                                      isArchived: false,
+                                      isPinned: false,
+                                      photoFileNames: [],
+                                      title: "Activity Stub Remove Element",
+                                      profile: profile)
+        let activityEntity = ActivityEntity(activity, insertInto: context)
+        coreDataStorage.saveContext()
+        context.delete(activityEntity)
+        coreDataStorage.saveContext()
+        return (activity, profile)
     }
     
 }

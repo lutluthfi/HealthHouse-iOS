@@ -43,7 +43,7 @@
         <attribute name="gender" optional="YES" attributeType="String"/>
         <attribute name="lastName" optional="YES" attributeType="String"/>
         <attribute name="mobileNumber" optional="YES" attributeType="String"/>
-        <attribute name="photoFileName" optional="YES" attributeType="String"/>
+        <attribute name="photoBase64String" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>

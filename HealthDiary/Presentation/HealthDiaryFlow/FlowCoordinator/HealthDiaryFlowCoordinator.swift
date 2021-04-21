@@ -12,7 +12,7 @@ import UIKit
 // MARK: HealthDiaryFlowCoordinatorFactory
 public protocol HealthDiaryFlowCoordinatorFactory  {
     
-    func makeHDTimelineController(requestValue: HDTimelineViewModelRequestValue,
+    func makeHDTimelineController(request: HDTimelineViewModelRequest,
                                   route: HDTimelineViewModelRoute) -> UIViewController
     
 }
@@ -21,7 +21,7 @@ public protocol HealthDiaryFlowCoordinatorFactory  {
 public protocol HealthDiaryFlowCoordinator {
     func start(with instructor: HealthDiaryFlowCoordinatorInstructor)
     
-    func makeTimelineUI(requestValue: HDTimelineViewModelRequestValue) -> UIViewController
+    func makeTimelineUI(requestValue: HDTimelineViewModelRequest) -> UIViewController
 }
 
 // MARK: HealthDiaryFlowCoordinatorInstructor
@@ -51,9 +51,9 @@ extension DefaultHealthDiaryFlowCoordinator: HealthDiaryFlowCoordinator {
     public func start(with instructor: HealthDiaryFlowCoordinatorInstructor) {
     }
     
-    public func makeTimelineUI(requestValue: HDTimelineViewModelRequestValue) -> UIViewController {
+    public func makeTimelineUI(requestValue: HDTimelineViewModelRequest) -> UIViewController {
         let route = HDTimelineViewModelRoute()
-        let controller = self.controllerFactory.makeHDTimelineController(requestValue: requestValue, route: route)
+        let controller = self.controllerFactory.makeHDTimelineController(request: requestValue, route: route)
         return controller
     }
     

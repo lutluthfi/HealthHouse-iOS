@@ -23,7 +23,7 @@ public class ProfileEntity: NSManagedObject {
         self.firstName = domain.firstName
         self.lastName = domain.lastName
         self.mobileNumber = domain.mobileNumbder
-        self.photoFileName = domain.photoFileName
+        self.photoBase64String = domain.photoBase64String
     }
     
 }
@@ -39,7 +39,7 @@ public extension ProfileEntity {
                              gender: GenderDomain(rawValue: self.gender),
                              lastName: self.lastName,
                              mobileNumbder: self.mobileNumber,
-                             photoFileName: self.photoFileName)
+                             photoBase64String: self.photoBase64String)
     }
     
 }
@@ -57,7 +57,7 @@ extension ProfileEntity {
         self.gender = newObject.gender.rawValue
         self.lastName = newObject.lastName
         self.mobileNumber = newObject.mobileNumbder
-        self.photoFileName = newObject.photoFileName
+        self.photoBase64String = newObject.photoBase64String
         return self
     }
     

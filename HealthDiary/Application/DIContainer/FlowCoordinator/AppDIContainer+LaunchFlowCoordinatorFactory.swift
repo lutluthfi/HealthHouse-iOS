@@ -11,45 +11,45 @@ extension AppDIContainer: LaunchFlowCoordinatorFactory { }
 
 extension AppDIContainer {
     
-    public func makeLNPadController(requestValue: LNPadViewModelRequestValue,
+    public func makeLNPadController(request: LNPadViewModelRequest,
                                     route: LNPadViewModelRoute) -> UITabBarController {
-        let viewModel = self.makeLNPadViewModel(requestValue: requestValue, route: route)
+        let viewModel = self.makeLNPadViewModel(request: request, route: route)
         return LNPadController.create(with: viewModel)
     }
     
-    private func makeLNPadViewModel(requestValue: LNPadViewModelRequestValue,
+    private func makeLNPadViewModel(request: LNPadViewModelRequest,
                                     route: LNPadViewModelRoute) -> LNPadViewModel {
-        return DefaultLNPadViewModel(requestValue: requestValue, route: route)
+        return DefaultLNPadViewModel(request: request, route: route)
     }
     
 }
 
 extension AppDIContainer {
     
-    public func makeLNPostController(requestValue: LNPostViewModelRequestValue,
+    public func makeLNPostController(request: LNPostViewModelRequest,
                                      route: LNPostViewModelRoute) -> UIViewController {
-        let viewModel = self.makeLNPostViewModel(requestValue: requestValue, route: route)
+        let viewModel = self.makeLNPostViewModel(request: request, route: route)
         return LNPostController.create(with: viewModel)
     }
     
-    private func makeLNPostViewModel(requestValue: LNPostViewModelRequestValue,
+    private func makeLNPostViewModel(request: LNPostViewModelRequest,
                                      route: LNPostViewModelRoute) -> LNPostViewModel {
-        return DefaultLNPostViewModel(requestValue: requestValue, route: route)
+        return DefaultLNPostViewModel(request: request, route: route)
     }
     
 }
 
 extension AppDIContainer {
     
-    public func makeLNWelcomeController(requestValue: LNWelcomeViewModelRequestValue,
+    public func makeLNWelcomeController(request: LNWelcomeViewModelRequest,
                                         route: LNWelcomeViewModelRoute) -> UIViewController {
-        let viewModel = self.makeLNWelcomeViewModel(requestValue: requestValue, route: route)
+        let viewModel = self.makeLNWelcomeViewModel(request: request, route: route)
         return LNWelcomeController.create(with: viewModel)
     }
     
-    private func makeLNWelcomeViewModel(requestValue: LNWelcomeViewModelRequestValue,
+    private func makeLNWelcomeViewModel(request: LNWelcomeViewModelRequest,
                                         route: LNWelcomeViewModelRoute) -> LNWelcomeViewModel {
-        return DefaultLNWelcomeViewModel(requestValue: requestValue, route: route)
+        return DefaultLNWelcomeViewModel(request: request, route: route)
     }
     
 }

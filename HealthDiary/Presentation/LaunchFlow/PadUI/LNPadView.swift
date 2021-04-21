@@ -9,10 +9,12 @@ import UIKit
 
 // MARK: LNPadViewFunction
 protocol LNPadViewFunction {
-    func viewDidLoad(_ view: UIView)
-    func viewWillAppear(navigationBar: UINavigationBar?,
+    func viewDidLoad(view: UIView)
+    func viewWillAppear(view: UIView,
+                        navigationBar: UINavigationBar?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?)
+    func viewDidAppear(view: UIView)
     func viewWillDisappear()
 }
 
@@ -60,14 +62,20 @@ extension DefaultLNPadView {
 // MARK: LNPadViewFunction
 extension DefaultLNPadView {
     
-    func viewDidLoad(_ view: UIView) {
+    func viewDidLoad(view: UIView) {
         view.backgroundColor = .white
+        view.showLoadingIndicator()
     }
     
-    func viewWillAppear(navigationBar: UINavigationBar?,
+    func viewWillAppear(view: UIView,
+                        navigationBar: UINavigationBar?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?) {
         // do nothing
+    }
+    
+    func viewDidAppear(view: UIView) {
+        view.hideLoadingIndicator()
     }
     
     func viewWillDisappear() {

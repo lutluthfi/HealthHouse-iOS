@@ -39,7 +39,9 @@ extension DefaultRemoteCountryDialingCodeStorage {
                 observer.onCompleted()
             }
             return Disposables.create()
-        }.observeOn(CurrentThreadScheduler.instance)
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
 }

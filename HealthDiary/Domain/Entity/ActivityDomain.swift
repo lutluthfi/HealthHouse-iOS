@@ -37,3 +37,12 @@ extension ActivityDomain: Equatable {
     }
     
 }
+
+extension Array where Element == Array<ActivityDomain> {
+    
+    func groupByDoDate() -> [String: [ActivityDomain]] {
+        
+        return [:]
+    }
+    
+}

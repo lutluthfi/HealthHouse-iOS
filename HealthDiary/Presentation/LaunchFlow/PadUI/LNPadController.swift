@@ -13,9 +13,10 @@ import UIKit
 final class LNPadController: UITabBarController {
 
     // MARK: DI Variable
-    lazy var _view: LNPadView = DefaultLNPadView()
-    var viewModel: LNPadViewModel!
     let disposeBag = DisposeBag()
+    lazy var padView: LNPadView = DefaultLNPadView()
+    var viewModel: LNPadViewModel!
+    lazy var _view: UIView = (self.padView as! UIView)
 
     // MARK: Common Variable
 
@@ -34,52 +35,60 @@ final class LNPadController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self._view.viewDidLoad(self.view)
+        self.padView.viewDidLoad(view: self.view)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self._view.viewWillAppear(navigationBar: self.navigationController?.navigationBar,
-                                  navigationItem: self.navigationItem,
-                                  tabBarController: self.tabBarController)
-        self.subscribeControllersViewModel(self.viewModel.controllers)
+        self.bind(view: self.padView, viewModel: self.viewModel)
+        self.padView.viewWillAppear(view: self.view,
+                                    navigationBar: self.navigationController?.navigationBar,
+                                    navigationItem: self.navigationItem,
+                                    tabBarController: self.tabBarController)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.padView.viewDidAppear(view: self.view)
         self.viewModel.viewDidAppear()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self._view.viewWillDisappear()
+        self.padView.viewWillDisappear()
+    }
+    
+    // MARK: Bind View & ViewModel Function
+    private func bind(view: LNPadView, viewModel: LNPadViewModel) {
+        self.bindControllersViewModelToViewControllers(observable: viewModel.controllers)
     }
     
 }
 
-// MARK: Observe ViewModel Function
 extension LNPadController {
     
-    func subscribeControllersViewModel(_ controllers: Observable<LNPadViewModelRequestValue.Controllers>) {
-        controllers.subscribe(onNext: { [unowned self] controllers in
-            let pfPreviewController = controllers.pfPreviewController
-            let hdTimelineController = controllers.hdTimelineController
-            let personFillImage = UIImage(systemName: "person.fill")
-            let heartTextSquareFillImage = UIImage(systemName: "heart.text.square.fill")
-            pfPreviewController.tabBarItem = UITabBarItem(title: "Profile",
-                                                          image: personFillImage,
-                                                          selectedImage: personFillImage)
-            hdTimelineController.tabBarItem = UITabBarItem(title: "Health Diary",
-                                                           image: heartTextSquareFillImage,
-                                                           selectedImage: heartTextSquareFillImage)
-            let _controllers = [hdTimelineController, pfPreviewController]
-            self.viewControllers = _controllers.map {
-                let navController = UINavigationController(rootViewController: $0)
-                navController.hidesBottomBarWhenPushed = false
-                return navController
-            }
-        })
-        .disposed(by: self.disposeBag)
+    func bindControllersViewModelToViewControllers(observable: Observable<LNPadViewModelRequest.Controllers>) {
+        observable
+            .subscribeOn(ConcurrentMainScheduler.instance)
+            .subscribe(onNext: { [unowned self] (controllers) in
+                let pfPreviewController = controllers.pfPreviewController
+                let hdTimelineController = controllers.hdTimelineController
+                let personFillImage = UIImage(systemName: "person.fill")
+                let heartTextSquareFillImage = UIImage(systemName: "heart.text.square.fill")
+                pfPreviewController.tabBarItem = UITabBarItem(title: "Profile",
+                                                              image: personFillImage,
+                                                              selectedImage: personFillImage)
+                hdTimelineController.tabBarItem = UITabBarItem(title: "Health Diary",
+                                                               image: heartTextSquareFillImage,
+                                                               selectedImage: heartTextSquareFillImage)
+                let _controllers = [hdTimelineController, pfPreviewController]
+                self.viewControllers = _controllers.map {
+                    let navController = UINavigationController(rootViewController: $0)
+                    navController.hidesBottomBarWhenPushed = false
+                    return navController
+                }
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

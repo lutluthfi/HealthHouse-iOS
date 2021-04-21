@@ -39,7 +39,7 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
     func start(with instructor: AppFlowCoordinatorInstructor) {
         switch instructor {
         case .default:
-            let requestValue = LNWelcomeViewModelRequestValue()
+            let requestValue = LNWelcomeViewModelRequest()
             let instructor = LaunchFlowCoordinatorInstructor.pushToWelcomeUI(requestValue)
             self.flowFactory.makeLaunchFlowCoordinator().start(with: instructor)
         }

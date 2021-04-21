@@ -29,7 +29,7 @@ protocol PFPersonalizeViewSubview {
 
 // MARK: PFPersonalizeViewVariable
 protocol PFPersonalizeViewVariable {
-    var personalizeFields: [[PFPersonalizeFieldDomain]] { get }
+    var personalizeFields: [[PFPLFieldDomain]] { get }
 }
 
 // MARK: PFPersonalizeView
@@ -60,7 +60,7 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
     }()
 
     // MARK: PFPersonalizeViewVariable
-    let personalizeFields: [[PFPersonalizeFieldDomain]] = [[.photo],
+    let personalizeFields: [[PFPLFieldDomain]] = [[.photo],
                                                            [.firstName, .lastName],
                                                            [.dateOfBirth],
                                                            [.gender],

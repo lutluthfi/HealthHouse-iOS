@@ -16,8 +16,8 @@ enum LNPadViewModelResponse {
 protocol LNPadViewModelDelegate: class {
 }
 
-// MARK: LNPadViewModelRequestValue
-public struct LNPadViewModelRequestValue {
+// MARK: LNPadViewModelRequest
+public struct LNPadViewModelRequest {
     
     public struct Controllers {
         
@@ -44,7 +44,7 @@ protocol LNPadViewModelInput {
 // MARK: LNPadViewModelOutput
 protocol LNPadViewModelOutput {
 
-    var controllers: PublishSubject<LNPadViewModelRequestValue.Controllers> { get }
+    var controllers: PublishSubject<LNPadViewModelRequest.Controllers> { get }
     
 }
 
@@ -56,7 +56,7 @@ final class DefaultLNPadViewModel: LNPadViewModel {
 
     // MARK: DI Variable
     weak var delegate: LNPadViewModelDelegate?
-    let requestValue: LNPadViewModelRequestValue
+    let request: LNPadViewModelRequest
     let route: LNPadViewModelRoute
 
     // MARK: UseCase Variable
@@ -68,12 +68,12 @@ final class DefaultLNPadViewModel: LNPadViewModel {
     
 
     // MARK: Output ViewModel
-    let controllers = PublishSubject<LNPadViewModelRequestValue.Controllers>()
+    let controllers = PublishSubject<LNPadViewModelRequest.Controllers>()
 
     // MARK: Init Function
-    init(requestValue: LNPadViewModelRequestValue,
+    init(request: LNPadViewModelRequest,
          route: LNPadViewModelRoute) {
-        self.requestValue = requestValue
+        self.request = request
         self.route = route
     }
     
@@ -83,7 +83,7 @@ final class DefaultLNPadViewModel: LNPadViewModel {
 extension DefaultLNPadViewModel {
     
     func viewDidAppear() {
-        let controllers = self.requestValue.controllers
+        let controllers = self.request.controllers
         self.controllers.onNext(controllers)
     }
     

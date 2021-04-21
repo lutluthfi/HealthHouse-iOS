@@ -15,15 +15,15 @@ enum LNWelcomeViewModelResponse {
 protocol LNWelcomeViewModelDelegate: class {
 }
 
-// MARK: LNWelcomeViewModelRequestValue
-public struct LNWelcomeViewModelRequestValue {
+// MARK: LNWelcomeViewModelRequest
+public struct LNWelcomeViewModelRequest {
 }
 
 // MARK: LNWelcomeViewModelRoute
 public struct LNWelcomeViewModelRoute {
     
     var showLNPadUI: (() -> Void)?
-    var showPFPersonalizeUI: ((PFPersonalizeViewModelRequestValue) -> Void)?
+    var showPFPersonalizeUI: ((PFPersonalizeViewModelRequest) -> Void)?
     
 }
 
@@ -48,7 +48,7 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
 
     // MARK: DI Variable
     weak var delegate: LNWelcomeViewModelDelegate?
-    let requestValue: LNWelcomeViewModelRequestValue
+    let request: LNWelcomeViewModelRequest
     let route: LNWelcomeViewModelRoute
 
     // MARK: UseCase Variable
@@ -63,9 +63,9 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
     
 
     // MARK: Init Function
-    init(requestValue: LNWelcomeViewModelRequestValue,
+    init(request: LNWelcomeViewModelRequest,
          route: LNWelcomeViewModelRoute) {
-        self.requestValue = requestValue
+        self.request = request
         self.route = route
     }
     
@@ -78,8 +78,8 @@ extension DefaultLNWelcomeViewModel {
     }
     
     func doContinue() {
-        self.showPFPersonalizeUI()
-//        self.showLNPadUI()
+//        self.showPFPersonalizeUI()
+        self.showLNPadUI()
     }
     
 }
@@ -91,8 +91,8 @@ extension DefaultLNWelcomeViewModel {
     }
     
     func showPFPersonalizeUI() {
-        let requestValue = PFPersonalizeViewModelRequestValue()
-        self.route.showPFPersonalizeUI?(requestValue)
+        let request = PFPersonalizeViewModelRequest()
+        self.route.showPFPersonalizeUI?(request)
     }
     
 }

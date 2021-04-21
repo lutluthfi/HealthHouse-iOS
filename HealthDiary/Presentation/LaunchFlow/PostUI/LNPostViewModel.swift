@@ -15,8 +15,8 @@ enum LNPostViewModelResponse {
 protocol LNPostViewModelDelegate: class {
 }
 
-// MARK: LNPostViewModelRequestValue
-public struct LNPostViewModelRequestValue {
+// MARK: LNPostViewModelRequest
+public struct LNPostViewModelRequest {
 }
 
 // MARK: LNPostViewModelRoute
@@ -43,7 +43,7 @@ final class DefaultLNPostViewModel: LNPostViewModel {
 
     // MARK: DI Variable
     weak var delegate: LNPostViewModelDelegate?
-    let requestValue: LNPostViewModelRequestValue
+    let request: LNPostViewModelRequest
     let route: LNPostViewModelRoute
 
     // MARK: UseCase Variable
@@ -58,11 +58,9 @@ final class DefaultLNPostViewModel: LNPostViewModel {
     
 
     // MARK: Init Function
-    init(
-        requestValue: LNPostViewModelRequestValue,
-        route: LNPostViewModelRoute
-    ) {
-        self.requestValue = requestValue
+    init(request: LNPostViewModelRequest,
+         route: LNPostViewModelRoute) {
+        self.request = request
         self.route = route
     }
     

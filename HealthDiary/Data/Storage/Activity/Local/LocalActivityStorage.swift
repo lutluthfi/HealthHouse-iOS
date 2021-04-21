@@ -41,7 +41,36 @@ extension DefaultLocalActivityStorage {
                 observer.onError(coreDataError)
             }
             return Disposables.create()
-        }.observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
+    }
+    
+    public func fetchAllInCoreData(ownedBy profile: ProfileDomain) -> Observable<[ActivityDomain]> {
+        return Observable.create { [unowned self] (observer) -> Disposable in
+            guard let profileCoreID = profile.coreID else {
+                let message = "LocalActivityStorage: Failed to execute fetchAllInCoreData() caused by profileCoreID is not available"
+                let error = PlainError(description: message)
+                let coreDataError = CoreDataStorageError.deleteError(error)
+                observer.onError(coreDataError)
+                return Disposables.create()
+            }
+            do {
+                let context = self.coreDataStorage.context
+                let request: NSFetchRequest = ActivityEntity.fetchRequest()
+                request.predicate = NSPredicate(format: "profileID = %@", profileCoreID)
+                let entities = try context.fetch(request)
+                let domains = entities.map { $0.toDomain(context: context) }
+                observer.onNext(domains)
+                observer.onCompleted()
+            } catch {
+                let coreDataError = CoreDataStorageError.readError(error)
+                observer.onError(coreDataError)
+            }
+            return Disposables.create()
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
     public func insertIntoCoreData(_ activity: ActivityDomain) -> Observable<ActivityDomain> {
@@ -65,14 +94,16 @@ extension DefaultLocalActivityStorage {
                 observer.onError(coreDataError)
             }
             return Disposables.create()
-        }.observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
     public func removeInCoreData(_ activity: ActivityDomain) -> Observable<ActivityDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             guard let coreID = activity.coreID else {
-                let message = "LocalActivityStorage: Failed to execute removeInCoreData(_:) caused by coreID is not available"
-                let error = NSError(domain: message, code: 0, userInfo: nil)
+                let message = "LocalActivityStorage: Failed to execute removeInCoreData() caused by coreID is not available"
+                let error = PlainError(description: message)
                 let coreDataError = CoreDataStorageError.deleteError(error)
                 observer.onError(coreDataError)
                 return Disposables.create()
@@ -91,7 +122,9 @@ extension DefaultLocalActivityStorage {
             }
             
             return Disposables.create()
-        }.observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
 }

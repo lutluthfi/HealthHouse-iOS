@@ -84,6 +84,7 @@ targets:
                 UIRequiredDeviceCapabilities:
                     - armv7
                 UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+                UIUserInterfaceStyle: Light
     HealthDiaryTests:
         type: bundle.unit-test
         platform: iOS

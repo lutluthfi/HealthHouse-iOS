@@ -12,6 +12,9 @@ public protocol ActivityRepository {
     
     func fetchAllActivity(in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
     
+    func fetchAllActivity(ownedBy profile: ProfileDomain,
+                          in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
+    
     func insertActivity(_ activity: ActivityDomain,
                         into storagePoint: StoragePoint) -> Observable<ActivityDomain>
     

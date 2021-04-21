@@ -25,5 +25,22 @@ class ArrayEquatableTests: XCTestCase {
         
         XCTAssertEqual(array, [1, 3, 4, 5, 6, 7, 8, 9, 0])
     }
+    
+    func test_indexOf_whenArrayHasElement_thenIndexNotNil() {
+        let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+        
+        let result = array.index(of: 5)
+        
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result, 4)
+    }
+    
+    func test_indexOf_whenArrayHasNotElement_thenIndexNil() {
+        let array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+        
+        let result = array.index(of: 10)
+        
+        XCTAssertNil(result)
+    }
 
 }

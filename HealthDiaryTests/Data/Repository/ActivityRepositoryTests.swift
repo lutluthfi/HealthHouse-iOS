@@ -13,50 +13,36 @@ import XCTest
 
 // MARK: ActivityRepositoryTests
 class ActivityRepositoryTests: XCTestCase {
-
+    
     private lazy var sut = self.makeActivityRepositorySUT()
-    private var insertedObject: ActivityDomain!
+    private var insertedActivity: (ActivityDomain, ProfileDomain)!
     
     override func setUp() {
         super.setUp()
         self.makeStub()
     }
-
+    
     override func tearDown() {
         self.removeStub()
         super.tearDown()
     }
     
     private func makeStub() {
-        let activity = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
-        self.sut.localActivityStorage
-            .insertIntoCoreData(activity)
-            .subscribe(onNext: { [unowned self] object in
-                self.insertedObject = object
-            }, onCompleted: { [unowned self] in
-                self.sut.semaphore.signal()
-            })
-            .disposed(by: self.sut.disposeBag)
-        self.sut.semaphore.wait()
+        let coreDataStorage = self.sut.coreDataStorage
+        self.insertedActivity = ActivityDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
     }
     
     private func removeStub() {
-        self.sut.localActivityStorage
-            .removeInCoreData(self.insertedObject)
-            .subscribe(onCompleted: { [unowned self] in
-                self.sut.semaphore.signal()
-            })
-            .disposed(by: self.sut.disposeBag)
-        self.sut.semaphore.wait()
+        self.removeCoreDataStorage()
     }
-
+    
 }
 
-// MARK: Tests Function
+// MARK: FetchAllActivity Function
 extension ActivityRepositoryTests {
     
     func test_fetchAllActivity_whenStoragePointCoreData_thenFetchedInCoreData() throws {
-        let timeout = self.sut.coreDataStorageMock.fetchCollectionTimeout
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
         
         let result = try self.sut.activityRepository
             .fetchAllActivity(in: .coreData)
@@ -64,31 +50,87 @@ extension ActivityRepositoryTests {
             .single()
         
         XCTAssertFalse(result.isEmpty)
-        XCTAssertTrue(result.contains(self.insertedObject))
+        XCTAssertEqual(result, [self.insertedActivity.0])
     }
     
     func test_fetchAllActivity_whenStoragePointUserDefault_thenObservePlainError() {
-        let timeout = self.sut.coreDataStorageMock.removeElementTimeout
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
         
-        let testExpectationDescription = "ActivityRepository: fetchAllActivity() is not available for UserDefaults"
-        let testExpectation = expectation(description: testExpectationDescription)
-        
-        self.sut.activityRepository
-            .fetchAllActivity(in: .userDefault)
-            .subscribe(onError: { error in
-                XCTAssertTrue(error is PlainError)
-                XCTAssertEqual(testExpectation.description, testExpectationDescription)
-                testExpectation.fulfill()
-            })
-            .disposed(by: self.sut.disposeBag)
-        
-        wait(for: [testExpectation], timeout: timeout)
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(in: .userDefault)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> fetchAllActivity() is not available for UserDefaults")
+        }
     }
     
-    func test_insertActivity_whenStoragePointCoreData_thenInsertedIntoCoreData() throws {
-        let timeout = self.sut.coreDataStorageMock.insertElementTimeout
+}
+
+// MARK: FetchAllActivityOwnedBy Function
+extension ActivityRepositoryTests {
+    
+    func test_fetchAllActivityOwnedBy_whenProfileHasCoreIDAndStoragePointCoreData_thenFetchedInCoreData() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+        let profile = self.insertedActivity.1
         
-        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
+        let result = try self.sut.activityRepository
+            .fetchAllActivity(ownedBy: profile, in: .coreData)
+            .toBlocking(timeout: timeout)
+            .single()
+        
+        XCTAssertFalse(result.isEmpty)
+        XCTAssertEqual(result, [self.insertedActivity.0])
+    }
+    
+    func test_fetchAllActivityOwnedBy_whenProfileHasCoreIDAndStorageRemotes_thenThrowsError() {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
+        let profile = self.insertedActivity.1
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, in: .remote)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> fetchAllActivity(ownedBy:) is not available for Remote")
+        }
+    }
+    
+    func test_fetchAllActivityOwnedBy_whenProfileHasCoreIDAndStorageUserDefaults_thenThrowsError() {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
+        let profile = self.insertedActivity.1
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, in: .userDefault)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> fetchAllActivity(ownedBy:) is not available for UserDefaults")
+        }
+    }
+    
+    func test_fetchAllActivityOwnedBy_whenProfileHasNotCoreIDAndStoragePointCoreData_thenThrowsCoreDataStorageError() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+        let profile = ProfileDomain.stubElement
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, in: .coreData)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData() caused by profileCoreID is not available")
+        }
+    }
+    
+}
+
+// MARK: InsertActivity Function
+extension ActivityRepositoryTests {
+    
+    func test_insertActivity_whenStoragePointCoreData_thenInsertedIntoCoreData() throws {
+        let timeout = self.sut.coreDataStorage.insertElementTimeout
+        
+        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
         let storagePoint = StoragePoint.coreData
         
         let result = try self.sut.activityRepository
@@ -101,22 +143,16 @@ extension ActivityRepositoryTests {
     }
     
     func test_insertActivity_whenStoragePointUserDefaults_thenObserverPlainError() {
-        let timeout = self.sut.coreDataStorageMock.removeElementTimeout
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
+        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
         
-        let testExpectationDescription = "ActivityRepository: insertActivity() is not available for UserDefaults"
-        let testExpectation = expectation(description: testExpectationDescription)
-        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
-        
-        self.sut.activityRepository
-            .insertActivity(object, into: .userDefault)
-            .subscribe(onError: { error in
-                XCTAssertTrue(error is PlainError)
-                XCTAssertEqual(testExpectation.description, testExpectationDescription)
-                testExpectation.fulfill()
-            })
-            .disposed(by: self.sut.disposeBag)
-        
-        wait(for: [testExpectation], timeout: timeout)
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .insertActivity(object, into: .userDefault)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> insertActivity() is not available for UserDefaults")
+        }
     }
     
 }
@@ -124,9 +160,8 @@ extension ActivityRepositoryTests {
 // MARK: ActivityRepositorySUT
 public struct ActivityRepositorySUT {
     
-    public let semaphore: DispatchSemaphore
     public let disposeBag: DisposeBag
-    public let coreDataStorageMock: CoreDataStorageSharedMock
+    public let coreDataStorage: CoreDataStorageSharedMock
     public let localActivityStorage: LocalActivityStorage
     public let activityRepository: ActivityRepository
     
@@ -135,14 +170,12 @@ public struct ActivityRepositorySUT {
 public extension XCTest {
     
     func makeActivityRepositorySUT() -> ActivityRepositorySUT {
-        let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
-        let coreDataStorageMock = self.makeCoreDataStorageMock()
-        let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorageMock)
+        let coreDataStorage = self.makeCoreDataStorageMock()
+        let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorage)
         let activityRepository = DefaultActivityRepository(localActivityStorage: localActivityStorage)
-        return ActivityRepositorySUT(semaphore: semaphore,
-                                     disposeBag: disposeBag,
-                                     coreDataStorageMock: coreDataStorageMock,
+        return ActivityRepositorySUT(disposeBag: disposeBag,
+                                     coreDataStorage: coreDataStorage,
                                      localActivityStorage: localActivityStorage,
                                      activityRepository: activityRepository)
     }

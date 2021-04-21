@@ -15,12 +15,9 @@ import XCTest
 // MARK: LocalActivityStorageTests
 class LocalActivityStorageTests: XCTestCase {
 
-    private lazy var sut: LocalActivityStorageSUT = {
-        return self.makeLocalActivityStorageSUT()
-    }()
+    private lazy var sut = self.makeLocalActivityStorageSUT()
     private var insertedActivities: [ActivityDomain] = []
     private var insertedActivity: ActivityDomain!
-    private var removedActivity: ActivityDomain!
     
     override func setUp() {
         super.setUp()
@@ -33,29 +30,16 @@ class LocalActivityStorageTests: XCTestCase {
     }
     
     private func makeStub() {
-        let context = self.sut.coreDataStorageMock.context
-        let stubCollection = ActivityDomain.stubCollection(coreDataStorage: self.sut.coreDataStorageMock)
-        let stubElement = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
-        let stubRemoveElement = ActivityDomain.stubRemoveElement(coreDataStorage: self.sut.coreDataStorageMock)
-        var insertedEntities = stubCollection.map { ActivityEntity($0, insertInto: context) }
-        let insertedEntity = ActivityEntity(stubElement, insertInto: context)
-        let removedEntity = ActivityEntity(stubRemoveElement, insertInto: context)
-        self.removedActivity = removedEntity.toDomain(context: context)
-        context.delete(removedEntity)
-        self.sut.coreDataStorageMock.saveContext()
-        insertedEntities.append(insertedEntity)
-        self.insertedActivity = insertedEntity.toDomain(context: context)
-        self.insertedActivities = insertedEntities
-            .map { $0.toDomain(context: context) }
-            .sorted { $0.title < $1.title }
+        let stubCollection = ActivityDomain.stubCollectionCoreData(coreDataStorage: self.sut.coreDataStorage)
+        let stubElement = ActivityDomain.stubElementCoreData(coreDataStorage: self.sut.coreDataStorage)
+        self.insertedActivity = stubElement.0
+        self.insertedActivities.append(self.insertedActivity)
+        self.insertedActivities.append(contentsOf: stubCollection.0)
+        self.insertedActivities.sort { $0.title < $1.title }
     }
     
     private func removeStub() {
-        let context = self.sut.coreDataStorageMock.context
-        let request: NSFetchRequest = ActivityEntity.fetchRequest()
-        let workspaces = try! context.fetch(request)
-        workspaces.forEach { context.delete($0) }
-        self.sut.coreDataStorageMock.saveContext()
+        self.removeCoreDataStorage()
     }
 
 }
@@ -64,7 +48,7 @@ class LocalActivityStorageTests: XCTestCase {
 extension LocalActivityStorageTests {
     
     func test_fetchAllActivityInCoreData_shouldFetchedInCoreData() throws {
-        let timeout = self.sut.coreDataStorageMock.fetchCollectionTimeout
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
         
         let result = try self.sut.localActivityStorage
             .fetchAllInCoreData()
@@ -72,14 +56,40 @@ extension LocalActivityStorageTests {
             .single()
             .sorted { $0.title < $1.title }
         
-        XCTAssertTrue(!result.isEmpty)
+        XCTAssertFalse(result.isEmpty)
         XCTAssertEqual(result, self.insertedActivities)
     }
     
-    func test_insertIntoCoreData_shouldInsertedIntoCoreData() throws {
-        let timeout = self.sut.coreDataStorageMock.insertElementTimeout
+    func test_fetchAllActivityInCoreDataOwnedBy_whenProfileHasCoreID_thenFetchedInCoreData() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+
+        let result = try self.sut.localActivityStorage
+            .fetchAllInCoreData(ownedBy: self.insertedActivity.profile)
+            .toBlocking(timeout: timeout)
+            .single()
+
+        XCTAssertFalse(result.isEmpty)
+        XCTAssertEqual(result, [self.insertedActivity])
+    }
+    
+    func test_fetchAllActivityInCoreDataOwnedBy_whenProfileHasNotCoreID_thenFetchedInCoreData() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
         
-        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
+        let profile = ProfileDomain.stubElement
+        
+        XCTAssertThrowsError(try self.sut.localActivityStorage
+                                .fetchAllInCoreData(ownedBy: profile)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData() caused by profileCoreID is not available")
+        }
+    }
+    
+    func test_insertIntoCoreData_shouldInsertedIntoCoreData() throws {
+        let timeout = self.sut.coreDataStorage.insertElementTimeout
+        
+        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
         
         let result = try self.sut.localActivityStorage
             .insertIntoCoreData(object)
@@ -91,7 +101,7 @@ extension LocalActivityStorageTests {
     }
     
     func test_insertIntoCoreData_whenCoreIdAlreadyInserted_then() throws {
-        let timeout = self.sut.coreDataStorageMock.insertElementTimeout
+        let timeout = self.sut.coreDataStorage.insertElementTimeout
         
         let object = self.insertedActivity!
         let updateObject = ActivityDomain(coreID: object.coreID,
@@ -116,8 +126,8 @@ extension LocalActivityStorageTests {
         XCTAssertNotEqual(result.title, object.title)
     }
     
-    func test_removeInCoreData_shouldRemovedInCoreData() throws {
-        let timeout = self.sut.coreDataStorageMock.removeElementTimeout
+    func test_removeInCoreData_whenActivityHasCoreID_thenRemovedInCoreData() throws {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
         
         let result = try self.sut.localActivityStorage
             .removeInCoreData(self.insertedActivity)
@@ -127,23 +137,18 @@ extension LocalActivityStorageTests {
         XCTAssertEqual(result.coreID, self.insertedActivity.coreID)
     }
     
-    func test_removeInCoreData_whenObjectDoesNotHaveCoreId_thenCoreDataDeleteError() {
-        let timeout = self.sut.coreDataStorageMock.removeElementTimeout
+    func test_removeInCoreData_whenActivityHasCoreID_thenThrowsCoreDataDeleteError() {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
         
-        let testExpectationDescription = "LocalActivityStorage: Failed to execute removeInCoreData(_:) caused by coreId is not available"
-        let testExpectation = expectation(description: testExpectationDescription)
-        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorageMock)
+        let object = ActivityDomain.stubRemoveElementCoreData(coreDataStorage: self.sut.coreDataStorage).0
         
-        self.sut.localActivityStorage
-            .removeInCoreData(object)
-            .subscribe(onError: { error in
-                XCTAssertTrue(error is CoreDataStorageError)
-                XCTAssertEqual(testExpectation.description, testExpectationDescription)
-                testExpectation.fulfill()
-            })
-            .disposed(by: self.sut.disposeBag)
-        
-        wait(for: [testExpectation], timeout: timeout)
+        XCTAssertThrowsError(try self.sut.localActivityStorage
+                                .removeInCoreData(object)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute removeInCoreData() caused by coreID is not available")
+        }
     }
     
 }
@@ -153,7 +158,7 @@ public struct LocalActivityStorageSUT {
     
     public let semaphore: DispatchSemaphore
     public let disposeBag: DisposeBag
-    public let coreDataStorageMock: CoreDataStorageSharedMock
+    public let coreDataStorage: CoreDataStorageSharedMock
     public let localActivityStorage: LocalActivityStorage
     
 }
@@ -163,11 +168,11 @@ public extension XCTest {
     func makeLocalActivityStorageSUT() -> LocalActivityStorageSUT {
         let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
-        let coreDataStorageMock = self.makeCoreDataStorageMock()
-        let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorageMock)
+        let coreDataStorage = self.makeCoreDataStorageMock()
+        let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorage)
         return LocalActivityStorageSUT(semaphore: semaphore,
                                        disposeBag: disposeBag,
-                                       coreDataStorageMock: coreDataStorageMock,
+                                       coreDataStorage: coreDataStorage,
                                        localActivityStorage: localActivityStorage)
     }
     

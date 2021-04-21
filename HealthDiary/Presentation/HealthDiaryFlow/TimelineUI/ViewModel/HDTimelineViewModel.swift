@@ -6,6 +6,7 @@
 //  Copyright (c) 2021 All rights reserved.
 
 import Foundation
+import RxSwift
 
 // MARK: HDTimelineViewModelResponse
 enum HDTimelineViewModelResponse {
@@ -15,8 +16,8 @@ enum HDTimelineViewModelResponse {
 protocol HDTimelineViewModelDelegate: class {
 }
 
-// MARK: HDTimelineViewModelRequestValue
-public struct HDTimelineViewModelRequestValue {
+// MARK: HDTimelineViewModelRequest
+public struct HDTimelineViewModelRequest {
 }
 
 // MARK: HDTimelineViewModelRoute
@@ -33,6 +34,8 @@ protocol HDTimelineViewModelInput {
 // MARK: HDTimelineViewModelOutput
 protocol HDTimelineViewModelOutput {
 
+    var showedActivities: PublishSubject<[ActivityDomain]> { get }
+    
 }
 
 // MARK: HDTimelineViewModel
@@ -43,24 +46,22 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
 
     // MARK: DI Variable
     weak var delegate: HDTimelineViewModelDelegate?
-    let requestValue: HDTimelineViewModelRequestValue
+    let request: HDTimelineViewModelRequest
     let route: HDTimelineViewModelRoute
 
     // MARK: UseCase Variable
-
-
+    
 
     // MARK: Common Variable
-
     
 
     // MARK: Output ViewModel
-    
+    let showedActivities = PublishSubject<[ActivityDomain]>()
 
     // MARK: Init Function
-    init(requestValue: HDTimelineViewModelRequestValue,
+    init(request: HDTimelineViewModelRequest,
          route: HDTimelineViewModelRoute) {
-        self.requestValue = requestValue
+        self.request = request
         self.route = route
     }
     

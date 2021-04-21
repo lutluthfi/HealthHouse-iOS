@@ -27,7 +27,7 @@ public final class HDPhotoProfileTableCell: UITableViewCell {
     public lazy var photoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     public lazy var contentContainerView: UIView = {
@@ -39,6 +39,11 @@ public final class HDPhotoProfileTableCell: UITableViewCell {
     public var abbreviationName: String = "" {
         didSet {
             self.abbreviationNameDidSet(self.abbreviationName)
+        }
+    }
+    public var photoImage: UIImage? = nil {
+        didSet {
+            self.photoImageDidSet(self.photoImage)
         }
     }
     
@@ -106,6 +111,10 @@ extension HDPhotoProfileTableCell {
         let size = self.photoImageView.frame.size
         let stringImageProperties = StringImageProperties(color: .white, scale: 0.5, size: size.height)
         self.photoImageView.image = newValue.image(properties: stringImageProperties)
+    }
+    
+    func photoImageDidSet(_ newValue: UIImage?) {
+        self.photoImageView.image = newValue
     }
     
 }

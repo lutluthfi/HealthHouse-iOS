@@ -35,6 +35,22 @@ extension DefaultActivityRepository: ActivityRepository {
         }
     }
     
+    public func fetchAllActivity(ownedBy profile: ProfileDomain,
+                                 in storagePoint: StoragePoint) -> Observable<[ActivityDomain]> {
+        switch storagePoint {
+        case .coreData:
+            return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile)
+        case .remote:
+            return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
+                                                              function: "fetchAllActivity(ownedBy:)",
+                                                              object: [ActivityDomain].self)
+        case .userDefault:
+            return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
+                                                                   function: "fetchAllActivity(ownedBy:)",
+                                                                   object: [ActivityDomain].self)
+        }
+    }
+    
     public func insertActivity(_ activity: ActivityDomain,
                                into storagePoint: StoragePoint) -> Observable<ActivityDomain> {
         switch storagePoint {

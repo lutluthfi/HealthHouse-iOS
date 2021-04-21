@@ -21,7 +21,7 @@ class LaunchFlowCoordinatorTests: XCTestCase {
     }
     
     func test_start_whenInstructorPresentWelcomeUI_thenNavigationControllerPresentWelcomeUI() {
-        let requestValue = LNWelcomeViewModelRequestValue()
+        let requestValue = LNWelcomeViewModelRequest()
         
         let instructor = LaunchFlowCoordinatorInstructor.presentWelcomeUI(requestValue, .standard)
         self.sut.coordinator.start(with: instructor)
@@ -30,7 +30,7 @@ class LaunchFlowCoordinatorTests: XCTestCase {
     }
     
     func test_start_whenInstructorPushToWelcomeUI_thenNavigationControllerPushToWelcomeUI() {
-        let requestValue = LNWelcomeViewModelRequestValue()
+        let requestValue = LNWelcomeViewModelRequest()
         
         let instructor = LaunchFlowCoordinatorInstructor.pushToWelcomeUI(requestValue)
         self.sut.coordinator.start(with: instructor)

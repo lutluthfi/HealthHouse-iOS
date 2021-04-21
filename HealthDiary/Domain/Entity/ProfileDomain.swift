@@ -16,20 +16,19 @@ public struct ProfileDomain: EntityDomain {
     public let dateOfBirth: Int64
     public let firstName: String
     public let gender: GenderDomain
-    public let lastName: String
+    public let lastName: String?
     public let mobileNumbder: String
-    public let photoFileName: String
+    public let photoBase64String: String?
     
     public var fullName: String {
-        if self.lastName.isEmpty {
+        guard let lastName = self.lastName else {
+            return self.firstName
+        }
+        if lastName.isEmpty {
             return self.firstName
         } else {
-            return "\(self.firstName) \(self.lastName)"
+            return "\(self.firstName) \(lastName)"
         }
-    }
-    public var photoURL: URL? {
-        let directoryURL = FileKit.local.localProfilePhotosDirectoryURL
-        return directoryURL.appendingPathComponent(self.photoFileName, isDirectory: false)
     }
     
 }

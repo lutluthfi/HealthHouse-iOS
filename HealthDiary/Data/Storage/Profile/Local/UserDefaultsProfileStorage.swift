@@ -45,16 +45,25 @@ extension DefaultUserDefaultsProfileStorage: UserDefaultsProfileStorage {
             observer.onNext(self.profileCoreID)
             observer.onCompleted()
             return Disposables.create()
-        }.observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        }
+        .observeOn(SerialDispatchQueueScheduler(qos: .background))
+        .subscribeOn(MainScheduler.instance)
     }
     
     public func insertIntoUserDefaults(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            self.profileCoreID = profile.coreID?.uriRepresentation()
-            observer.onNext(profile)
-            observer.onCompleted()
+            if let coreID = profile.coreID {
+                self.profileCoreID = coreID.uriRepresentation()
+                observer.onNext(profile)
+                observer.onCompleted()
+            } else {
+                let error = PlainError(description: "UserDefaultsProfileStorage -> Failed to insertIntoUserDefaults() caused by coreID is nil")
+                observer.onError(error)
+            }
             return Disposables.create()
-        }.observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        }
+        .observeOn(SerialDispatchQueueScheduler(qos: .background))
+        .subscribeOn(MainScheduler.instance)
     }
     
 }

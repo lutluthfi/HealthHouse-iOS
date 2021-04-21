@@ -27,16 +27,14 @@ class UserDefaultsProfileStorageTests: XCTestCase {
     }
     
     private func makeStub() {
-        let context = self.sut.coreDataStorage.context
-        let insertedEntity = ProfileEntity(.stubElement, insertInto: context)
-        self.sut.coreDataStorage.saveContext()
-        self.insertedObject = insertedEntity.toDomain()
+        let coreDataStorage = self.sut.coreDataStorage
+        self.insertedObject = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         self.sut.userDefaults.set(self.insertedObject.coreID?.uriRepresentation(),
                                   forKey: "ProfileCoreIDKey.UserDefaultsProfileStorage")
     }
     
     private func removeStub() {
-        self.sut.userDefaults.removePersistentDomain(forName: #file)
+        self.removeUserDefaults()
     }
 
 }
@@ -53,7 +51,7 @@ extension UserDefaultsProfileStorageTests {
     }
     
     func test_insertIntoUserDefaults_shouldInsertedIntoUserDefaults() throws {
-        let object = ProfileDomain.stubElementInsertedIntoCoreData
+        let object = ProfileDomain.stubElementCoreData(coreDataStorage: self.sut.coreDataStorage)
         
         let result = try self.sut.userDefaultsProfileStorage
             .insertIntoUserDefaults(object)
@@ -65,27 +63,21 @@ extension UserDefaultsProfileStorageTests {
     
 }
 
-public struct UserDefaultsProfileStorageSUT {
+struct UserDefaultsProfileStorageSUT {
     
-    public let semaphore: DispatchSemaphore
-    public let disposeBag: DisposeBag
-    public let coreDataStorage: CoreDataStorageSharedMock
-    public let userDefaults: UserDefaults
-    public let userDefaultsProfileStorage: UserDefaultsProfileStorage
+    let coreDataStorage: CoreDataStorageSharedMock
+    let userDefaults: UserDefaults
+    let userDefaultsProfileStorage: UserDefaultsProfileStorage
     
 }
 
-public extension XCTest {
+extension XCTest {
     
     func makeUserDefaultsProfileStorageSUT() -> UserDefaultsProfileStorageSUT {
-        let semaphore = self.makeSempahore()
-        let disposeBag = self.makeDisposeBag()
         let coreDataStorage = self.makeCoreDataStorageMock()
-        let userDefaults = UserDefaults(suiteName: #file)!
-        let userDefaultsProfileStorage = DefaultUserDefaultsProfileStorage(userDefaults: UserDefaults(suiteName: #file)!)
-        return UserDefaultsProfileStorageSUT(semaphore: semaphore,
-                                             disposeBag: disposeBag,
-                                             coreDataStorage: coreDataStorage,
+        let userDefaults = self.makeUserDefaults()
+        let userDefaultsProfileStorage = DefaultUserDefaultsProfileStorage(userDefaults: userDefaults)
+        return UserDefaultsProfileStorageSUT(coreDataStorage: coreDataStorage,
                                              userDefaults: userDefaults,
                                              userDefaultsProfileStorage: userDefaultsProfileStorage)
     }

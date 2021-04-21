@@ -15,8 +15,8 @@ enum PFPreviewViewModelResponse {
 protocol PFPreviewViewModelDelegate: class {
 }
 
-// MARK: PFPreviewViewModelRequestValue
-public struct PFPreviewViewModelRequestValue {
+// MARK: PFPreviewViewModelRequest
+public struct PFPreviewViewModelRequest {
 }
 
 // MARK: PFPreviewViewModelRoute
@@ -43,7 +43,7 @@ final class DefaultPFPreviewViewModel: PFPreviewViewModel {
 
     // MARK: DI Variable
     weak var delegate: PFPreviewViewModelDelegate?
-    let requestValue: PFPreviewViewModelRequestValue
+    let request: PFPreviewViewModelRequest
     let route: PFPreviewViewModelRoute
 
     // MARK: UseCase Variable
@@ -58,9 +58,9 @@ final class DefaultPFPreviewViewModel: PFPreviewViewModel {
     
 
     // MARK: Init Function
-    init(requestValue: PFPreviewViewModelRequestValue,
+    init(request: PFPreviewViewModelRequest,
          route: PFPreviewViewModelRoute) {
-        self.requestValue = requestValue
+        self.request = request
         self.route = route
     }
     

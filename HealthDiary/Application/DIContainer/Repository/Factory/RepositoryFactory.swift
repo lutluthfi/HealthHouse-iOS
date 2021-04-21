@@ -11,4 +11,6 @@ public protocol RepositoryFactory {
     
     func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository
     
+    func makeProfileRepository() -> ProfileRepository
+    
 }

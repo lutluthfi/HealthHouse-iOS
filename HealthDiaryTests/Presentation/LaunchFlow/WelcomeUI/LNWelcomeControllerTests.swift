@@ -14,9 +14,9 @@ import XCTest
 class LNWelcomeControllerTests: XCTestCase {
 
     private lazy var controller: LNWelcomeController = {
-        let requestValue = LNWelcomeViewModelRequestValue()
+        let request = LNWelcomeViewModelRequest()
         let route = LNWelcomeViewModelRoute()
-        let viewModel: LNWelcomeViewModel = DefaultLNWelcomeViewModel(requestValue: requestValue, route: route)
+        let viewModel: LNWelcomeViewModel = DefaultLNWelcomeViewModel(request: request, route: route)
         let controller = LNWelcomeController.create(with: viewModel)
         return controller
     }()

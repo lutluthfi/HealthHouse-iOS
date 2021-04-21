@@ -11,10 +11,10 @@ import UIKit
 // MARK: ProfileFlowCoordinatorFactory
 public protocol ProfileFlowCoordinatorFactory  {
     
-    func makePFPersonalizeController(requestValue: PFPersonalizeViewModelRequestValue,
+    func makePFPersonalizeController(request: PFPersonalizeViewModelRequest,
                                      route: PFPersonalizeViewModelRoute) -> UIViewController
     
-    func makePFPreviewController(requestValue: PFPreviewViewModelRequestValue,
+    func makePFPreviewController(request: PFPreviewViewModelRequest,
                                  route: PFPreviewViewModelRoute) -> UIViewController
     
 }
@@ -24,13 +24,13 @@ public protocol ProfileFlowCoordinator {
     
     func start(with instructor: ProfileFlowCoordinatorInstructor)
     
-    func makePreviewUI(requestValue: PFPreviewViewModelRequestValue) -> UIViewController
+    func makePreviewUI(request: PFPreviewViewModelRequest) -> UIViewController
     
 }
 
 // MARK: ProfileFlowCoordinatorInstructor
 public enum ProfileFlowCoordinatorInstructor {
-    case pushToPersonalizeUI(PFPersonalizeViewModelRequestValue)
+    case pushToPersonalizeUI(PFPersonalizeViewModelRequest)
 }
 
 // MARK: DefaultProfileFlowCoordinator
@@ -54,14 +54,14 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
     
     public func start(with instructor: ProfileFlowCoordinatorInstructor) {
         switch instructor {
-        case .pushToPersonalizeUI(let requestValue):
-            self.pushToPersonalizeUI(requestValue: requestValue)
+        case .pushToPersonalizeUI(let request):
+            self.pushToPersonalizeUI(request: request)
         }
     }
     
-    public func makePreviewUI(requestValue: PFPreviewViewModelRequestValue) -> UIViewController {
+    public func makePreviewUI(request: PFPreviewViewModelRequest) -> UIViewController {
         let route = PFPreviewViewModelRoute()
-        let controller = self.controllerFactory.makePFPreviewController(requestValue: requestValue, route: route)
+        let controller = self.controllerFactory.makePFPreviewController(request: request, route: route)
         return controller
     }
     
@@ -70,15 +70,15 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
 // MARK: PFPersonalizeUI
 extension DefaultProfileFlowCoordinator {
     
-    private func makePFPersonalizeUI(requestValue: PFPersonalizeViewModelRequestValue) -> UIViewController {
+    private func makePFPersonalizeUI(request: PFPersonalizeViewModelRequest) -> UIViewController {
         let route = PFPersonalizeViewModelRoute()
-        let controller = self.controllerFactory.makePFPersonalizeController(requestValue: requestValue, route: route)
+        let controller = self.controllerFactory.makePFPersonalizeController(request: request, route: route)
         return controller
     }
     
-    func pushToPersonalizeUI(requestValue: PFPersonalizeViewModelRequestValue) {
+    func pushToPersonalizeUI(request: PFPersonalizeViewModelRequest) {
         guaranteeMainThread {
-            let controller = self.makePFPersonalizeUI(requestValue: requestValue)
+            let controller = self.makePFPersonalizeUI(request: request)
             self.navigationController.pushViewController(controller, animated: true)
         }
     }

@@ -12,6 +12,28 @@ import XCTest
 class PFPersonalizeViewModelTests: XCTestCase {
 
     private lazy var sut = self.makePFPersonalizeViewModelSUT()
+
+    func test_doCreate() {
+        let _resultExpectation = AnyResult<String, String>.success("Health Diary has been created.\nWe hope you are always healthy 🥳")
+        let _responseExpectation = PFPersonalizeViewModelResponse.DoCreate(_resultExpectation)
+        var _response: PFPersonalizeViewModelResponse?
+        let subscription = self.sut.viewModel
+            .response
+            .subscribe(onNext: { _response = $0 })
+        
+        self.sut.viewModel.doCreate(firstName: "Health",
+                                    dateOfBirth: Date(),
+                                    gender: .male,
+                                    lastName: "Diary",
+                                    mobileNumber: "1234567890",
+                                    photo: UIImage())
+        
+        eventually {
+            subscription.dispose()
+            XCTAssertNotNil(_response)
+            XCTAssertEqual(_response, _responseExpectation)
+        }
+    }
     
     func test_viewDidLoad_shouldFetchedCountryDialingCode() {
         var _countryDialingCodes: [CountryDialingCodeDomain] = []
@@ -21,9 +43,9 @@ class PFPersonalizeViewModelTests: XCTestCase {
         
         self.sut.viewModel.viewDidLoad()
         
-        eventually(timeoutAfter: TimeInterval(5)) {
+        eventually {
             subscription.dispose()
-            XCTAssertTrue(!_countryDialingCodes.isEmpty)
+            XCTAssertFalse(_countryDialingCodes.isEmpty)
             XCTAssertTrue(_countryDialingCodes.contains(.indonesia))
         }
     }
@@ -39,11 +61,13 @@ struct PFPersonalizeViewModelSUT {
 extension XCTest {
     
     func makePFPersonalizeViewModelSUT() -> PFPersonalizeViewModelSUT {
+        let createProfileUseCase = self.makeCreateProfileUseCaseSUT()
         let fetchCountryDialingCodeUseCase = self.makeFetchCountryDialingCodeUseCaseSUT()
-        let requestValue = PFPersonalizeViewModelRequestValue()
+        let request = PFPersonalizeViewModelRequest()
         let route = PFPersonalizeViewModelRoute()
-        let viewModel = DefaultPFPersonalizeViewModel(requestValue: requestValue,
+        let viewModel = DefaultPFPersonalizeViewModel(request: request,
                                                       route: route,
+                                                      createProfileUseCase: createProfileUseCase.useCase,
                                                       fetchCountryDialingCodeUseCase: fetchCountryDialingCodeUseCase.useCase)
         return PFPersonalizeViewModelSUT(viewModel: viewModel)
     }

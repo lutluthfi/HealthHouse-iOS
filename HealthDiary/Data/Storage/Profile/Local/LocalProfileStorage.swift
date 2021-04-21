@@ -44,7 +44,9 @@ extension DefaultLocalProfileStorage {
                 observer.onError(coreDataError)
             }
             return Disposables.create()
-        }.observeOn(CurrentThreadScheduler.instance)
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
     public func insertIntoCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
@@ -68,14 +70,16 @@ extension DefaultLocalProfileStorage {
                 observer.onError(coreDataError)
             }
             return Disposables.create()
-        }.observeOn(CurrentThreadScheduler.instance)
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
     public func removeInCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             guard let coreID = profile.coreID else {
                 let message = "LocalProfileStorage: Failed to execute removeInCoreData(_:) caused by coreID is not available"
-                let error = NSError(domain: message, code: 0, userInfo: nil)
+                let error = PlainError(description: message)
                 let coreDataError = CoreDataStorageError.deleteError(error)
                 observer.onError(coreDataError)
                 return Disposables.create()
@@ -93,7 +97,9 @@ extension DefaultLocalProfileStorage {
                 observer.onError(coreDataError)
             }
             return Disposables.create()
-        }.observeOn(CurrentThreadScheduler.instance)
+        }
+        .observeOn(ConcurrentDispatchQueueScheduler(qos: .background))
+        .subscribeOn(ConcurrentMainScheduler.instance)
     }
     
 }

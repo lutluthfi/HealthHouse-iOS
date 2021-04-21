@@ -15,7 +15,7 @@ class CountryDialingCodeRepositoryTests: XCTestCase {
 
     private lazy var sut = self.makeCountryDialingCodeRepositorySUT()
     
-    func test_fetchAllCountryDialingCode_whenStoragePointCoreData_thenThrowPlainError() throws {
+    func test_fetchAllCountryDialingCode_whenStoragePointCoreData_thenThrowsPlainError() throws {
         let storagePoint = StoragePoint.coreData
         
         XCTAssertThrowsError(try self.sut.countryDialingCodeRepository
@@ -40,7 +40,7 @@ class CountryDialingCodeRepositoryTests: XCTestCase {
         XCTAssertEqual(result.last?.name, "Zimbabwe")
     }
     
-    func test_fetchAllCountryDialingCode_whenStoragePointUserDefaults_thenThrowPlainError() throws {
+    func test_fetchAllCountryDialingCode_whenStoragePointUserDefaults_thenThrowsPlainError() throws {
         let storagePoint = StoragePoint.userDefault
         
         XCTAssertThrowsError(try self.sut.countryDialingCodeRepository

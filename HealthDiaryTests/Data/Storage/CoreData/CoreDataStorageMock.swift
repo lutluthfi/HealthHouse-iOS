@@ -82,7 +82,6 @@ extension CoreDataStorageMock: CoreDataStorageSharedMock {
     
     public func saveContext() {
         let context = self.persistantContainerMock.viewContext
-        guard context.hasChanges else { return }
         do {
             try context.save()
         } catch {
