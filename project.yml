@@ -30,7 +30,7 @@ targets:
         settings:
             base:
                 CODE_SIGN_STYLE: Automatic
-                DEVELOPMENT_TEAM: 5NTQ9A32JY
+                DEVELOPMENT_TEAM: 5U7M39KWXM # Arif Luthfiansyah - Personal Team (lutluthfi@icloud.com)
                 EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
                 IPHONEOS_DEPLOYMENT_TARGET: 13.0
                 INFOPLIST_FILE: HealthDiary/Resources/Info.plist
@@ -38,27 +38,27 @@ targets:
                 TARGETED_DEVICE_FAMILY: 1
             configs:
                 DEV-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.dev
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.dev
                     PRODUCT_NAME: DEV Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
                 DEV-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.dev
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.dev
                     PRODUCT_NAME: DEV Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
                 STA-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.sta
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.sta
                     PRODUCT_NAME: STA Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
                 STA-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary.sta
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.sta
                     PRODUCT_NAME: STA Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
                 PRO-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary
                     PRODUCT_NAME: Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
                 PRO-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arifluthfiansyah.healthdiary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary
                     PRODUCT_NAME: Health Diary
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
         info:
