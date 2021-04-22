@@ -78,8 +78,7 @@ extension DefaultLNWelcomeViewModel {
     }
     
     func doContinue() {
-//        self.showPFPersonalizeUI()
-        self.showLNPadUI()
+        self.showPFPersonalizeUI()
     }
     
 }

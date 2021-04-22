@@ -30,10 +30,15 @@ class HDTLCalendarItemCollectionCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    lazy var todayMarkView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
-    var dateFormatted: String? {
+    var date: Date? {
         didSet {
-            self.dateFormattedDidSet(self.dateFormatted)
+            self.todayDidSet(self.date)
         }
     }
     
@@ -66,6 +71,7 @@ class HDTLCalendarItemCollectionCell: UICollectionViewCell {
     
     private func subviewWillAdd() {
         self.contentView.addSubview(self.contentContainerView)
+        self.contentContainerView.addSubview(self.todayMarkView)
         self.contentContainerView.addSubview(self.selectedMarkView)
         self.contentContainerView.addSubview(self.dateLabel)
     }
@@ -73,6 +79,11 @@ class HDTLCalendarItemCollectionCell: UICollectionViewCell {
     private func subviewConstraintWillMake() {
         self.contentContainerView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
+        }
+        self.todayMarkView.snp.makeConstraints { (make) in
+            make.height.equalTo(self.contentView.frame.height / 1.5)
+            make.width.equalTo(self.contentView.frame.height / 1.5)
+            make.center.equalToSuperview()
         }
         self.selectedMarkView.snp.makeConstraints { (make) in
             make.height.equalTo(self.contentView.frame.height / 1.5)
@@ -86,6 +97,9 @@ class HDTLCalendarItemCollectionCell: UICollectionViewCell {
     
     private func viewDidInit() {
         let cornerRad = (self.contentView.frame.height / 1.5) / 2
+        self.todayMarkView.makeRound(borderColor: .systemBlue,
+                                     borderWidth: 2,
+                                     cornerRad: cornerRad)
         self.selectedMarkView.makeRound(cornerRad: cornerRad)
     }
     
@@ -93,8 +107,15 @@ class HDTLCalendarItemCollectionCell: UICollectionViewCell {
 
 extension HDTLCalendarItemCollectionCell {
     
-    func dateFormattedDidSet(_ dateFormatted: String?) {
-        self.dateLabel.text = dateFormatted
+    func todayDidSet(_ date: Date?) {
+        self.dateLabel.text = date?.formatted(components: [.dayOfMonth])
+        let dateFormatted = date?.formatted(components: [.dayOfMonthPadding,
+                                                         .monthOfYearDouble,
+                                                         .yearFullDigits])
+        let todayFormatted = Date().formatted(components: [.dayOfMonthPadding,
+                                                           .monthOfYearDouble,
+                                                           .yearFullDigits])
+        self.todayMarkView.isHidden = dateFormatted != todayFormatted
     }
     
 }

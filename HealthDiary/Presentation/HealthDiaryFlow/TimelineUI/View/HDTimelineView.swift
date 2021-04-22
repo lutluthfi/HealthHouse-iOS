@@ -10,18 +10,20 @@ import UIKit
 
 // MARK: HDTimelineViewFunction
 protocol HDTimelineViewFunction {
-    func viewDidLoad(navigationController: UINavigationController?, tabBarController: UITabBarController?)
+    func viewDidLoad(navigationController: UINavigationController?,
+                     tabBarController: UITabBarController?,
+                     navigationItem: UINavigationItem)
     func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?)
     func viewWillDisappear()
 }
 
 // MARK: HDTimelineViewSubview
 protocol HDTimelineViewSubview {
+    var addBarButtonItem: UIBarButtonItem { get }
     var calendarSeparatorView: UIView { get }
-    var collectionView: UICollectionView { get }
-    var dateDetailLabel: UILabel { get }
+    var calendarCollectionView: UICollectionView { get }
     var dayHeaderStackView: UIStackView { get }
-    var tableView: UITableView { get }
+    var timelineTableView: UITableView { get }
 }
 
 // MARK: HDTimelineViewVariable
@@ -37,35 +39,27 @@ protocol HDTimelineView: HDTimelineViewFunction, HDTimelineViewSubview, HDTimeli
 final class DefaultHDTimelineView: UIView, HDTimelineView {
 
     // MARK: HDTimelineViewSubview
+    lazy var addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
     lazy var calendarSeparatorView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .black
+        view.backgroundColor = .appleShadowNavigationbar
         return view
     }()
-    lazy var collectionView: UICollectionView = {
+    lazy var calendarCollectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: self.frame, collectionViewLayout: collectionViewLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.alwaysBounceHorizontal = true
         collectionView.isPagingEnabled = true
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .appleNavigationBar
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.allowsSelection = true
         collectionView.allowsMultipleSelection = false
         collectionView.register(HDTLCalendarItemCollectionCell.self,
                                 forCellWithReuseIdentifier: HDTLCalendarItemCollectionCell.identifier)
         return collectionView
-    }()
-    lazy var dateDetailLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .preferredFont(forTextStyle: .body)
-        label.textColor = .darkText
-        label.numberOfLines = 1
-        label.textAlignment = .center
-        return label
     }()
     lazy var dayHeaderStackView: UIStackView = {
         let stackView = UIStackView()
@@ -78,13 +72,16 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
             label.font = .preferredFont(forTextStyle: .footnote)
             label.textColor = .darkText
             label.textAlignment = .center
+            label.backgroundColor = .appleNavigationBar
             stackView.addArrangedSubview(label)
         }
         return stackView
     }()
-    lazy var tableView: UITableView = {
+    lazy var timelineTableView: UITableView = {
         let tableView = UITableView(frame: self.frame, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.allowsSelection = true
+        tableView.allowsMultipleSelection = false
         return tableView
     }()
 
@@ -124,19 +121,25 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
 extension DefaultHDTimelineView {
     
     func subviewDidLayout() {
-        self.collectionView.snp.makeConstraints { (make) in
+        self.calendarCollectionView.snp.makeConstraints { (make) in
             make.height.equalTo(44)
             make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
             make.top.equalTo(self.dayHeaderStackView.snp.bottom)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
         }
+        self.timelineTableView.snp.makeConstraints { (make) in
+            make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
+            make.top.equalTo(self.calendarSeparatorView.snp.bottom)
+            make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
+        }
     }
     
     func subviewWillAdd() {
         self.addSubview(self.dayHeaderStackView)
-        self.addSubview(self.dateDetailLabel)
-        self.addSubview(self.collectionView)
+        self.addSubview(self.calendarCollectionView)
         self.addSubview(self.calendarSeparatorView)
+        self.addSubview(self.timelineTableView)
     }
     
     func subviewConstraintWillMake() {
@@ -146,15 +149,10 @@ extension DefaultHDTimelineView {
             make.top.equalTo(self.safeAreaLayoutGuide.snp.top)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
         }
-        self.dateDetailLabel.snp.makeConstraints { (make) in
-            make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
-            make.top.equalTo(self.collectionView.snp.bottom)
-            make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
-        }
         self.calendarSeparatorView.snp.makeConstraints { (make) in
-            make.height.equalTo(0.2)
+            make.height.equalTo(1)
             make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
-            make.top.equalTo(self.dateDetailLabel.snp.bottom).offset(8)
+            make.top.equalTo(self.calendarCollectionView.snp.bottom)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
         }
     }
@@ -168,8 +166,14 @@ extension DefaultHDTimelineView {
 // MARK: HDTimelineViewFunction
 extension DefaultHDTimelineView {
     
-    func viewDidLoad(navigationController: UINavigationController?, tabBarController: UITabBarController?) {
-        navigationController?.setNavigationBarHidden(true, animated: false)
+    func viewDidLoad(navigationController: UINavigationController?,
+                     tabBarController: UITabBarController?,
+                     navigationItem: UINavigationItem) {
+        guard let _navigationController = navigationController else { return }
+        navigationItem.rightBarButtonItems = [self.addBarButtonItem]
+        _navigationController.setNavigationBarHidden(false, animated: false)
+        _navigationController.navigationBar.shadowImage = UIImage()
+        _navigationController.navigationBar.barTintColor = .appleNavigationBar
     }
     
     func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?) {

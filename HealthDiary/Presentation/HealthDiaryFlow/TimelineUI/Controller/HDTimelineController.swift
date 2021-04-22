@@ -12,28 +12,28 @@ import UIKit
 
 // MARK: HDTimelineController
 public final class HDTimelineController: UIViewController {
-
+    
     // MARK: DI Variable
     let disposeBag = DisposeBag()
     lazy var timelineView: HDTimelineView = DefaultHDTimelineView()
     var viewModel: HDTimelineViewModel!
     lazy var _view: UIView = (self.timelineView as! UIView)
-
+    
     // MARK: Common Variable
     let _selectedDate = BehaviorSubject<Date>(value: Date())
     var calendarItems: [HDTLCalendarItemDomain] = []
-
+    
     // MARK: Create Function
     class func create(with viewModel: HDTimelineViewModel) -> HDTimelineController {
         let controller = HDTimelineController()
         controller.viewModel = viewModel
         return controller
     }
-
+    
     // MARK: UIViewController Function
     public override func loadView() {
         self.timelineView
-            .collectionView.rx
+            .calendarCollectionView.rx
             .setDelegate(self)
             .disposed(by: self.disposeBag)
         self.view = self._view
@@ -43,7 +43,8 @@ public final class HDTimelineController: UIViewController {
         super.viewDidLoad()
         self.bind(view: self.timelineView, viewModel: self.viewModel)
         self.timelineView.viewDidLoad(navigationController: self.navigationController,
-                                      tabBarController: self.tabBarController)
+                                      tabBarController: self.tabBarController,
+                                      navigationItem: self.navigationItem)
         self.viewModel.viewDidLoad()
     }
     
@@ -68,9 +69,9 @@ public final class HDTimelineController: UIViewController {
         let todayIndex = self.calendarItems.index(of: todayCalendarItem)
         guard let _todayIndex = todayIndex else { return }
         let selectedIndex = IndexPath(row: _todayIndex, section: 0)
-        self.timelineView.collectionView.selectItem(at: selectedIndex,
-                                                    animated: false,
-                                                    scrollPosition: .centeredHorizontally)
+        self.timelineView.calendarCollectionView.selectItem(at: selectedIndex,
+                                                            animated: false,
+                                                            scrollPosition: .centeredHorizontally)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -78,64 +79,17 @@ public final class HDTimelineController: UIViewController {
         self.timelineView.viewWillDisappear()
     }
     
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-
     // MARK: Bind View & ViewModel Function
     private func bind(view: HDTimelineView, viewModel: HDTimelineViewModel) {
         self.bindCalendarItems(observable: view.calendarItems)
-        self.bindCalendarItemsToCollectionView(observable: view.calendarItems, collectionView: view.collectionView)
-        self.bindCollectionViewModelSelectedToDateDetailLabel(collectionView: view.collectionView,
-                                                              label: view.dateDetailLabel)
-        self.bindSelectedDateToDateDetailLabel(observable: self._selectedDate, label: view.dateDetailLabel)
-    }
-    
-}
-
-// MARK: BindSelectedDateToDateDetailLabel
-extension HDTimelineController {
-    
-    func bindSelectedDateToDateDetailLabel(observable: Observable<Date>, label: UILabel) {
-        observable
-            .asDriver(onErrorJustReturn: Date())
-            .drive(onNext : { [unowned label] (date) in
-                label.text = date.formatted(components: [.dayOfWeekWideName,
-                                                         .comma,
-                                                         .whitespace,
-                                                         .dayOfMonth,
-                                                         .whitespace,
-                                                         .monthOfYearFullName,
-                                                         .whitespace,
-                                                         .yearFullDigits])
-            })
-            .disposed(by: self.disposeBag)
-    }
-    
-}
-
-// MARK: BindActivityToTableView
-extension HDTimelineController {
-    
-    func bindActivityToTableView(observable: Observable<[[ActivityDomain]]>, tableView: UITableView) {
-        let dataSource = self.makeTableViewDataSource()
-        observable
-            .asDriver(onErrorJustReturn: [[]])
-            .map { $0.map { SectionModel(model: "", items: $0) } }
-            .drive(tableView.rx.items(dataSource: dataSource))
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func makeTableViewDataSource() -> RxTableViewSectionedReloadDataSource<SectionModel<String, ActivityDomain>> {
-        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, ActivityDomain>>
-        { [unowned self] (_, _, _, item) -> UITableViewCell in
-            let identifier = self.timelineView.HDTLActivityTableCellIdentifier
-            let cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier)
-            cell.textLabel?.text = item.title
-            cell.detailTextLabel?.text = item.explanation
-            return cell
-        }
-        return dataSource
+        self.bindCalendarItemsToCalendarCollectionView(observable: view.calendarItems,
+                                                       collectionView: view.calendarCollectionView)
+        self.bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: view.calendarCollectionView,
+                                                                          navigationItem: self.navigationItem)
+        self.bindSelectedDateToNavigationItemTitle(observable: self._selectedDate,
+                                                   navigationItem: self.navigationItem)
+        self.bindShowedActivitiesViewModelToTimelineTableView(observable: viewModel.showedActivities,
+                                                              tableView: view.timelineTableView)
     }
     
 }
@@ -154,15 +108,15 @@ extension HDTimelineController {
     
 }
 
-// MARK: BindCalendarItemsToCollectionView
+// MARK: BindCalendarItemsToCalendarCollectionView
 extension HDTimelineController {
     
-    func bindCalendarItemsToCollectionView(observable: Observable<[HDTLCalendarItemDomain]>,
-                                           collectionView: UICollectionView) {
+    func bindCalendarItemsToCalendarCollectionView(observable: Observable<[HDTLCalendarItemDomain]>,
+                                                   collectionView: UICollectionView) {
         let dataSource = self.makeCollectionViewDataSource()
         observable
             .asDriver(onErrorJustReturn: [])
-            .map { [HDTLCalendarItemDomainSectionModel(model: "", items: $0)] }
+            .map({ [HDTLCalendarItemDomainSectionModel(model: "", items: $0)] })
             .drive(collectionView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
     }
@@ -176,9 +130,9 @@ extension HDTimelineController {
                 fatalError("Cannot dequeueReusableCell() with identifier: \(identifier)")
             }
             if item.date.timeIntervalSince1970 != -1 {
-                cell.dateFormatted = item.date.formatted(components: [.dayOfMonth])
+                cell.date = item.date
             } else {
-                cell.dateFormatted = nil
+                cell.date = nil
             }
             return cell
         }
@@ -187,18 +141,72 @@ extension HDTimelineController {
     
 }
 
-// MARK: BindCollectionViewModelSelectedToDateDetailLabel
+// MARK: BindCalendarCollectionModelSelectedToNavigationItemTitle
 extension HDTimelineController {
     
-    func bindCollectionViewModelSelectedToDateDetailLabel(collectionView: UICollectionView, label: UILabel) {
+    func bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: UICollectionView,
+                                                                  navigationItem: UINavigationItem) {
         collectionView.rx
             .modelSelected(HDTLCalendarItemDomain.self)
             .asDriver()
-            .drive(onNext: { [unowned label] (calendarItem) in
-                guard calendarItem.date.timeIntervalSince1970 != -1 else { return }
-                label.text = calendarItem.dateFormatted
-            })
+            .filter({ $0.date.timeIntervalSince1970 != -1 })
+            .map({ $0.dateFormatted })
+            .drive(navigationItem.rx.title)
             .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindSelectedDateToDateDetailLabel
+extension HDTimelineController {
+    
+    func bindSelectedDateToNavigationItemTitle(observable: Observable<Date>, navigationItem: UINavigationItem) {
+        observable
+            .asDriver(onErrorJustReturn: Date())
+            .map({ $0.formatted(components: [.dayOfWeekWideName,
+                                             .comma,
+                                             .whitespace,
+                                             .dayOfMonth,
+                                             .whitespace,
+                                             .monthOfYearFullName,
+                                             .whitespace,
+                                             .yearFullDigits])
+            })
+            .drive(navigationItem.rx.title)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindShowedActivitiesViewModelToTimelineTableView
+extension HDTimelineController {
+    
+    func bindShowedActivitiesViewModelToTimelineTableView(observable: Observable<[ActivityDomain]>,
+                                                          tableView: UITableView) {
+        let dataSource = self.makeTableViewDataSource()
+        observable
+            .asDriver(onErrorJustReturn: [])
+            .map({ [ActivityDomainSectionModel(model: "", items: $0)] })
+            .drive(tableView.rx.items(dataSource: dataSource))
+            .disposed(by: self.disposeBag)
+    }
+    
+    private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<ActivityDomainSectionModel> {
+        let dataSource = RxTableViewSectionedAnimatedDataSource<ActivityDomainSectionModel>
+        { [unowned self] (_, _, _, item) -> UITableViewCell in
+            let identifier = self.timelineView.HDTLActivityTableCellIdentifier
+            let cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier)
+            cell.selectionStyle = .none
+            cell.textLabel?.text = item.title
+            cell.detailTextLabel?.text = item.doDate.toDate().formatted(components: [.hour12Padding,
+                                                                                     .colon,
+                                                                                     .minutePadding,
+                                                                                     .whitespace,
+                                                                                     .meridiem])
+            cell.imageView?.image = UIImage(named: "image.placeholder")
+            return cell
+        }
+        return dataSource
     }
     
 }

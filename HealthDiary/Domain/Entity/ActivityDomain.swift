@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RxDataSources
 
 public struct ActivityDomain: EntityDomain {
     
@@ -43,6 +44,18 @@ extension Array where Element == Array<ActivityDomain> {
     func groupByDoDate() -> [String: [ActivityDomain]] {
         
         return [:]
+    }
+    
+}
+
+public typealias ActivityDomainSectionModel = AnimatableSectionModel<String, ActivityDomain>
+
+extension ActivityDomain: IdentifiableType {
+    
+    public typealias Identity = String
+    
+    public var identity: String {
+        return self.coreID?.uriRepresentation().path ?? self.title
     }
     
 }

@@ -5,18 +5,18 @@ target 'HealthDiary' do
 
   pod 'RealmSwift'
 
-  pod 'RxCocoa'
-  pod 'RxDataSources'
-  pod 'RxGesture'
-  pod 'RxKeyboard'
-  pod 'RxSwift'
+  pod 'RxCocoa', '~> 6.0'
+  pod 'RxDataSources', '~> 5.0.0'
+  pod 'RxGesture', '~> 4.0'
+  pod 'RxKeyboard', '~> 2.0.0'
+  pod 'RxSwift', '~> 6.0'
 
-  pod 'SnapKit'
+  pod 'SnapKit', '~> 5.0.0'
 
   target 'HealthDiaryTests' do
     inherit! :search_paths
-    pod 'RxBlocking'
-    pod 'RxTest'
+    pod 'RxBlocking', '~> 6.0'
+    pod 'RxTest', '~> 6.0'
   end
 
   # target 'HealthDiaryUITests' do

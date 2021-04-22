@@ -19,7 +19,9 @@ extension AppDIContainer {
     
     private func makeHDTimelineViewModel(request: HDTimelineViewModelRequest,
                                          route: HDTimelineViewModelRoute) -> HDTimelineViewModel {
-        return DefaultHDTimelineViewModel(request: request, route: route)
+        return DefaultHDTimelineViewModel(request: request,
+                                          route: route,
+                                          fetchAllActivityUseCase: self.makeFetchAllActivityUseCase())
     }
     
 }

@@ -9,6 +9,10 @@ import Foundation
 
 extension AppDIContainer: RepositoryFactory {
     
+    public func makeActivityRepository() -> ActivityRepository {
+        return DefaultActivityRepository(localActivityStorage: self.localActivityStorage)
+    }
+    
     public func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository {
         return DefaultCountryDialingCodeRepository(remoteCountryDialingCodeStorage: self.remoteCountryDialingCodeStorage)
     }
