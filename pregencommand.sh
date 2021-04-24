@@ -1,5 +1,5 @@
-rm -rf ~/Library/Developer/Xcode/DerivedData/HealthDiary-*
-rm -rf HealthDiary.xcodeproj
-rm -rf HealthDiary.xcworkspace
-rm HealthDiary/Resources/Info*
+rm -rf ~/Library/Developer/Xcode/DerivedData/HealthHouse-*
+rm -rf HealthHouse.xcodeproj
+rm -rf HealthHouse.xcworkspace
+rm HealthHouse/Resources/Info*
 rm -rf Pods

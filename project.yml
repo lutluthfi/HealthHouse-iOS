@@ -1,5 +1,5 @@
 ## MARK: - Project Name
-name: HealthDiary
+name: HealthHouse
 
 
 ## MARK: - Configs Section
@@ -23,46 +23,46 @@ options:
 
 ## MARK: - Target Section
 targets:
-    HealthDiary:
+    HealthHouse:
         type: application
         platform: iOS
-        sources: HealthDiary
+        sources: HealthHouse
         settings:
             base:
                 CODE_SIGN_STYLE: Automatic
                 DEVELOPMENT_TEAM: 5U7M39KWXM # Arif Luthfiansyah - Personal Team (lutluthfi@icloud.com)
                 EXCLUDED_ARCHS[sdk=iphonesimulator*]: arm64
                 IPHONEOS_DEPLOYMENT_TARGET: 13.0
-                INFOPLIST_FILE: HealthDiary/Resources/Info.plist
+                INFOPLIST_FILE: HealthHouse/Resources/Info.plist
                 MOMC_NO_WARNINGS: true
                 TARGETED_DEVICE_FAMILY: 1
             configs:
                 DEV-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.dev
-                    PRODUCT_NAME: DEV Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.dev
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
                 DEV-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.dev
-                    PRODUCT_NAME: DEV Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.dev
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
                 STA-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.sta
-                    PRODUCT_NAME: STA Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.sta
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
                 STA-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary.sta
-                    PRODUCT_NAME: STA Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.sta
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
                 PRO-Debug:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary
-                    PRODUCT_NAME: Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
                 PRO-Release:
-                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthdiary
-                    PRODUCT_NAME: Health Diary
+                    PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse
+                    PRODUCT_NAME: Health House
                     SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
         info:
-            path: HealthDiary/Resources/Info.plist
+            path: HealthHouse/Resources/Info.plist
             properties:
                 CFBundleDevelopmentRegion: $(DEVELOPMENT_LANGUAGE)
                 CFBundleExecutable: $(EXECUTABLE_NAME)
@@ -85,22 +85,22 @@ targets:
                     - armv7
                 UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
                 UIUserInterfaceStyle: Light
-    HealthDiaryTests:
+    HealthHouseTests:
         type: bundle.unit-test
         platform: iOS
         sources:
-            - path: HealthDiaryTests
+            - path: HealthHouseTests
         settings:
-            INFOPLIST_FILE: HealthDiaryTests/Info.plist
-            TEST_TARGET_NAME: HealthDiary
-            TEST_HOST: $(BUILT_PRODUCTS_DIR)/DEV Health Diary.app/DEV Health Diary
+            INFOPLIST_FILE: HealthHouseTests/Info.plist
+            TEST_TARGET_NAME: HealthHouse
+            TEST_HOST: $(BUILT_PRODUCTS_DIR)/Health House.app/Health House
 
 ## MARK: - Scheme Section
 schemes:
-    DEV-HealthDiary:
+    DEV-HealthHouse:
         build:
             targets:
-                HealthDiary: [run, archive]
+                HealthHouse: [run, archive]
         run:
             config: DEV-Debug
         test:
@@ -111,12 +111,12 @@ schemes:
             config: DEV-Debug
         archive:
             config: DEV-Release
-            customArchiveName: DEV HealthDiary
+            customArchiveName: DEV HealthHouse
             revealArchiveInOrganizer: true
-    PRO-HealthDiary:
+    PRO-HealthHouse:
         build:
             targets:
-                HealthDiary: [run, archive]
+                HealthHouse: [run, archive]
         run:
             config: PRO-Debug
         test:
@@ -127,5 +127,5 @@ schemes:
             config: PRO-Debug
         archive:
             config: PRO-Release
-            customArchiveName: PRO HealthDiary
+            customArchiveName: PRO HealthHouse
             revealArchiveInOrganizer: true

@@ -1,6 +1,6 @@
 platform :ios, '13.0'
 
-target 'HealthDiary' do
+target 'HealthHouse' do
   use_frameworks!
 
   pod 'RealmSwift'
@@ -13,13 +13,13 @@ target 'HealthDiary' do
 
   pod 'SnapKit', '~> 5.0.0'
 
-  target 'HealthDiaryTests' do
+  target 'HealthHouseTests' do
     inherit! :search_paths
     pod 'RxBlocking', '~> 6.0'
     pod 'RxTest', '~> 6.0'
   end
 
-  # target 'HealthDiaryUITests' do
+  # target 'HealthHouseUITests' do
   # end
 end
 
