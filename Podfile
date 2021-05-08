@@ -6,9 +6,11 @@ target 'HealthHouse' do
   pod 'RealmSwift'
 
   pod 'RxCocoa', '~> 6.0'
+  pod 'RxCoreLocation', '~> 1.5.1'
   pod 'RxDataSources', '~> 5.0.0'
   pod 'RxGesture', '~> 4.0'
   pod 'RxKeyboard', '~> 2.0.0'
+  pod 'RxMKMapView', '~> 6.0.0'
   pod 'RxSwift', '~> 6.0'
 
   pod 'SnapKit', '~> 5.0.0'

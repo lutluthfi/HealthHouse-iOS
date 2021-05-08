@@ -1,6 +1,6 @@
 //
 //  ProfileEntity+CoreDataProperties.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //
@@ -25,9 +25,6 @@ extension ProfileEntity {
     @NSManaged public var lastName: String?
     @NSManaged public var mobileNumber: String
     @NSManaged public var photoBase64String: String?
-    
-    @NSManaged public var activitiesID: [NSManagedObjectID]
-    @NSManaged public var diseasesID: [NSManagedObjectID]
 
 }
 

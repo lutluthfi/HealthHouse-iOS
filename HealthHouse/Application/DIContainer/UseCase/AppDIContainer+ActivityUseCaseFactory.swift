@@ -1,6 +1,6 @@
 //
 //  AppDIContainer+ActivityUseCaseFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 21/04/21.
 //
@@ -9,12 +9,12 @@ import Foundation
 
 extension AppDIContainer: ActivityUseCaseFactory {
     
-    public func makeCreateActivityUseCase() -> CreateActivityUseCase {
-        return DefaultCreateActivityUseCase()
+    public func makeCreateUpdateActivityUseCase() -> CreateUpdateActivityUseCase {
+        return DefaultCreateUpdateActivityUseCase(activityRepository: self.makeActivityRepository())
     }
     
-    public func makeFetchAllActivityUseCase() -> FetchAllActivityUseCase {
-        return DefaultFetchAllActivityUseCase(activityRepository: self.makeActivityRepository())
+    public func makeFetchAllActivityByProfileUseCase() -> FetchAllActivityByProfileUseCase {
+        return DefaultFetchAllActivityByProfileUseCase(activityRepository: self.makeActivityRepository())
     }
     
 }

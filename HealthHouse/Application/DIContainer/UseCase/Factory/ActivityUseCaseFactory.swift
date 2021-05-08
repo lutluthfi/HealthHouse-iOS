@@ -1,6 +1,6 @@
 //
 //  ActivityUseCaseFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 21/04/21.
 //
@@ -9,8 +9,8 @@ import Foundation
 
 public protocol ActivityUseCaseFactory {
     
-    func makeCreateActivityUseCase() -> CreateActivityUseCase
+    func makeCreateUpdateActivityUseCase() -> CreateUpdateActivityUseCase
     
-    func makeFetchAllActivityUseCase() -> FetchAllActivityUseCase
+    func makeFetchAllActivityByProfileUseCase() -> FetchAllActivityByProfileUseCase
     
 }

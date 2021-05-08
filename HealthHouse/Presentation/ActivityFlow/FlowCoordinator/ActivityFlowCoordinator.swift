@@ -1,6 +1,6 @@
 //
 //  ActivityFlowCoordinator.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 23/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -11,9 +11,7 @@ import UIKit
 
 // MARK: ActivityFlowCoordinatorFactory
 public protocol ActivityFlowCoordinatorFactory  {
-    
     func makeCreateController(request: ATCreateViewModelRequest, route: ATCreateViewModelRoute) -> UIViewController
-    
 }
 
 // MARK: ActivityFlowCoordinator
@@ -57,7 +55,13 @@ extension DefaultActivityFlowCoordinator: ActivityFlowCoordinator {
 extension DefaultActivityFlowCoordinator {
     
     private func initCreateUI(request: ATCreateViewModelRequest) -> UIViewController {
-        let route = ATCreateViewModelRoute()
+        let presentCMSearchMapUI: (LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void = { (request, response) in
+            let coordinator = self.flowFactory.makeCommonFlowCoordinator()
+            let controller = coordinator.makeLCSearchUI(request: request,
+                                                           response: response) as! SearchResultController
+            coordinator.start(with: .presentSearchUI(controller))
+        }
+        let route = ATCreateViewModelRoute(presentCMSearchMapUI: presentCMSearchMapUI)
         let controller = self.controllerFactory.makeCreateController(request: request, route: route)
         return controller
     }

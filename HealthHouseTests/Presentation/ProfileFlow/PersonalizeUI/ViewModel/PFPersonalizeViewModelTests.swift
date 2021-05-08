@@ -1,13 +1,13 @@
 //
 //  PFPersonalizeViewModelTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 12/04/21.
 //
 
 import RxSwift
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class PFPersonalizeViewModelTests: XCTestCase {
 
@@ -15,11 +15,9 @@ class PFPersonalizeViewModelTests: XCTestCase {
 
     func test_doCreate() {
         let _resultExpectation = AnyResult<String, String>.success("Health Diary has been created.\nWe hope you are always healthy 🥳")
-        let _responseExpectation = PFPersonalizeViewModelResponse.DoCreate(_resultExpectation)
-        var _response: PFPersonalizeViewModelResponse?
-        let subscription = self.sut.viewModel
-            .response
-            .subscribe(onNext: { _response = $0 })
+        let _responseExpectation = PFPersonalizeViewModelResult.DoCreate(_resultExpectation)
+        var _response: PFPersonalizeViewModelResult?
+        let subscription = self.sut.viewModel.result.subscribe(onNext: { _response = $0 })
         
         self.sut.viewModel.doCreate(firstName: "Health",
                                     dateOfBirth: Date(),
@@ -28,7 +26,7 @@ class PFPersonalizeViewModelTests: XCTestCase {
                                     mobileNumber: "1234567890",
                                     photo: UIImage())
         
-        eventually {
+        eventually(timeoutAfter: 5, timeoutExpectation: 5) {
             subscription.dispose()
             XCTAssertNotNil(_response)
             XCTAssertEqual(_response, _responseExpectation)
@@ -37,13 +35,14 @@ class PFPersonalizeViewModelTests: XCTestCase {
     
     func test_viewDidLoad_shouldFetchedCountryDialingCode() {
         var _countryDialingCodes: [CountryDialingCodeDomain] = []
+        
         let subscription = self.sut.viewModel
             .showedCountryDialingCodes
             .subscribe(onNext: { _countryDialingCodes = $0 })
         
         self.sut.viewModel.viewDidLoad()
         
-        eventually {
+        eventually(timeoutAfter: 5, timeoutExpectation: 5) {
             subscription.dispose()
             XCTAssertFalse(_countryDialingCodes.isEmpty)
             XCTAssertTrue(_countryDialingCodes.contains(.indonesia))

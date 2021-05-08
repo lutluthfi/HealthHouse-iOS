@@ -1,6 +1,6 @@
 //
 //  AppDIContainer+HealthDiaryFlowCoordinatorFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //
@@ -21,7 +21,7 @@ extension AppDIContainer {
                                          route: HDTimelineViewModelRoute) -> HDTimelineViewModel {
         return DefaultHDTimelineViewModel(request: request,
                                           route: route,
-                                          fetchAllActivityUseCase: self.makeFetchAllActivityUseCase())
+                                          fetchAllActivityByProfileUseCase: self.makeFetchAllActivityByProfileUseCase())
     }
     
 }

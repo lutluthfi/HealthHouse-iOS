@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  healthdiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 16/03/21.
 //

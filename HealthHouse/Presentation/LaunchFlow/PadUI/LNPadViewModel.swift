@@ -1,6 +1,6 @@
 //
 //  LNPadViewModel.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -8,25 +8,24 @@
 import Foundation
 import RxSwift
 
-// MARK: LNPadViewModelResponse
-enum LNPadViewModelResponse {
-}
-
-// MARK: LNPadViewModelDelegate
-protocol LNPadViewModelDelegate: class {
+// MARK: LNPadViewModelResult
+enum LNPadViewModelResult {
 }
 
 // MARK: LNPadViewModelRequest
 public struct LNPadViewModelRequest {
     
     public struct Controllers {
-        
         public let hdTimelineController: HDTimelineController
         public let pfPreviewController: PFPreviewController
-        
     }
     
     public let controllers: Controllers
+    
+}
+
+// MARK: LNPadViewModelResponse
+public struct LNPadViewModelResponse {
     
 }
 
@@ -36,16 +35,12 @@ public struct LNPadViewModelRoute {
 
 // MARK: LNPadViewModelInput
 protocol LNPadViewModelInput {
-
     func viewDidAppear()
-
 }
 
 // MARK: LNPadViewModelOutput
 protocol LNPadViewModelOutput {
-
     var controllers: PublishSubject<LNPadViewModelRequest.Controllers> { get }
-    
 }
 
 // MARK: LNPadViewModel
@@ -55,7 +50,6 @@ protocol LNPadViewModel: LNPadViewModelInput, LNPadViewModelOutput { }
 final class DefaultLNPadViewModel: LNPadViewModel {
 
     // MARK: DI Variable
-    weak var delegate: LNPadViewModelDelegate?
     let request: LNPadViewModelRequest
     let route: LNPadViewModelRoute
 

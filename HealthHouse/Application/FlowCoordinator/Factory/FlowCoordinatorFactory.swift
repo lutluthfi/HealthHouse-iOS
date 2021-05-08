@@ -1,6 +1,6 @@
 //
 //  FlowCoordinatorFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //
@@ -11,7 +11,11 @@ public protocol FlowCoordinatorFactory {
     
     func makeActivityFlowCoordinator() -> ActivityFlowCoordinator
     
+    func makeCommonFlowCoordinator() -> LocationFlowCoordinator
+    
     func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator
+    
+    func makeLabelFlowCoordinator() -> LabelFlowCoordinator
     
     func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator
     

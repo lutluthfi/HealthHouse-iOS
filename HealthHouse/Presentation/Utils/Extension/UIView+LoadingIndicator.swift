@@ -1,6 +1,6 @@
 //
 //  UIView+LoadingIndicator.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 21/04/21.
 //

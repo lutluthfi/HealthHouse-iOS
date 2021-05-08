@@ -1,12 +1,12 @@
 //
 //  ActivityDomain.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 21/03/21.
 //
 
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 // MARK: StubCollection
 extension ActivityDomain {
@@ -24,7 +24,6 @@ extension ActivityDomain {
                                          isPinned: false,
                                          photoFileNames: [],
                                          title: "Activity Stub Collection 1",
-                                         label: nil,
                                          profile: profile),
                           ActivityDomain(coreID: nil,
                                          createdAt: now.toInt64(),
@@ -35,7 +34,6 @@ extension ActivityDomain {
                                          isPinned: false,
                                          photoFileNames: [],
                                          title: "Activity Stub Collection 2",
-                                         label: nil,
                                          profile: profile),
                           ActivityDomain(coreID: nil,
                                          createdAt: now.toInt64(),
@@ -46,7 +44,6 @@ extension ActivityDomain {
                                          isPinned: false,
                                          photoFileNames: [],
                                          title: "Activity Stub Collection 3",
-                                         label: nil,
                                          profile: profile),
                           ActivityDomain(coreID: nil,
                                          createdAt: now.toInt64(),
@@ -57,7 +54,6 @@ extension ActivityDomain {
                                          isPinned: false,
                                          photoFileNames: [],
                                          title: "Activity Stub Collection 4",
-                                         label: nil,
                                          profile: profile),
                           ActivityDomain(coreID: nil,
                                          createdAt: now.toInt64(),
@@ -68,11 +64,10 @@ extension ActivityDomain {
                                          isPinned: false,
                                          photoFileNames: [],
                                          title: "Activity Stub Collection 5",
-                                         label: nil,
                                          profile: profile)]
-        let activityEntities = activities.map { ActivityEntity($0, insertInto: coreDataStorage.context) }
+        let entities = activities.map { ActivityEntity($0, insertInto: coreDataStorage.context) }
         coreDataStorage.saveContext()
-        let _activities = activityEntities
+        let _activities = entities
             .map { $0.toDomain(context: coreDataStorage.context) }
             .sorted(by: { $0.title < $1.title })
         return (_activities, profile)
@@ -96,7 +91,6 @@ extension ActivityDomain {
                                       isPinned: false,
                                       photoFileNames: [],
                                       title: "Activity Stub Element",
-                                      label: nil,
                                       profile: profile)
         return (activity, profile)
     }
@@ -110,16 +104,15 @@ extension ActivityDomain {
                                       createdAt: now.toInt64(),
                                       updatedAt: now.toInt64(),
                                       doDate: now.toInt64(),
-                                      explanation: "Activity Stub Element",
+                                      explanation: "Activity Stub CoreData Element",
                                       isArchived: false,
                                       isPinned: false,
                                       photoFileNames: [],
-                                      title: "Activity Stub Element",
-                                      label: nil,
+                                      title: "Activity Stub CoreData Element",
                                       profile: profile)
-        let activityEntity = ActivityEntity(activity, insertInto: context)
+        let entity = ActivityEntity(activity, insertInto: context)
         coreDataStorage.saveContext()
-        let _activity = activityEntity.toDomain(context: context)
+        let _activity = entity.toDomain(context: context)
         return (_activity, profile)
     }
     
@@ -142,11 +135,10 @@ extension ActivityDomain {
                                       isPinned: false,
                                       photoFileNames: [],
                                       title: "Activity Stub Remove Element",
-                                      label: nil,
                                       profile: profile)
-        let activityEntity = ActivityEntity(activity, insertInto: context)
+        let entity = ActivityEntity(activity, insertInto: context)
         coreDataStorage.saveContext()
-        context.delete(activityEntity)
+        context.delete(entity)
         coreDataStorage.saveContext()
         return (activity, profile)
     }

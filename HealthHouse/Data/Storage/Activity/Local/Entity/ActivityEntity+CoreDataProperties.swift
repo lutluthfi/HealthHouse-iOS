@@ -1,6 +1,6 @@
 //
 //  ActivityEntity+CoreDataProperties.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //
@@ -25,7 +25,6 @@ extension ActivityEntity {
     @NSManaged public var photoFileNames: [String]
     @NSManaged public var title: String
     
-    @NSManaged public var labelID: NSManagedObjectID?
     @NSManaged public var profileID: NSManagedObjectID
 
 }

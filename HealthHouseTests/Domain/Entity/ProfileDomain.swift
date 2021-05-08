@@ -1,12 +1,12 @@
 //
 //  ProfileDomain.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 03/04/21.
 //
 
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 extension ProfileDomain {
     

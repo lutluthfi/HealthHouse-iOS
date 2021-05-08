@@ -1,6 +1,6 @@
 //
 //  LNWelcomeControllerTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //
@@ -9,7 +9,7 @@ import RxBlocking
 import RxSwift
 import RxTest
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class LNWelcomeControllerTests: XCTestCase {
 

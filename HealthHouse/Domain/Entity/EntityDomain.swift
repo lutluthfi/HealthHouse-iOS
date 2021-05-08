@@ -1,6 +1,6 @@
 //
 //  EntityDomain.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //

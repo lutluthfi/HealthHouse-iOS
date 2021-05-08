@@ -1,6 +1,6 @@
 //
 //  AppDIContainer+FlowCoordinatorFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 20/03/21.
 //
@@ -13,8 +13,16 @@ extension AppDIContainer: FlowCoordinatorFactory {
         return DefaultActivityFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
+    public func makeCommonFlowCoordinator() -> LocationFlowCoordinator {
+        return DefaultLocationFlowCoordinator(navigationController: self.navigationController, factory: self)
+    }
+    
     public func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator {
         return DefaultHealthDiaryFlowCoordinator(navigationController: self.navigationController, factory: self)
+    }
+    
+    public func makeLabelFlowCoordinator() -> LabelFlowCoordinator {
+        return DefaultLabelFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
     public func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator {

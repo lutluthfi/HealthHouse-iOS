@@ -1,6 +1,6 @@
 //
 //  AppDIContainer.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //
@@ -10,7 +10,9 @@ import UIKit
 public typealias PresentationFactory = FlowCoordinatorFactory&ControllerFactory
 public typealias ControllerFactory =
     ActivityFlowCoordinatorFactory&
+    LocationFlowCoordinatorFactory&
     HealthDiaryFlowCoordinatorFactory&
+    LabelFlowCoordinatorFactory&
     LaunchFlowCoordinatorFactory&
     ProfileFlowCoordinatorFactory
 

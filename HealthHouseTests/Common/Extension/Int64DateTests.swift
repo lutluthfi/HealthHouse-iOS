@@ -1,12 +1,12 @@
 //
 //  Int64DateTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //
 
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class Int64DateTests: XCTestCase {
     

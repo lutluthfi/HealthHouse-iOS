@@ -1,6 +1,6 @@
 //
 //  DefaultActivityRepository.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 27/03/21.
 //
@@ -47,6 +47,23 @@ extension DefaultActivityRepository: ActivityRepository {
         case .userDefault:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity(ownedBy:)",
+                                                                   object: [ActivityDomain].self)
+        }
+    }
+    
+    public func fetchAllActivity(ownedBy profile: ProfileDomain,
+                                 onDoDate doDate: Int64,
+                                 in storagePoint: StoragePoint) -> Observable<[ActivityDomain]> {
+        switch storagePoint {
+        case .coreData:
+            return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile, onDoDate: doDate)
+        case .remote:
+            return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
+                                                              function: "fetchAllActivity(ownedBy:, onDoDate:)",
+                                                              object: [ActivityDomain].self)
+        case .userDefault:
+            return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
+                                                                   function: "fetchAllActivity(ownedBy:, onDoDate:)",
                                                                    object: [ActivityDomain].self)
         }
     }

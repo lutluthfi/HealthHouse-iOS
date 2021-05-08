@@ -1,6 +1,6 @@
 //
 //  HDTimelineController.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -79,13 +79,17 @@ public final class HDTimelineController: UIViewController {
         self.timelineView.viewWillDisappear()
     }
     
-    // MARK: Bind View & ViewModel Function
-    private func bind(view: HDTimelineView, viewModel: HDTimelineViewModel) {
+}
+
+// MARK: Bind View & ViewModel Function
+extension HDTimelineController {
+    
+    func bind(view: HDTimelineView, viewModel: HDTimelineViewModel) {
         self.bindCalendarItems(observable: view.calendarItems)
         self.bindCalendarItemsToCalendarCollectionView(observable: view.calendarItems,
                                                        collectionView: view.calendarCollectionView)
         self.bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: view.calendarCollectionView,
-                                                                          navigationItem: self.navigationItem)
+                                                                      navigationItem: self.navigationItem)
         self.bindSelectedDateToNavigationItemTitle(observable: self._selectedDate,
                                                    navigationItem: self.navigationItem)
         self.bindShowedActivitiesViewModelToTimelineTableView(observable: viewModel.showedActivities,
@@ -186,13 +190,13 @@ extension HDTimelineController {
         let dataSource = self.makeTableViewDataSource()
         observable
             .asDriver(onErrorJustReturn: [])
-            .map({ [ActivityDomainSectionModel(model: "", items: $0)] })
+            .map({ [SectionDomain<ActivityDomain>(header: "", items: $0)] })
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
     }
     
-    private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<ActivityDomainSectionModel> {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<ActivityDomainSectionModel>
+    private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<ActivityDomain>> {
+        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<ActivityDomain>>
         { [unowned self] (_, _, _, item) -> UITableViewCell in
             let identifier = self.timelineView.HDTLActivityTableCellIdentifier
             let cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier)

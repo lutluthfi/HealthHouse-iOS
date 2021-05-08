@@ -1,22 +1,23 @@
 //
 //  LNPostViewModel.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //  Copyright (c) 2021 All rights reserved.
 
 import Foundation
 
-// MARK: LNPostViewModelResponse
-enum LNPostViewModelResponse {
-}
-
-// MARK: LNPostViewModelDelegate
-protocol LNPostViewModelDelegate: class {
+// MARK: LNPostViewModelResult
+enum LNPostViewModelResult {
 }
 
 // MARK: LNPostViewModelRequest
 public struct LNPostViewModelRequest {
+}
+
+// MARK: LNPostViewModelResponse
+public struct LNPostViewModelResponse {
+    
 }
 
 // MARK: LNPostViewModelRoute
@@ -25,14 +26,11 @@ public struct LNPostViewModelRoute {
 
 // MARK: LNPostViewModelInput
 protocol LNPostViewModelInput {
-
     func viewDidLoad()
-
 }
 
 // MARK: LNPostViewModelOutput
 protocol LNPostViewModelOutput {
-
 }
 
 // MARK: LNPostViewModel
@@ -42,7 +40,6 @@ protocol LNPostViewModel: LNPostViewModelInput, LNPostViewModelOutput { }
 final class DefaultLNPostViewModel: LNPostViewModel {
 
     // MARK: DI Variable
-    weak var delegate: LNPostViewModelDelegate?
     let request: LNPostViewModelRequest
     let route: LNPostViewModelRoute
 

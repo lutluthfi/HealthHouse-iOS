@@ -1,6 +1,6 @@
 //
 //  HDTimelineViewModel.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -8,16 +8,17 @@
 import Foundation
 import RxSwift
 
-// MARK: HDTimelineViewModelResponse
-enum HDTimelineViewModelResponse {
-}
-
-// MARK: HDTimelineViewModelDelegate
-protocol HDTimelineViewModelDelegate: class {
+// MARK: HDTimelineViewModelResult
+enum HDTimelineViewModelResult {
 }
 
 // MARK: HDTimelineViewModelRequest
 public struct HDTimelineViewModelRequest {
+}
+
+// MARK: HDTimelineViewModelResponse
+public struct HDTimelineViewModelResponse {
+    
 }
 
 // MARK: HDTimelineViewModelRoute
@@ -26,16 +27,12 @@ public struct HDTimelineViewModelRoute {
 
 // MARK: HDTimelineViewModelInput
 protocol HDTimelineViewModelInput {
-
     func viewDidLoad()
-
 }
 
 // MARK: HDTimelineViewModelOutput
 protocol HDTimelineViewModelOutput {
-
     var showedActivities: PublishSubject<[ActivityDomain]> { get }
-    
 }
 
 // MARK: HDTimelineViewModel
@@ -45,12 +42,11 @@ protocol HDTimelineViewModel: HDTimelineViewModelInput, HDTimelineViewModelOutpu
 final class DefaultHDTimelineViewModel: HDTimelineViewModel {
 
     // MARK: DI Variable
-    weak var delegate: HDTimelineViewModelDelegate?
     let request: HDTimelineViewModelRequest
     let route: HDTimelineViewModelRoute
 
     // MARK: UseCase Variable
-    let fetchAllActivityUseCase: FetchAllActivityUseCase
+    let fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase
 
     // MARK: Common Variable
     
@@ -61,10 +57,10 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
     // MARK: Init Function
     init(request: HDTimelineViewModelRequest,
          route: HDTimelineViewModelRoute,
-         fetchAllActivityUseCase: FetchAllActivityUseCase) {
+         fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase) {
         self.request = request
         self.route = route
-        self.fetchAllActivityUseCase = fetchAllActivityUseCase
+        self.fetchAllActivityByProfileUseCase = fetchAllActivityByProfileUseCase
     }
     
 }

@@ -1,6 +1,6 @@
 //
 //  UIPresentProperties.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 20/03/21.
 //
@@ -9,6 +9,7 @@ import UIKit
 
 public struct UIPresentProperties {
     
+    public static let required = UIPresentProperties(isModalInPresentation: true)
     public static let standard = UIPresentProperties()
     
     public let isModalInPresentation: Bool

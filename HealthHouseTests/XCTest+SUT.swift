@@ -1,6 +1,6 @@
 //
 //  XCTest+SUT.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 21/03/21.
 //
@@ -9,7 +9,7 @@ import CoreData
 import RxSwift
 import RxTest
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 public extension XCTest {
     
@@ -37,9 +37,13 @@ public extension XCTest {
         let profiles = try! context.fetch(profileRequest)
         profiles.forEach { context.delete($0) }
         
-        let request: NSFetchRequest = ActivityEntity.fetchRequest()
-        let activityEntities = try! context.fetch(request)
+        let activityRequest: NSFetchRequest = ActivityEntity.fetchRequest()
+        let activityEntities = try! context.fetch(activityRequest)
         activityEntities.forEach { context.delete($0) }
+        
+        let labelRequest: NSFetchRequest = LabelEntity.fetchRequest()
+        let labelEntities = try! context.fetch(labelRequest)
+        labelEntities.forEach { context.delete($0) }
         
         coreDataStorage.saveContext()
     }

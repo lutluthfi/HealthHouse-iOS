@@ -1,12 +1,12 @@
 //
 //  CreateProfileUseCaseTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 18/04/21.
 //
 
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class CreateProfileUseCaseTests: XCTestCase {
 

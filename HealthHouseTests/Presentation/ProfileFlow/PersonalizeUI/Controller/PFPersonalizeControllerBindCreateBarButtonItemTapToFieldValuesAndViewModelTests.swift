@@ -1,13 +1,13 @@
 //
 //  PFPersonalizeControllerBindCreateBarButtonItemTapToFieldValuesAndViewModelTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 19/04/21.
 //
 
 import RxSwift
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class PFPersonalizeControllerBindCreateBarButtonItemTapToFieldValuesAndViewModelTests: XCTestCase {
     
@@ -17,10 +17,8 @@ class PFPersonalizeControllerBindCreateBarButtonItemTapToFieldValuesAndViewModel
         let element = (Date(), "Health", GenderDomain.male, "Diary", "1234567890", UIImage())
         let observable = Observable<(Date, String, GenderDomain, String, String, UIImage?)>.just(element)
         let barButtonItem = UIBarButtonItem()
-        self.sut.controller
-            .bindCreateBarButtonItemTapToFieldValuesAndViewModel(barButtonItem: barButtonItem,
-                                                                 observable: observable,
-                                                                 viewModel: self.sut.viewModel)
+        self.sut.controller.bindCreateBarButtonItemTapToFieldValues(barButtonItem: barButtonItem,
+                                                                    observable: observable)
         UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: self, for: nil)
     }
     

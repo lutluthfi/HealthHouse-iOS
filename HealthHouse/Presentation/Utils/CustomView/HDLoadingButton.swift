@@ -1,6 +1,6 @@
 //
 //  HDLoadingButton.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 21/03/21.
 //
@@ -24,29 +24,27 @@ public class HDLoadingButton: UIButton {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.subviewDidInit()
-        self.subviewConstraintDidInit()
+        self.subviewWillAdd()
+        self.subviewConstraintWillMake()
         self.viewDidInit()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.subviewDidInit()
-        self.subviewConstraintDidInit()
+        self.subviewWillAdd()
+        self.subviewConstraintWillMake()
         self.viewDidInit()
     }
     
-    private func subviewDidInit() {
+    private func subviewWillAdd() {
         self.addSubview(self.activityIndicator)
     }
     
-    private func subviewConstraintDidInit() {
+    private func subviewConstraintWillMake() {
         self.activityIndicator.snp.makeConstraints { (make) in
             make.centerX.equalTo(self)
             make.centerY.equalTo(self)
         }
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
     }
     
     private func viewDidInit() {

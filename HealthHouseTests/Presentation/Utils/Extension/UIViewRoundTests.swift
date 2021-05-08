@@ -1,13 +1,13 @@
 //
 //  UIViewRoundTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 30/03/21.
 //
 
 import UIKit
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class UIViewRoundTests: XCTestCase {
 

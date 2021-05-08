@@ -1,22 +1,23 @@
 //
 //  PFPreviewViewModel.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
 
 import Foundation
 
-// MARK: PFPreviewViewModelResponse
-enum PFPreviewViewModelResponse {
-}
-
-// MARK: PFPreviewViewModelDelegate
-protocol PFPreviewViewModelDelegate: class {
+// MARK: PFPreviewViewModelResult
+enum PFPreviewViewModelResult {
 }
 
 // MARK: PFPreviewViewModelRequest
 public struct PFPreviewViewModelRequest {
+}
+
+// MARK: PFPreviewViewModelResponse
+public struct PFPreviewViewModelResponse {
+    
 }
 
 // MARK: PFPreviewViewModelRoute
@@ -25,9 +26,7 @@ public struct PFPreviewViewModelRoute {
 
 // MARK: PFPreviewViewModelInput
 protocol PFPreviewViewModelInput {
-
     func viewDidLoad()
-
 }
 
 // MARK: PFPreviewViewModelOutput
@@ -42,7 +41,6 @@ protocol PFPreviewViewModel: PFPreviewViewModelInput, PFPreviewViewModelOutput {
 final class DefaultPFPreviewViewModel: PFPreviewViewModel {
 
     // MARK: DI Variable
-    weak var delegate: PFPreviewViewModelDelegate?
     let request: PFPreviewViewModelRequest
     let route: PFPreviewViewModelRoute
 

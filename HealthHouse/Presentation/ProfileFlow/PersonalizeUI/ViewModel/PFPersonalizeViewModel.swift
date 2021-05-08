@@ -1,17 +1,17 @@
 //
 //  PFPersonalizeViewModel.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
 
 import RxSwift
 
-// MARK: PFPersonalizeViewModelResponse
-enum PFPersonalizeViewModelResponse: Equatable {
+// MARK: PFPersonalizeViewModelResult
+enum PFPersonalizeViewModelResult: Equatable {
     case DoCreate(AnyResult<String, String>)
     
-    static func == (lhs: PFPersonalizeViewModelResponse, rhs: PFPersonalizeViewModelResponse) -> Bool {
+    static func == (lhs: PFPersonalizeViewModelResult, rhs: PFPersonalizeViewModelResult) -> Bool {
         switch (lhs, rhs) {
         case (.DoCreate(let lhsRes), .DoCreate(let rhsRes)):
             switch (lhsRes, rhsRes) {
@@ -26,12 +26,13 @@ enum PFPersonalizeViewModelResponse: Equatable {
     }
 }
 
-// MARK: PFPersonalizeViewModelDelegate
-protocol PFPersonalizeViewModelDelegate: AnyObject {
-}
-
 // MARK: PFPersonalizeViewModelRequest
 public struct PFPersonalizeViewModelRequest {
+}
+
+// MARK: PFPersonalizeViewModelResponse
+public struct PFPersonalizeViewModelResponse {
+    
 }
 
 // MARK: PFPersonalizeViewModelRoute
@@ -41,7 +42,6 @@ public struct PFPersonalizeViewModelRoute {
 
 // MARK: PFPersonalizeViewModelInput
 protocol PFPersonalizeViewModelInput {
-
     func viewDidLoad()
     func doCreate(firstName: String,
                   dateOfBirth: Date,
@@ -49,15 +49,12 @@ protocol PFPersonalizeViewModelInput {
                   lastName: String,
                   mobileNumber: String,
                   photo: UIImage?)
-
 }
 
 // MARK: PFPersonalizeViewModelOutput
 protocol PFPersonalizeViewModelOutput {
-    
-    var response: PublishSubject<PFPersonalizeViewModelResponse> { get }
+    var result: PublishSubject<PFPersonalizeViewModelResult> { get }
     var showedCountryDialingCodes: PublishSubject<[CountryDialingCodeDomain]> { get }
-    
 }
 
 // MARK: PFPersonalizeViewModel
@@ -67,7 +64,6 @@ protocol PFPersonalizeViewModel: PFPersonalizeViewModelInput, PFPersonalizeViewM
 final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
 
     // MARK: DI Variable
-    weak var delegate: PFPersonalizeViewModelDelegate?
     let request: PFPersonalizeViewModelRequest
     let route: PFPersonalizeViewModelRoute
 
@@ -79,7 +75,7 @@ final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
     let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
-    let response = PublishSubject<PFPersonalizeViewModelResponse>()
+    let result = PublishSubject<PFPersonalizeViewModelResult>()
     let showedCountryDialingCodes = PublishSubject<[CountryDialingCodeDomain]>()
 
     // MARK: Init Function
@@ -121,12 +117,12 @@ extension DefaultPFPersonalizeViewModel {
                 let profile = response.profile
                 let successMessage = "\(profile.fullName) has been created.\nWe hope you are always healthy 🥳"
                 let success = AnyResult<String, String>.success(successMessage)
-                let response = PFPersonalizeViewModelResponse.DoCreate(success)
-                self.response.onNext(response)
+                let result = PFPersonalizeViewModelResult.DoCreate(success)
+                self.result.onNext(result)
             }, onError: { [unowned self] (error) in
                 let failure = AnyResult<String, String>.failure(error.localizedDescription)
-                let response = PFPersonalizeViewModelResponse.DoCreate(failure)
-                self.response.onNext(response)
+                let result = PFPersonalizeViewModelResult.DoCreate(failure)
+                self.result.onNext(result)
             })
             .disposed(by: self.disposeBag)
     }

@@ -7,7 +7,7 @@
 
 import CoreData
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 public class CoreDataStorageMock {
 

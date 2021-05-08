@@ -1,6 +1,6 @@
 //
 //  ActivityRepository.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 27/03/21.
 //
@@ -13,6 +13,10 @@ public protocol ActivityRepository {
     func fetchAllActivity(in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
     
     func fetchAllActivity(ownedBy profile: ProfileDomain,
+                          in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
+    
+    func fetchAllActivity(ownedBy profile: ProfileDomain,
+                          onDoDate doDate: Int64,
                           in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
     
     func insertActivity(_ activity: ActivityDomain,

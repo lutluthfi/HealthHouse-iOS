@@ -1,6 +1,6 @@
 //
 //  RepositoryError.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 30/03/21.
 //

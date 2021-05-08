@@ -1,6 +1,6 @@
 //
 //  PFPersonalizeController+UITableViewDelegate.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 05/04/21.
 //
@@ -27,9 +27,9 @@ extension PFPersonalizeController: UITableViewDelegate {
         let field = self.personalizeView.fields[section][row]
         switch field {
         case .photo:
-            return HDPhotoProfileTableCell.height
+            return HHPhotoProfileTableCell.height
         default:
-            return HDTextFieldTableCell.height
+            return HHTextFieldTableCell.height
         }
     }
     

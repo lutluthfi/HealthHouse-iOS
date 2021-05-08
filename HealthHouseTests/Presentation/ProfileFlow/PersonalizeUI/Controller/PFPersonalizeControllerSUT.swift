@@ -1,13 +1,13 @@
 //
 //  PFPersonalizeControllerSUT.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 12/04/21.
 //
 
 import RxSwift
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 struct PFPersonalizeControllerSUT {
     

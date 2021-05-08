@@ -1,12 +1,12 @@
 //
 //  PFPersonalizeControllerBindGenderToPickerTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 17/04/21.
 //
 
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 class PFPersonalizeControllerBindGenderToPickerTests: XCTestCase {
 

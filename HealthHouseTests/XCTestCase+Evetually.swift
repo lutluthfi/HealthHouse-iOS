@@ -1,6 +1,6 @@
 //
 //  XCTestCase+Evetually.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //

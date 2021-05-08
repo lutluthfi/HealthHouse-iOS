@@ -1,6 +1,6 @@
 //
 //  ActivityEntity+CoreDataClass.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
 //
@@ -26,7 +26,6 @@ public class ActivityEntity: NSManagedObject {
         self.isPinned = domain.isPinned
         self.title = domain.title
         
-        self.labelID = domain.profile.coreID!
         self.profileID = domain.profile.coreID!
     }
     
@@ -36,13 +35,6 @@ public extension ActivityEntity {
     
     func toDomain(context: NSManagedObjectContext) -> ActivityDomain {
         let profile = context.object(with: self.profileID) as! ProfileEntity
-        var label: LabelEntity?
-        if let labelID = self.labelID,
-           let _label = context.object(with: labelID) as? LabelEntity {
-            label = _label
-        } else {
-            label = nil
-        }
         return ActivityDomain(coreID: self.objectID,
                               createdAt: self.createdAt,
                               updatedAt: self.updatedAt,
@@ -52,7 +44,6 @@ public extension ActivityEntity {
                               isPinned: self.isPinned,
                               photoFileNames: self.photoFileNames,
                               title: self.title,
-                              label: label?.toDomain(),
                               profile: profile.toDomain())
     }
     
@@ -73,7 +64,6 @@ extension ActivityEntity {
         self.photoFileNames = newObject.photoFileNames
         self.title = newObject.title
         
-        self.labelID = newObject.label?.coreID
         self.profileID = newObject.profile.coreID!
         
         return self

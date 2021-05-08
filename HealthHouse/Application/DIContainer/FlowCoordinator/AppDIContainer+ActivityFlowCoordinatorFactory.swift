@@ -1,6 +1,6 @@
 //
 //  AppDIContainer+ActivityFlowCoordinatorFactory.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 23/04/21.
 //

@@ -1,6 +1,6 @@
 //
 //  ActivityDomain.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //
@@ -21,10 +21,9 @@ public struct ActivityDomain: EntityDomain {
     public let photoFileNames: [String]
     public let title: String
     
-    public let label: LabelDomain?
     public let profile: ProfileDomain
     
-    public var photoFileUrls: [URL] {
+    public var photoFileURLs: [URL] {
         let directoryURL = FileKit.local.localAttachmentsDirectoryURL
         let urls = self.photoFileNames.map { directoryURL.appendingPathComponent($0, isDirectory: false) }
         return urls
@@ -52,8 +51,6 @@ extension Array where Element == ActivityDomain {
     }
     
 }
-
-public typealias ActivityDomainSectionModel = AnimatableSectionModel<String, ActivityDomain>
 
 extension ActivityDomain: IdentifiableType {
     

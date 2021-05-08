@@ -1,6 +1,6 @@
 //
 //  LaunchFlowCoordinator.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 17/03/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -11,16 +11,12 @@ import UIKit
 
 // MARK: LaunchFlowCoordinatorFactory
 public protocol LaunchFlowCoordinatorFactory  {
-
     func makeLNPadController(request: LNPadViewModelRequest,
                              route: LNPadViewModelRoute) -> UITabBarController
-    
     func makeLNPostController(request: LNPostViewModelRequest,
                               route: LNPostViewModelRoute) -> UIViewController
-    
     func makeLNWelcomeController(request: LNWelcomeViewModelRequest,
                                  route: LNWelcomeViewModelRoute) -> UIViewController
-
 }
 
 // MARK: LaunchFlowCoordinator
@@ -102,7 +98,7 @@ extension DefaultLaunchFlowCoordinator {
             let lnPadRequestValue = LNPadViewModelRequest(controllers: controllers)
             self.start(with: .pushToPadUI(lnPadRequestValue))
         }
-        let showPFPersonalizeUI: (PFPersonalizeViewModelRequest) -> Void = { request in
+        let showPFPersonalizeUI: (PFPersonalizeViewModelRequest) -> Void = { (request) in
             let instructor = ProfileFlowCoordinatorInstructor.pushToPersonalizeUI(request)
             self.flowFactory.makeProfileFlowCoordinator().start(with: instructor)
         }

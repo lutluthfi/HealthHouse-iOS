@@ -1,6 +1,6 @@
 //
 //  LNWelcomeView.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 20/03/21.
 //  Copyright (c) 2021 All rights reserved.

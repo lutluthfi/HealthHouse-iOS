@@ -1,6 +1,6 @@
 //
 //  ProfileFlowCoordinator.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -10,22 +10,16 @@ import UIKit
 
 // MARK: ProfileFlowCoordinatorFactory
 public protocol ProfileFlowCoordinatorFactory  {
-    
     func makePFPersonalizeController(request: PFPersonalizeViewModelRequest,
                                      route: PFPersonalizeViewModelRoute) -> UIViewController
-    
     func makePFPreviewController(request: PFPreviewViewModelRequest,
                                  route: PFPreviewViewModelRoute) -> UIViewController
-    
 }
 
 // MARK: ProfileFlowCoordinator
 public protocol ProfileFlowCoordinator {
-    
     func start(with instructor: ProfileFlowCoordinatorInstructor)
-    
     func makePreviewUI(request: PFPreviewViewModelRequest) -> UIViewController
-    
 }
 
 // MARK: ProfileFlowCoordinatorInstructor

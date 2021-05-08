@@ -1,6 +1,6 @@
 //
 //  CoreDataActivityStorage.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 27/03/21.
 //
@@ -13,6 +13,8 @@ public protocol CoreDataActivityStorage {
     func fetchAllInCoreData() -> Observable<[ActivityDomain]>
     
     func fetchAllInCoreData(ownedBy profile: ProfileDomain) -> Observable<[ActivityDomain]>
+    
+    func fetchAllInCoreData(ownedBy profile: ProfileDomain, onDoDate doDate: Int64) -> Observable<[ActivityDomain]>
     
     func insertIntoCoreData(_ activity: ActivityDomain) -> Observable<ActivityDomain>
     

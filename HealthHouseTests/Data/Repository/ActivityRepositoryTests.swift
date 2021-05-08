@@ -1,6 +1,6 @@
 //
 //  ActivityRepositoryTests.swift
-//  HealthDiaryTests
+//  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 27/03/21.
 //
@@ -9,7 +9,7 @@ import RxBlocking
 import RxSwift
 import RxTest
 import XCTest
-@testable import DEV_Health_Diary
+@testable import Health_House
 
 // MARK: ActivityRepositoryTests
 class ActivityRepositoryTests: XCTestCase {
@@ -38,7 +38,7 @@ class ActivityRepositoryTests: XCTestCase {
     
 }
 
-// MARK: FetchAllActivity Function
+// MARK: FetchAllActivity
 extension ActivityRepositoryTests {
     
     func test_fetchAllActivity_whenStoragePointCoreData_thenFetchedInCoreData() throws {
@@ -67,7 +67,7 @@ extension ActivityRepositoryTests {
     
 }
 
-// MARK: FetchAllActivityOwnedBy Function
+// MARK: FetchAllActivityOwnedBy
 extension ActivityRepositoryTests {
     
     func test_fetchAllActivityOwnedBy_whenProfileHasCoreIDAndStoragePointCoreData_thenFetchedInCoreData() throws {
@@ -118,13 +118,88 @@ extension ActivityRepositoryTests {
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData() caused by profileCoreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData(ownedBy:) caused by profileCoreID is not available")
         }
     }
     
 }
 
-// MARK: InsertActivity Function
+// MARK: FetchAllActivityOwnedByOnDoDate
+extension ActivityRepositoryTests {
+    
+    func test_fetchAllActivityOwnedByOnDoDate_whenProfileHasCoreIDAndStoragePointCoreData_thenFetchedInCoreData() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+        let profile = self.insertedActivity.1
+        let doDate = Date().toInt64()
+        
+        let result = try self.sut.activityRepository
+            .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .coreData)
+            .toBlocking(timeout: timeout)
+            .single()
+        
+        XCTAssertFalse(result.isEmpty)
+        XCTAssertEqual(result, [self.insertedActivity.0])
+    }
+    
+    func test_fetchAllActivityOwnedByOnDoDate_whenProfileHasCoreIDAndDoDateTomorrowAndStoragePointCoreData_thenFetchedInCoreDataButEmpty() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+        let profile = self.insertedActivity.1
+        let doDate = Int64(1625529600) // Tuesday, July 6, 2021 12:00:00 AM
+        
+        let result = try self.sut.activityRepository
+            .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .coreData)
+            .toBlocking(timeout: timeout)
+            .single()
+        
+        XCTAssertTrue(result.isEmpty)
+        XCTAssertNotEqual(result, [self.insertedActivity.0])
+    }
+    
+    func test_fetchAllActivityOwnedByOnDoDate_whenProfileHasCoreIDAndStorageRemotes_thenThrowsError() {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
+        let profile = self.insertedActivity.1
+        let doDate = Date().toInt64()
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .remote)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> fetchAllActivity(ownedBy:, onDoDate:) is not available for Remote")
+        }
+    }
+    
+    func test_fetchAllActivityOwnedByOnDoDate_whenProfileHasCoreIDAndStorageUserDefaults_thenThrowsError() {
+        let timeout = self.sut.coreDataStorage.removeElementTimeout
+        let profile = self.insertedActivity.1
+        let doDate = Date().toInt64()
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .userDefault)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is PlainError)
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> fetchAllActivity(ownedBy:, onDoDate:) is not available for UserDefaults")
+        }
+    }
+    
+    func test_fetchAllActivityOwnedByOnDoDate_whenProfileHasNotCoreIDAndStoragePointCoreData_thenThrowsCoreDataStorageError() throws {
+        let timeout = self.sut.coreDataStorage.fetchCollectionTimeout
+        let profile = ProfileDomain.stubElement
+        let doDate = Date().toInt64()
+        
+        XCTAssertThrowsError(try self.sut.activityRepository
+                                .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .coreData)
+                                .toBlocking(timeout: timeout)
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData(ownedBy:, onDoDate:) caused by profileCoreID is not available")
+        }
+    }
+    
+}
+
+// MARK: InsertActivity
 extension ActivityRepositoryTests {
     
     func test_insertActivity_whenStoragePointCoreData_thenInsertedIntoCoreData() throws {

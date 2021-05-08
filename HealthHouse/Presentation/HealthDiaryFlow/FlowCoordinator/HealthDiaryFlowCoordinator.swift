@@ -1,6 +1,6 @@
 //
 //  HealthDiaryFlowCoordinator.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
@@ -11,22 +11,18 @@ import UIKit
 
 // MARK: HealthDiaryFlowCoordinatorFactory
 public protocol HealthDiaryFlowCoordinatorFactory  {
-    
     func makeHDTimelineController(request: HDTimelineViewModelRequest,
                                   route: HDTimelineViewModelRoute) -> UIViewController
-    
 }
 
 // MARK: HealthDiaryFlowCoordinator
 public protocol HealthDiaryFlowCoordinator {
     func start(with instructor: HealthDiaryFlowCoordinatorInstructor)
-    
     func makeTimelineUI(request: HDTimelineViewModelRequest) -> UIViewController
 }
 
 // MARK: HealthDiaryFlowCoordinatorInstructor
 public enum HealthDiaryFlowCoordinatorInstructor {
-    
 }
 
 // MARK: DefaultHealthDiaryFlowCoordinator

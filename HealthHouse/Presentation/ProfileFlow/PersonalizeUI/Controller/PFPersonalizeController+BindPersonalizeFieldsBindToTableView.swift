@@ -1,6 +1,6 @@
 //
 //  PFPersonalizeController+BindPersonalizeFieldsBindToTableView.swift
-//  HealthDiary
+//  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 02/04/21.
 //
@@ -13,12 +13,11 @@ import UIKit
 // MARK: BindPersonalizeFieldsBindToTableView
 extension PFPersonalizeController {
     
-    func bindFieldsToTableView(observable: Observable<[[FieldDomain]]>,
-                                          tableView: UITableView) {
+    func bindFieldsToTableView(observable: Observable<[[FieldDomain]]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         observable
             .observe(on: ConcurrentMainScheduler.instance)
-            .map { $0.map { SectionModel(model: "", items: $0) } }
+            .map({ $0.map { SectionModel(model: "", items: $0) } })
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
     }
@@ -28,40 +27,40 @@ extension PFPersonalizeController {
         { [unowned self] (_, _, _, item) -> UITableViewCell in
             switch item {
             case .dateOfBirth:
-                let cell = self.makeHDTextFieldTableCell(with: item, style: .prompt)
-                self.setupDateOfBirthHDTextFieldTableCell(cell, item: item)
+                let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
+                self.setupDateOfBirthHHTextFieldTableCell(cell, item: item)
                 self.bindDateOfBirthToTextField(observable: self._dateOfBirth, textField: cell.textField)
                 return cell
             case .firstName:
-                let cell = self.makeHDTextFieldTableCell(with: item, style: .prompt)
-                self.setupFirstNameHDTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, subject: self._firstName)
+                let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
+                self.setupFirstNameHHTextFieldTableCell(cell, item: item)
+                self.bindTextFieldToFirstOrLastName(textField: cell.textField, relay: self._firstName)
                 return cell
             case .gender:
-                let cell = self.makeHDTextFieldTableCell(with: item, style: .prompt)
-                self.setupGenderHDTextFieldTableCell(cell, item: item)
-                self.bindGenderToTextField(subject: self._gender, textField: cell.textField)
+                let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
+                self.setupGenderHHTextFieldTableCell(cell, item: item)
+                self.bindGenderToTextField(relay: self._gender, textField: cell.textField)
                 return cell
             case .lastName:
-                let cell = self.makeHDTextFieldTableCell(with: item, style: .prompt)
-                self.setupLastNameHDTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, subject: self._lastName)
+                let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
+                self.setupLastNameHHTextFieldTableCell(cell, item: item)
+                self.bindTextFieldToFirstOrLastName(textField: cell.textField, relay: self._lastName)
                 return cell
             case .mobileNumber:
-                let cell = self.makeHDTextFieldTableCell(with: item, style: .prompt)
-                self.setupMobileNumberHDTextFieldTableCell(cell, item: item)
-                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(subject: self._countryDialingCode,
+                let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
+                self.setupMobileNumberHHTextFieldTableCell(cell, item: item)
+                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(relay: self._countryDialingCode,
                                                                                   textField: cell.promptTextField,
                                                                                   picker: self.personalizeView.countryDialignCodePicker)
                 self.bindMobileNumberTextFieldEditingChangedToMobileNumber(textField: cell.textField,
-                                                                           subject: self._mobileNumbder)
+                                                                           relay: self._mobileNumbder)
                 return cell
             case .photo:
-                let cell = HDPhotoProfileTableCell()
+                let cell = HHPhotoProfileTableCell()
                 self.bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: self._firstOrLastNameOrPhoto,
                                                                          cell: cell)
-                self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, subject: self._photo)
-                self.bindPhotoToPhotoImageView(observable: self._photo, imageView: cell.photoImageView)
+                self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, relay: self._photo)
+                self.bindPhotoToPhotoImageView(relay: self._photo, imageView: cell.photoImageView)
                 return cell
             default:
                 fatalError("PFPersonalizeController -> FieldDomain (\(item)) is not available")
@@ -74,38 +73,38 @@ extension PFPersonalizeController {
 
 extension PFPersonalizeController {
     
-    func makeHDTextFieldTableCell(with item: FieldDomain,
-                                  style: HDTextFieldTableCellStyle) -> HDTextFieldTableCell {
-        let cell = HDTextFieldTableCell(reuseIdentifier: HDTextFieldTableCell.identifier, style: style)
+    func makeHHTextFieldTableCell(with item: FieldDomain,
+                                  style: HHTextFieldTableCellStyle) -> HHTextFieldTableCell {
+        let cell = HHTextFieldTableCell(reuseIdentifier: HHTextFieldTableCell.identifier, style: style)
         cell.textField.placeholder = item.placeholder
         return cell
     }
     
-    func setupDateOfBirthHDTextFieldTableCell(_ cell: HDTextFieldTableCell, item: FieldDomain) {
+    func setupDateOfBirthHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
         cell.promptTextField.text = item.placeholder
         cell.textField.inputView = self.personalizeView.dateOfBirthPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupFirstNameHDTextFieldTableCell(_ cell: HDTextFieldTableCell, item: FieldDomain) {
+    func setupFirstNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
         cell.promptTextField.text = item.placeholder
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
     }
     
-    func setupGenderHDTextFieldTableCell(_ cell: HDTextFieldTableCell, item: FieldDomain) {
+    func setupGenderHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
         cell.promptTextField.text = item.placeholder
         cell.textField.inputView = self.personalizeView.genderPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupLastNameHDTextFieldTableCell(_ cell: HDTextFieldTableCell, item: FieldDomain) {
+    func setupLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
         cell.promptTextField.text = item.placeholder
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
     }
     
-    func setupMobileNumberHDTextFieldTableCell(_ cell: HDTextFieldTableCell, item: FieldDomain) {
+    func setupMobileNumberHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
         cell.promptTextField.isEnabled = true
         cell.promptTextField.inputView = self.personalizeView.countryDialignCodePicker
         cell.textField.keyboardType = .numberPad
