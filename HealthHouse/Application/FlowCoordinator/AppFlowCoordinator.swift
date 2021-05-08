@@ -39,18 +39,9 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
     func start(with instructor: AppFlowCoordinatorInstructor) {
         switch instructor {
         case .default:
-            let selectedLabels = [LabelDomain(coreID: nil,
-                                              createdAt: Date().toInt64(),
-                                              updatedAt: Date().toInt64(),
-                                              name: "Rontgen of legs")]
-            let request = LBListViewModelRequest(selectedLabels: selectedLabels)
-            let response = LBListViewModelResponse()
-            let instructor = LabelFlowCoordinatorInstructor.presentListUI(request, response, .required)
-            self.flowFactory.makeLabelFlowCoordinator().start(with: instructor)
-            
-//            let request = ATCreateViewModelRequest()
-//            let instructor = ActivityFlowCoordinatorInstructor.pushToCreateUI(request)
-//            self.flowFactory.makeActivityFlowCoordinator().start(with: instructor)
+            let request = ATCreateViewModelRequest()
+            let instructor = ActivityFlowCoordinatorInstructor.pushToCreateUI(request)
+            self.flowFactory.makeActivityFlowCoordinator().start(with: instructor)
             
 //            The original flow of the app
 //            let request = LNWelcomeViewModelRequest()

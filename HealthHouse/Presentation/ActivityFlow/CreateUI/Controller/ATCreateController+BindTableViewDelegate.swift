@@ -80,6 +80,8 @@ extension ATCreateController {
             self.isSelectTime.toggle()
             self.createView.fields.accept(newFields)
             tableView.endUpdates()
+        case .label:
+            self.viewModel.presentLBListUI()
         case .location:
             tableView.deselectRow(at: indexPath, animated: true)
             self.onIndexLocationDidSelect(by: tableView, at: indexPath)

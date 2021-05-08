@@ -55,13 +55,18 @@ extension DefaultActivityFlowCoordinator: ActivityFlowCoordinator {
 extension DefaultActivityFlowCoordinator {
     
     private func initCreateUI(request: ATCreateViewModelRequest) -> UIViewController {
-        let presentCMSearchMapUI: (LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void = { (request, response) in
-            let coordinator = self.flowFactory.makeCommonFlowCoordinator()
-            let controller = coordinator.makeLCSearchUI(request: request,
-                                                           response: response) as! SearchResultController
-            coordinator.start(with: .presentSearchUI(controller))
+        let presentLBListUI: (LBListViewModelRequest, LBListViewModelResponse) -> Void = { (request, response) in
+            let coordinator = self.flowFactory.makeLabelFlowCoordinator()
+            let instructor = LabelFlowCoordinatorInstructor.presentListUI(request, response, .required)
+            coordinator.start(with: instructor)
         }
-        let route = ATCreateViewModelRoute(presentCMSearchMapUI: presentCMSearchMapUI)
+        let presentLCSearchUI: (LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void = { (request, response) in
+            let coordinator = self.flowFactory.makeLocationFlowCoordinator()
+            let instructor = LocationFlowCoordinatorInstructor.presentSearchUI(request, response, .standard)
+            coordinator.start(with: instructor)
+        }
+        let route = ATCreateViewModelRoute(presentLBListUI: presentLBListUI,
+                                           presentLCSearchUI: presentLCSearchUI)
         let controller = self.controllerFactory.makeCreateController(request: request, route: route)
         return controller
     }

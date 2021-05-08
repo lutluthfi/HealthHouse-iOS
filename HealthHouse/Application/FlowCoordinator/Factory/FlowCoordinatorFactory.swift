@@ -11,7 +11,7 @@ public protocol FlowCoordinatorFactory {
     
     func makeActivityFlowCoordinator() -> ActivityFlowCoordinator
     
-    func makeCommonFlowCoordinator() -> LocationFlowCoordinator
+    func makeLocationFlowCoordinator() -> LocationFlowCoordinator
     
     func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator
     

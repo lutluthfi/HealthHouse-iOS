@@ -21,13 +21,11 @@ public protocol LocationFlowCoordinatorFactory  {
 // MARK: LocationFlowCoordinator
 public protocol LocationFlowCoordinator {
     func start(with instructor: LocationFlowCoordinatorInstructor)
-    func makeLCSearchUI(request: LCSearchViewModelRequest,
-                        response: LCSearchViewModelResponse) -> UIViewController
 }
 
 // MARK: LocationFlowCoordinatorInstructor
 public enum LocationFlowCoordinatorInstructor {
-    case presentSearchUI( SearchResultController)
+    case presentSearchUI(LCSearchViewModelRequest, LCSearchViewModelResponse, UIPresentProperties)
 }
 
 // MARK: DefaultLocationFlowCoordinator
@@ -43,19 +41,30 @@ public final class DefaultLocationFlowCoordinator {
         self.controllerFactory = factory
     }
     
+    func initSearchController(resultController: SearchResultController) -> UIViewController {
+        let searchController = UISearchController(searchResultsController: resultController)
+        searchController.delegate = resultController
+        searchController.searchBar.delegate = resultController
+        return searchController
+    }
+    
 }
 
 extension DefaultLocationFlowCoordinator: LocationFlowCoordinator {
     
     public func start(with instructor: LocationFlowCoordinatorInstructor) {
         switch instructor {
-        case .presentSearchUI(let resultController):
-            self.presentSearchUI(resultController: resultController)
+        case .presentSearchUI(let request, let response, let presentProperties):
+            self.presentSearchUI(request: request, response: response, presentProperties: presentProperties)
         }
     }
     
-    public func makeLCSearchUI(request: LCSearchViewModelRequest,
-                               response: LCSearchViewModelResponse) -> UIViewController {
+}
+
+extension DefaultLocationFlowCoordinator {
+    
+    private func initSearchUI(request: LCSearchViewModelRequest,
+                              response: LCSearchViewModelResponse) -> UIViewController {
         let route = LCSearchViewModelRoute()
         let controller = self.controllerFactory.makeLCSearchController(request: request,
                                                                        response: response,
@@ -63,21 +72,13 @@ extension DefaultLocationFlowCoordinator: LocationFlowCoordinator {
         return controller
     }
     
-}
-
-extension DefaultLocationFlowCoordinator {
-    
-    private func initSearchController(resultController: SearchResultController) -> UIViewController {
-        let searchController = UISearchController(searchResultsController: resultController)
-        searchController.delegate = resultController
-        searchController.searchBar.delegate = resultController
-        return searchController
-    }
-    
-    func presentSearchUI(resultController: SearchResultController) {
+    func presentSearchUI(request: LCSearchViewModelRequest,
+                         response: LCSearchViewModelResponse,
+                         presentProperties: UIPresentProperties) {
         guaranteeMainThread { [unowned self] in
-            let controller = self.initSearchController(resultController: resultController)
-            self.navigationController.present(controller, animated: true)
+            let controller = self.initSearchUI(request: request, response: response) as! SearchResultController
+            let searchController = self.initSearchController(resultController: controller)
+            self.navigationController.present(searchController, animated: true)
         }
     }
     

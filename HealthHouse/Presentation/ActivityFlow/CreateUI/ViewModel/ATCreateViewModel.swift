@@ -25,13 +25,15 @@ public class ATCreateViewModelResponse {
 
 // MARK: ATCreateViewModelRoute
 public struct ATCreateViewModelRoute {
-    var presentCMSearchMapUI: ((LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void)?
+    var presentLBListUI: ((LBListViewModelRequest, LBListViewModelResponse) -> Void)?
+    var presentLCSearchUI: ((LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void)?
 }
 
 // MARK: ATCreateViewModelInput
 protocol ATCreateViewModelInput {
     func viewDidLoad()
-    func presentSearchUI()
+    func presentLBListUI()
+    func presentLCSearchUI()
 }
 
 // MARK: ATCreateViewModelOutput
@@ -74,14 +76,20 @@ extension DefaultATCreateViewModel {
     func viewDidLoad() {
     }
     
-    func presentSearchUI() {
+    func presentLBListUI() {
+        let response = LBListViewModelResponse()
+        let request = LBListViewModelRequest(selectedLabels: [])
+        self.route.presentLBListUI?(request, response)
+    }
+    
+    func presentLCSearchUI() {
         let response = LCSearchViewModelResponse()
         response
             .selectedMapItem
             .bind(to: self.selectedLocation)
             .disposed(by: self.disposeBag)
         let request = LCSearchViewModelRequest()
-        self.route.presentCMSearchMapUI?(request, response)
+        self.route.presentLCSearchUI?(request, response)
     }
     
 }

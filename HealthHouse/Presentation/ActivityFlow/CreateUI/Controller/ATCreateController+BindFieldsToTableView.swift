@@ -58,6 +58,7 @@ extension ATCreateController {
                 return cell
             case .label:
                 let cell = self.makeSubtitleTableCell()
+                cell.selectionStyle = .none
                 cell.textLabel?.text = item.placeholder
                 cell.accessoryType = .disclosureIndicator
                 return cell

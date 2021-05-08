@@ -111,7 +111,7 @@ extension ATCreateController {
                                               status: CLAuthorizationStatus) {
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
-            self.viewModel.presentSearchUI()
+            self.viewModel.presentLCSearchUI()
         case .denied, .restricted:
             self.showAlertWhenLocationServiceNotAvailable()
         case .notDetermined:

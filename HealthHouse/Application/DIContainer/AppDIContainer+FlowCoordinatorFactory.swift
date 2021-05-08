@@ -13,7 +13,7 @@ extension AppDIContainer: FlowCoordinatorFactory {
         return DefaultActivityFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeCommonFlowCoordinator() -> LocationFlowCoordinator {
+    public func makeLocationFlowCoordinator() -> LocationFlowCoordinator {
         return DefaultLocationFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
