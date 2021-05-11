@@ -26,7 +26,7 @@ extension ATCreateController {
 extension ATCreateController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let sectionModel = self.createView.fields.value[indexPath.section]
+        let sectionModel = self.createView.sections.value[indexPath.section]
         let rowModel = sectionModel.items[indexPath.row]
         switch rowModel {
         case .datePicker:
@@ -41,14 +41,14 @@ extension ATCreateController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let sectionModel = self.createView.fields.value[indexPath.section]
+        let sectionModel = self.createView.sections.value[indexPath.section]
         let rowModel = sectionModel.items[indexPath.row]
         switch rowModel {
         case .date:
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.beginUpdates()
-            var newFields = self.createView.fields.value
-            var firstSection = self.createView.fields.value[1]
+            var newFields = self.createView.sections.value
+            var firstSection = self.createView.sections.value[1]
             if self.isSelectDate {
                 let index = firstSection.items.index(of: .datePicker)!
                 firstSection.items.remove(firstIndexOf: .datePicker)
@@ -60,13 +60,13 @@ extension ATCreateController {
             }
             newFields[1] = firstSection
             self.isSelectDate.toggle()
-            self.createView.fields.accept(newFields)
+            self.createView.sections.accept(newFields)
             tableView.endUpdates()
         case .time:
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.beginUpdates()
-            var newFields = self.createView.fields.value
-            var firstSection = self.createView.fields.value[1]
+            var newFields = self.createView.sections.value
+            var firstSection = self.createView.sections.value[1]
             if self.isSelectTime {
                 let index = firstSection.items.index(of: .timePicker)!
                 firstSection.items.remove(firstIndexOf: .timePicker)
@@ -78,7 +78,7 @@ extension ATCreateController {
             }
             newFields[1] = firstSection
             self.isSelectTime.toggle()
-            self.createView.fields.accept(newFields)
+            self.createView.sections.accept(newFields)
             tableView.endUpdates()
         case .label:
             self.viewModel.presentLBListUI()

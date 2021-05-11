@@ -29,7 +29,7 @@ protocol PFPersonalizeViewSubview {
 
 // MARK: PFPersonalizeViewVariable
 protocol PFPersonalizeViewVariable {
-    var fields: [[FieldDomain]] { get }
+    var sections: [[RowDomain]] { get }
 }
 
 // MARK: PFPersonalizeView
@@ -37,12 +37,12 @@ protocol PFPersonalizeView: PFPersonalizeViewFunction, PFPersonalizeViewSubview,
 
 // MARK: DefaultPFPersonalizeView
 final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
-
+    
     // MARK: PFPersonalizeViewSubview
     lazy var countryDialignCodePicker = UIPickerView()
     lazy var createBarButtonItem = UIBarButtonItem(title: "Create", style: .done, target: self, action: nil)
     lazy var dateOfBirthPicker: UIDatePicker = {
-       let datePicker = UIDatePicker()
+        let datePicker = UIDatePicker()
         datePicker.maximumDate = Date()
         datePicker.datePickerMode = .date
         if #available(iOS 13.4, *) {
@@ -58,9 +58,9 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
         tableView.rowHeight = UITableView.automaticDimension
         return tableView
     }()
-
+    
     // MARK: PFPersonalizeViewVariable
-    let fields: [[FieldDomain]] = [[.photo],
+    let sections: [[RowDomain]] = [[.photo],
                                    [.firstName, .lastName],
                                    [.dateOfBirth],
                                    [.gender],
@@ -70,7 +70,7 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     init() {
         super.init(frame: UIScreen.main.fixedCoordinateSpace.bounds)
         self.subviewWillAdd()

@@ -19,6 +19,7 @@ public class LabelEntity: NSManagedObject {
         self.createdAt = domain.createdAt
         self.updatedAt = domain.updatedAt
         
+        self.hexcolor = domain.hexcolor
         self.name = domain.name
     }
     
@@ -31,6 +32,7 @@ public extension LabelEntity {
         return LabelDomain(coreID: self.objectID,
                            createdAt: self.createdAt,
                            updatedAt: self.updatedAt,
+                           hexcolor: self.hexcolor,
                            name: self.name)
     }
     
@@ -44,6 +46,8 @@ public extension LabelEntity {
             return LabelEntity(newObject, insertInto: context)
         }
         self.updatedAt = Date().toInt64()
+        
+        self.hexcolor = newObject.hexcolor
         self.name = newObject.name
         return self
     }

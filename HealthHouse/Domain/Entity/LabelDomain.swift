@@ -14,6 +14,7 @@ public struct LabelDomain: EntityDomain {
     public let createdAt: Int64
     public let updatedAt: Int64
     
+    public let hexcolor: String
     public let name: String
     
 }

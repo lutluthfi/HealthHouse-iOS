@@ -13,7 +13,7 @@ import UIKit
 // MARK: BindPersonalizeFieldsBindToTableView
 extension PFPersonalizeController {
     
-    func bindFieldsToTableView(observable: Observable<[[FieldDomain]]>, tableView: UITableView) {
+    func bindSectionsToTableView(observable: Observable<[[RowDomain]]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         observable
             .observe(on: ConcurrentMainScheduler.instance)
@@ -22,8 +22,8 @@ extension PFPersonalizeController {
             .disposed(by: self.disposeBag)
     }
     
-    private func makeTableViewDataSource() -> RxTableViewSectionedReloadDataSource<SectionModel<String, FieldDomain>> {
-        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, FieldDomain>>
+    private func makeTableViewDataSource() -> RxTableViewSectionedReloadDataSource<SectionModel<String, RowDomain>> {
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, RowDomain>>
         { [unowned self] (_, _, _, item) -> UITableViewCell in
             switch item {
             case .dateOfBirth:
@@ -73,38 +73,38 @@ extension PFPersonalizeController {
 
 extension PFPersonalizeController {
     
-    func makeHHTextFieldTableCell(with item: FieldDomain,
+    func makeHHTextFieldTableCell(with item: RowDomain,
                                   style: HHTextFieldTableCellStyle) -> HHTextFieldTableCell {
         let cell = HHTextFieldTableCell(reuseIdentifier: HHTextFieldTableCell.identifier, style: style)
-        cell.textField.placeholder = item.placeholder
+        cell.textField.placeholder = item.identify
         return cell
     }
     
-    func setupDateOfBirthHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
-        cell.promptTextField.text = item.placeholder
+    func setupDateOfBirthHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+        cell.promptTextField.text = item.identify
         cell.textField.inputView = self.personalizeView.dateOfBirthPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupFirstNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
-        cell.promptTextField.text = item.placeholder
+    func setupFirstNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+        cell.promptTextField.text = item.identify
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
     }
     
-    func setupGenderHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
-        cell.promptTextField.text = item.placeholder
+    func setupGenderHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+        cell.promptTextField.text = item.identify
         cell.textField.inputView = self.personalizeView.genderPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
-        cell.promptTextField.text = item.placeholder
+    func setupLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+        cell.promptTextField.text = item.identify
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
     }
     
-    func setupMobileNumberHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: FieldDomain) {
+    func setupMobileNumberHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
         cell.promptTextField.isEnabled = true
         cell.promptTextField.inputView = self.personalizeView.countryDialignCodePicker
         cell.textField.keyboardType = .numberPad

@@ -19,6 +19,7 @@ extension LabelEntity {
     @NSManaged public var createdAt: Int64
     @NSManaged public var updatedAt: Int64
     
+    @NSManaged public var hexcolor: String
     @NSManaged public var name: String
 
 }

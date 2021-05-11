@@ -9,15 +9,18 @@ import UIKit
 
 // MARK: LBListViewFunction
 protocol LBListViewFunction {
-    func viewWillAppear(navigationBar: UINavigationBar?,
+    func viewWillAppear(navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
-                        tabBarController: UITabBarController?)
+                        tabBarController: UITabBarController?,
+                        toolbarItems: inout [UIBarButtonItem]?)
     func viewWillDisappear()
 }
 
 // MARK: LBListViewSubview
 protocol LBListViewSubview {
+    var addBarButtonItem: UIBarButtonItem { get }
     var doneBarButtonItem: UIBarButtonItem { get }
+    var selectedCountBarButtonItem: UIBarButtonItem { get }
     var tableView: UITableView { get }
 }
 
@@ -32,7 +35,19 @@ protocol LBListView: LBListViewFunction, LBListViewSubview, LBListViewVariable {
 final class DefaultLBListView: UIView, LBListView {
 
     // MARK: LBListViewSubview
-    lazy var doneBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: nil)
+    lazy var addBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: nil)
+    lazy var doneBarButtonItem = UIBarButtonItem.done
+    lazy var selectedCountBarButtonItem: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "",
+                                     style: .plain,
+                                     target: self,
+                                     action: nil)
+        button.isEnabled = false
+        button.setTitleTextAttributes([.font: UIFont.preferredFont(forTextStyle: .footnote),
+                                       .foregroundColor: UIColor.black],
+                                      for: .disabled)
+        return button
+    }()
     lazy var tableView: UITableView = {
         let tableView = UITableView(frame: UIScreen.main.fixedCoordinateSpace.bounds, style: .grouped)
         tableView.allowsSelection = true
@@ -81,10 +96,15 @@ extension DefaultLBListView {
 // MARK: LBListViewFunction
 extension DefaultLBListView {
     
-    func viewWillAppear(navigationBar: UINavigationBar?,
+    func viewWillAppear(navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
-                        tabBarController: UITabBarController?) {
+                        tabBarController: UITabBarController?,
+                        toolbarItems: inout [UIBarButtonItem]?) {
+        navigationController?.isToolbarHidden = false
+        navigationItem.title = "Label"
+        navigationItem.leftBarButtonItem = self.addBarButtonItem
         navigationItem.rightBarButtonItem = self.doneBarButtonItem
+        toolbarItems = [.flexible, self.selectedCountBarButtonItem, .flexible]
     }
     
     func viewWillDisappear() {

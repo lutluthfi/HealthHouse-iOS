@@ -39,6 +39,7 @@ protocol ATCreateViewModelInput {
 // MARK: ATCreateViewModelOutput
 protocol ATCreateViewModelOutput {
     var selectedLocation: PublishRelay<MKMapItem> { get }
+    var showedSelectedLabels: BehaviorRelay<[LabelDomain]> { get }
 }
 
 // MARK: ATCreateViewModel
@@ -60,6 +61,7 @@ final class DefaultATCreateViewModel: ATCreateViewModel {
 
     // MARK: Output ViewModel
     let selectedLocation = PublishRelay<MKMapItem>()
+    let showedSelectedLabels = BehaviorRelay<[LabelDomain]>(value: [])
 
     // MARK: Init Function
     init(request: ATCreateViewModelRequest,
@@ -78,6 +80,9 @@ extension DefaultATCreateViewModel {
     
     func presentLBListUI() {
         let response = LBListViewModelResponse()
+        response.selectedLabels
+            .bind(to: self.showedSelectedLabels)
+            .disposed(by: self.disposeBag)
         let request = LBListViewModelRequest(selectedLabels: [])
         self.route.presentLBListUI?(request, response)
     }

@@ -90,8 +90,8 @@ final class PFPersonalizeController: UIViewController {
         self.bindGenderPickerToGender(picker: self.personalizeView.genderPicker, relay: self._gender)
         self.bindCountryDialingCodePickerToCountryDialingCode(picker: self.personalizeView.countryDialignCodePicker,
                                                               relay: self._countryDialingCode)
-        self.bindFieldsToTableView(observable: Observable.just(self.personalizeView.fields),
-                                   tableView: self.personalizeView.tableView)
+        self.bindSectionsToTableView(observable: Observable.just(self.personalizeView.sections),
+                                     tableView: self.personalizeView.tableView)
         self.viewModel.viewDidLoad()
     }
     

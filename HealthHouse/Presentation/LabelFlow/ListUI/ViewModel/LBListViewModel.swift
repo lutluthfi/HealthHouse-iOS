@@ -15,6 +15,7 @@ enum LBListViewModelResult {
 
 // MARK: LBListViewModelResponse
 public struct LBListViewModelResponse {
+    public let selectedLabels = PublishRelay<[LabelDomain]>()
 }
 
 // MARK: LBListViewModelRequest
@@ -30,6 +31,7 @@ public struct LBListViewModelRoute {
 protocol LBListViewModelInput {
     func viewDidLoad()
     func doDone(selectedLabels: [LabelDomain])
+    func doRemove(label: LabelDomain)
     func doSelect(label: LabelDomain)
 }
 
@@ -78,10 +80,12 @@ extension DefaultLBListViewModel {
         let showedlabels = [LabelDomain(coreID: nil,
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
+                                        hexcolor: UIColor.red.hex,
                                         name: "Rontgen of legs"),
                             LabelDomain(coreID: nil,
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
+                                        hexcolor: UIColor.green.hex,
                                         name: "Rontgen of lungs")]
         let showedSelectableLabels = showedlabels.map({
             SelectableDomain(identify: $0.name, selected: selectedLabels.contains($0), value: $0)
@@ -90,7 +94,11 @@ extension DefaultLBListViewModel {
     }
     
     func doDone(selectedLabels: [LabelDomain]) {
-        
+        self.response.selectedLabels.accept(selectedLabels)
+    }
+    
+    func doRemove(label: LabelDomain) {
+//        self.showedLabels.accept(self._currSelectedLabels)
     }
     
     func doSelect(label: LabelDomain) {

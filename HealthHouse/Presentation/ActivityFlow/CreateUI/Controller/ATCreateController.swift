@@ -45,8 +45,19 @@ final class ATCreateController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindTableViewDelegate(tableView: self.tableView)
-        self.bindFieldsToTableView(relay: self.createView.fields, tableView: self.tableView)
+        self.viewModel.showedSelectedLabels
+            .asDriver()
+            .map({ $0.map({ RowDomain(identify: "\(LabelDomain.self)-\($0.identity)", value: $0) }) })
+            .drive(onNext: { [unowned self] (labelRows) in
+                var _sections = self.createView.sections.value
+                var labelSection = _sections[4]
+                labelSection.items.append(contentsOf: labelRows)
+                _sections[4] = labelSection
+                self.createView.sections.accept(_sections)
+            })
+            .disposed(by: self.disposeBag)
+        self.bindTableViewDelegate(tableView: self.createView.tableView)
+        self.bindSectionsToTableView(relay: self.createView.sections, tableView: self.createView.tableView)
         self.viewModel.viewDidLoad()
         
     }
@@ -147,6 +158,21 @@ extension ATCreateController {
             .subscribe(on: MainScheduler.instance)
             .map({ $0.name })
             .bind(to: label.rx.text)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindTextViewDidChangeToPlaceholderLabelHidden
+extension ATCreateController {
+    
+    func bindTextViewDidChangeToPlaceholderLabelHidden(textView: UITextView, label: UILabel) {
+        textView.rx
+            .didChange
+            .flatMap({ [unowned textView] in textView.rx.text.orEmpty })
+            .asDriver(onErrorJustReturn: "")
+            .map({ !$0.isEmpty })
+            .drive(label.rx.isHidden)
             .disposed(by: self.disposeBag)
     }
     

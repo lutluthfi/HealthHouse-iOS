@@ -16,6 +16,7 @@ extension LabelDomain {
         let label = LabelDomain(coreID: nil,
                                 createdAt: now.toInt64(),
                                 updatedAt: now.toInt64(),
+                                hexcolor: "000",
                                 name: "Label Stub Element")
         return label
     }
@@ -27,6 +28,7 @@ extension LabelDomain {
         let label = LabelDomain(coreID: nil,
                                 createdAt: now.toInt64(),
                                 updatedAt: now.toInt64(),
+                                hexcolor: "000",
                                 name: "Label Stub Element Core Data")
         let entity = LabelEntity(label, insertInto: context)
         coreDataStorage.saveContext()

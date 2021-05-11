@@ -25,7 +25,7 @@ protocol ATCreateViewSubview {
 
 // MARK: ATCreateViewVariable
 protocol ATCreateViewVariable {
-    var fields: BehaviorRelay<[SectionDomain<FieldDomain>]> { get }
+    var sections: BehaviorRelay<[SectionDomain<RowDomain>]> { get }
 }
 
 // MARK: ATCreateView
@@ -45,7 +45,7 @@ final class DefaultATCreateView: UIView, ATCreateView {
     }()
     
     // MARK: ATCreateViewVariable
-    let fields = BehaviorRelay<[SectionDomain<FieldDomain>]>(value: [
+    let sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [
         SectionDomain(header: "Title", items: [.title]),
         SectionDomain(header: "Date and Time", items: [.date, .time]),
         SectionDomain(header: "Health Practition", items: [.practitioner, .location]),

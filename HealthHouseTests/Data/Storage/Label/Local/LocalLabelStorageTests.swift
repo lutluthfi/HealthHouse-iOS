@@ -44,6 +44,7 @@ extension LocalLabelStorageTests {
         let updatedObject = LabelDomain(coreID: self.insertedLabel.coreID,
                                         createdAt: self.insertedLabel.createdAt,
                                         updatedAt: self.insertedLabel.updatedAt,
+                                        hexcolor: "000",
                                         name: "Label Updated Test")
         
         let result = try self.sut.localLabelStorage

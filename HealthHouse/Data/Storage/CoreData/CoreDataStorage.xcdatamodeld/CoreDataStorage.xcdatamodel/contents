@@ -19,6 +19,7 @@
     </entity>
     <entity name="LabelEntity" representedClassName="LabelEntity" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="hexcolor" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
@@ -45,9 +46,9 @@
     </entity>
     <elements>
         <element name="ActivityEntity" positionX="-63" positionY="-18" width="128" height="164"/>
-        <element name="LabelEntity" positionX="-63" positionY="54" width="128" height="74"/>
+        <element name="ActivityLabelEntity" positionX="-45" positionY="99" width="128" height="89"/>
+        <element name="LabelEntity" positionX="-63" positionY="54" width="128" height="89"/>
         <element name="MedicationEntity" positionX="-36" positionY="81" width="128" height="164"/>
         <element name="ProfileEntity" positionX="-54" positionY="63" width="128" height="149"/>
-        <element name="ActivityLabelEntity" positionX="-45" positionY="99" width="128" height="89"/>
     </elements>
 </model>
