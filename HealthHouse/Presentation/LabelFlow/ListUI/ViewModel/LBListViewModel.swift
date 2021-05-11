@@ -81,12 +81,12 @@ extension DefaultLBListViewModel {
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
                                         hexcolor: UIColor.red.hex,
-                                        name: "Rontgen of legs"),
+                                        name: "Annual MCU"),
                             LabelDomain(coreID: nil,
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
                                         hexcolor: UIColor.green.hex,
-                                        name: "Rontgen of lungs")]
+                                        name: "Rontgen")]
         let showedSelectableLabels = showedlabels.map({
             SelectableDomain(identify: $0.name, selected: selectedLabels.contains($0), value: $0)
         })

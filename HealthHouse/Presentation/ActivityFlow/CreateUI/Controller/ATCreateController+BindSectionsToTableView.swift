@@ -33,20 +33,20 @@ extension ATCreateController {
                 cell.imageView?.tintColor = UIColor(hex: label.hexcolor)
                 return cell
             }
-            switch item.identity {
-            case RowDomain.attachment.identity:
+            switch item {
+            case .attachment:
                 let cell = self.makeSubtitleTableCell()
                 cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
                 return cell
-            case RowDomain.date.identity:
+            case .date:
                 let cell = self.makeValue1TableCell()
                 cell.imageView?.image = UIImage(named: "calendar.round.color")
                 cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
                 self.bindDateToDateLabel(relay: self._date, label: cell.detailTextLabel!)
                 return cell
-            case RowDomain.datePicker.identity:
+            case .datePicker:
                 let cell = self.makeHHDatePickerTableCell()
                 cell.datePicker.datePickerMode = .date
                 if #available(iOS 13.4, *) {
@@ -54,32 +54,37 @@ extension ATCreateController {
                 }
                 self.bindDatePickerToDateOrTime(picker: cell.datePicker, relay: self._date)
                 return cell
-            case RowDomain.explanation.identity:
+            case .explanation:
                 let cell = HHTextViewTableCell()
                 cell.placeholderLabel.text = item.identify
                 self.bindTextViewDidChangeToPlaceholderLabelHidden(textView: cell.textView,
                                                                    label: cell.placeholderLabel)
                 return cell
-            case RowDomain.label.identity:
+            case .label:
                 let cell = self.makeSubtitleTableCell()
                 cell.selectionStyle = .none
                 cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
                 return cell
-            case RowDomain.location.identity:
+            case .location:
                 let cell = self.makeSubtitleTableCell()
                 cell.textLabel?.text = item.identify
+                cell.accessoryType = .disclosureIndicator
                 self.bindSelectedLocationViewModelToLocationLabel(relay: self.viewModel.selectedLocation,
                                                                   label: cell.detailTextLabel!)
                 return cell
-            case RowDomain.time.identity:
+            case .practitioner:
+                let cell = makeHHTextFieldTableCell(with: item, style: .plain)
+                cell.textField.autocapitalizationType = .words
+                return cell
+            case .time:
                 let cell = self.makeValue1TableCell()
                 cell.imageView?.image = UIImage(named: "clock.round.color")
                 cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
                 self.bindTimeToTimeLabel(relay: self._time, label: cell.detailTextLabel!)
                 return cell
-            case RowDomain.timePicker.identity:
+            case .timePicker:
                 let cell = self.makeHHDatePickerTableCell()
                 cell.datePicker.datePickerMode = .time
                 if #available(iOS 13.4, *) {
@@ -87,9 +92,13 @@ extension ATCreateController {
                 }
                 self.bindDatePickerToDateOrTime(picker: cell.datePicker, relay: self._time)
                 return cell
-            default:
-                let cell = self.makeHHTextFieldTableCell(with: item, style: .plain)
+            case .title:
+                let cell = makeHHTextFieldTableCell(with: item, style: .plain)
                 cell.textField.autocapitalizationType = .words
+                return cell
+            default:
+                let cell = self.makeDefaultTableCell()
+                cell.textLabel?.text = item.identify
                 return cell
             }
         }
