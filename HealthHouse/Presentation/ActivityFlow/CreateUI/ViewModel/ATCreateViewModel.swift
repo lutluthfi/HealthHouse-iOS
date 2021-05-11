@@ -57,7 +57,7 @@ final class DefaultATCreateViewModel: ATCreateViewModel {
     
 
     // MARK: Common Variable
-    
+    var _selectedLabels: [LabelDomain] = []
 
     // MARK: Output ViewModel
     let selectedLocation = PublishRelay<MKMapItem>()
@@ -81,9 +81,13 @@ extension DefaultATCreateViewModel {
     func presentLBListUI() {
         let response = LBListViewModelResponse()
         response.selectedLabels
+            .do(onNext: { [unowned self] in
+                self._selectedLabels.append(contentsOf: $0)
+            })
             .bind(to: self.showedSelectedLabels)
             .disposed(by: self.disposeBag)
-        let request = LBListViewModelRequest(selectedLabels: [])
+        let selectedLabels = self._selectedLabels
+        let request = LBListViewModelRequest(selectedLabels: selectedLabels)
         self.route.presentLBListUI?(request, response)
     }
     

@@ -27,7 +27,7 @@ extension LBListController {
             let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
             cell.selectionStyle = .none
             cell.textLabel?.text = item.value.name
-            cell.accessoryType = item.selected ? .checkmark : .none
+            cell.isSelected = item.selected
             let circleBadgeFill = UIImage(systemName: "circlebadge.fill")
             cell.imageView?.image = circleBadgeFill
             cell.imageView?.tintColor = UIColor(hex: item.value.hexcolor)

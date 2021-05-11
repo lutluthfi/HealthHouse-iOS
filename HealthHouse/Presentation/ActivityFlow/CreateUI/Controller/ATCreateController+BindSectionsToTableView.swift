@@ -26,6 +26,7 @@ extension ATCreateController {
         { [unowned self] (_, tableView, _, item) -> UITableViewCell in
             if let label = item.value as? LabelDomain {
                 let cell = makeDefaultTableCell()
+                cell.selectionStyle = .none
                 cell.textLabel?.text = label.name
                 let circleBadgeFill = UIImage(systemName: "circlebadge.fill")
                 cell.imageView?.image = circleBadgeFill
