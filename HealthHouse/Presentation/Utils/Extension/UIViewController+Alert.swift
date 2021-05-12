@@ -19,6 +19,12 @@ public extension UIViewController {
     func showActionSheet(title: String, message: String, actions: [UIAlertAction]) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         actions.forEach { alertController.addAction($0) }
+        let subviewConstraint = alertController.view.subviews
+            .flatMap({ $0.constraints })
+            .filter({ $0.constant < 0 })
+        for subviewConstraint in subviewConstraint {
+            subviewConstraint.constant = -subviewConstraint.constant
+        }
         self.present(alertController, animated: true)
     }
     

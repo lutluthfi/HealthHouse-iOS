@@ -28,7 +28,7 @@ extension ATCreateController {
                 let cell = makeDefaultTableCell()
                 cell.selectionStyle = .none
                 cell.textLabel?.text = label.name
-                let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
+                let circleBadgeFill = UIImage(systemName: "tag.circle.fill")
                 cell.imageView?.image = circleBadgeFill
                 cell.imageView?.tintColor = UIColor(hex: label.hexcolor)
                 return cell
@@ -36,6 +36,7 @@ extension ATCreateController {
             switch item {
             case .attachment:
                 let cell = self.makeSubtitleTableCell()
+                cell.selectionStyle = .none
                 cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
                 return cell

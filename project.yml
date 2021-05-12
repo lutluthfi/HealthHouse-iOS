@@ -91,8 +91,11 @@ targets:
                     - armv7
                 UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
                 UIUserInterfaceStyle: Light
+                NSDocumentsFolderUsageDescription: $(PRODUCT_NAME) will helps you to manage your health attachment
+                NSDownloadsFolderUsageDescription: $(PRODUCT_NAME) will helps you to manage your health attachment
                 NSLocationAlwaysAndWhenInUseUsageDescription: $(PRODUCT_NAME) will helps you to remember and find your hospital
                 NSLocationWhenInUseUsageDescription: $(PRODUCT_NAME) will helps you to remember and find your hospital
+                NSPhotoLibraryUsageDescription: $(PRODUCT_NAME) will helps you to detail your activity by attaching a photo as an attachment
     HealthHouseTests:
         type: bundle.unit-test
         platform: iOS

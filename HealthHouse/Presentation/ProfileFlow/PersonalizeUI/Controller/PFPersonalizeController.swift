@@ -30,9 +30,9 @@ fileprivate extension String {
 final class PFPersonalizeController: UIViewController {
     
     // MARK: DI Variable
-    let disposeBag = DisposeBag()
-    lazy var rxMediaPicker = RxMediaPicker(delegate: self)
+    lazy var disposeBag = DisposeBag()
     lazy var personalizeView: PFPersonalizeView = DefaultPFPersonalizeView()
+    lazy var rxMediaPicker = RxMediaPicker(delegate: self)
     var viewModel: PFPersonalizeViewModel!
     lazy var _view: UIView = (self.personalizeView as! UIView)
     

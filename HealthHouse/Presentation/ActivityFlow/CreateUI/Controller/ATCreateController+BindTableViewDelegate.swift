@@ -44,6 +44,34 @@ extension ATCreateController {
         let sectionModel = self.createView.sections.value[indexPath.section]
         let rowModel = sectionModel.items[indexPath.row]
         switch rowModel {
+        case .attachment:
+            let dismissAction = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
+            let filesAction = UIAlertAction(title: "Files", style: .default) { [unowned self] (action) in
+                self.rxDocumentPicker
+                    .selectDocuments(documentTypes: [.pdf, .png, .jpeg])
+                    .bind(onNext: { (documents) in
+                        print(documents)
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+            filesAction.setValue(UIImage(systemName: "doc.text.magnifyingglass"), forKey: "image")
+            filesAction.setValue(UIImage(systemName: "doc.text.magnifyingglass"), forKey: "image")
+            let photosAction = UIAlertAction(title: "Photos", style: .default) { [unowned self] (action) in
+                self.rxMediaPicker
+                    .selectImage(source: .photoLibrary, editable: true)
+                    .bind(onNext: { (originalImage, editadImage) in
+                        print(editadImage)
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+            photosAction.setValue(UIImage(systemName: "photo.on.rectangle.angled"), forKey: "image")
+            let scanAction = UIAlertAction(title: "Scan", style: .default) { (action) in
+
+            }
+            scanAction.setValue(UIImage(systemName: "doc.text.viewfinder"), forKey: "image")
+            self.showActionSheet(title: "Where are your attachments?",
+                                 message: "Please select the location where you save your attachments",
+                                 actions: [dismissAction, filesAction, photosAction, scanAction])
         case .date:
             tableView.deselectRow(at: indexPath, animated: true)
             tableView.beginUpdates()

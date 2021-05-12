@@ -19,7 +19,9 @@ final class ATCreateController: UITableViewController {
     // MARK: DI Variable
     lazy var createView: ATCreateView = DefaultATCreateView()
     lazy var disposeBag = DisposeBag()
-    let locationManager = CLLocationManager()
+    lazy var locationManager = CLLocationManager()
+    lazy var rxDocumentPicker = RxDocumentPicker(delegate: self)
+    lazy var rxMediaPicker = RxMediaPicker(delegate: self)
     var viewModel: ATCreateViewModel!
 
     // MARK: Common Variable
@@ -202,4 +204,12 @@ extension ATCreateController {
             .disposed(by: self.disposeBag)
     }
     
+}
+
+// MARK: RxDocumentPickerDelegate
+extension ATCreateController: RxDocumentPickerDelegate {
+}
+
+// MARK: RxMediaPickerDelegate
+extension ATCreateController: RxMediaPickerDelegate {
 }
