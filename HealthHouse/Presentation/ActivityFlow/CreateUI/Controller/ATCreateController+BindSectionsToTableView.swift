@@ -28,7 +28,7 @@ extension ATCreateController {
                 let cell = makeDefaultTableCell()
                 cell.selectionStyle = .none
                 cell.textLabel?.text = label.name
-                let circleBadgeFill = UIImage(systemName: "circlebadge.fill")
+                let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
                 cell.imageView?.image = circleBadgeFill
                 cell.imageView?.tintColor = UIColor(hex: label.hexcolor)
                 return cell

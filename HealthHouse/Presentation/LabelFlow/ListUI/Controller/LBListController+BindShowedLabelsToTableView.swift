@@ -33,7 +33,7 @@ extension LBListController {
                 tableView.deselectRow(at: index, animated: true)
             }
             cell.textLabel?.text = item.value.name
-            let circleBadgeFill = UIImage(systemName: "circlebadge.fill")
+            let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
             cell.imageView?.image = circleBadgeFill
             cell.imageView?.tintColor = UIColor(hex: item.value.hexcolor)
             return cell
