@@ -16,16 +16,16 @@ import UIKit
 final class LCSearchController: SearchResultController {
 
     // MARK: DI Variable
-    let disposeBag = DisposeBag()
-    let locationManager = CLLocationManager()
+    lazy var disposeBag = DisposeBag()
+    lazy var locationManager = CLLocationManager()
     lazy var searchView: LCSearchView = DefaultLCSearchView()
     var viewModel: LCSearchViewModel!
     lazy var _view: UIView = (self.searchView as! UIView)
 
     // MARK: Common Variable
-    let showedMapItems = BehaviorSubject<[MKMapItem]>(value: [])
-    let _currLocation = PublishSubject<CLLocation>()
-    let _searchText = PublishSubject<String>()
+    lazy var showedMapItems = BehaviorSubject<[MKMapItem]>(value: [])
+    lazy var _currLocation = PublishSubject<CLLocation>()
+    lazy var _searchText = PublishSubject<String>()
     lazy var _currLocationSearchText = Observable.combineLatest(self._currLocation,
                                                                 self._searchText)
 
@@ -44,9 +44,9 @@ final class LCSearchController: SearchResultController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.locationManager.startUpdatingLocation()
-        self.bindCurrLocationSearchTextToShowedMapItems(observable: self._currLocationSearchText,
+        self.bindCurrLocationSearchTextToShowedMapItems(currLoactionSearcText: self._currLocationSearchText,
                                                         subject: self.showedMapItems)
-        self.bindShowedMapItemsToTableView(observable: self.showedMapItems, tableView: self.searchView.tableView)
+        self.bindShowedMapItemsToTableView(showedMapItems: self.showedMapItems, tableView: self.searchView.tableView)
         self.bindTableViewModelSelectedToViewModel(tableView: self.searchView.tableView, viewModel: self.viewModel)
         self.viewModel.viewDidLoad()
     }
@@ -60,7 +60,7 @@ final class LCSearchController: SearchResultController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.bindSingleLocationToCurrLocation(locationManager: self.locationManager, subject: self._currLocation)
+        self.bindSingleLocationToCurrLocation(locationManager: self.locationManager, currLoaction: self._currLocation)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -99,9 +99,9 @@ extension LCSearchController {
 // MARK: BindCurrLocationSearchTextToShowedMapItems
 extension LCSearchController {
     
-    func bindCurrLocationSearchTextToShowedMapItems(observable: Observable<(CLLocation, String)>,
+    func bindCurrLocationSearchTextToShowedMapItems(currLoactionSearcText: Observable<(CLLocation, String)>,
                                                     subject: BehaviorSubject<[MKMapItem]>) {
-        observable
+        currLoactionSearcText
             .debounce(.milliseconds(800), scheduler: MainScheduler.instance)
             .flatMap(self.locationWillSearch(combined:))
             .bind(to: subject)
@@ -134,9 +134,9 @@ extension LCSearchController {
 // MARK: BindShowedMapItemsToTableView
 extension LCSearchController {
     
-    func bindShowedMapItemsToTableView(observable: Observable<[MKMapItem]>, tableView: UITableView) {
+    func bindShowedMapItemsToTableView(showedMapItems: Observable<[MKMapItem]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
-        observable
+        showedMapItems
             .asDriver(onErrorJustReturn: [])
             .map({ [SectionModel(model: "", items: $0)] })
             .drive(tableView.rx.items(dataSource: dataSource))
@@ -159,12 +159,13 @@ extension LCSearchController {
 // MARK: BindSingleLocationToCurrLocation
 extension LCSearchController {
     
-    func bindSingleLocationToCurrLocation(locationManager: CLLocationManager, subject: PublishSubject<CLLocation>) {
+    func bindSingleLocationToCurrLocation(locationManager: CLLocationManager,
+                                          currLoaction: PublishSubject<CLLocation>) {
         locationManager.rx
             .location
             .asDriver(onErrorJustReturn: nil)
             .compactMap({ $0 })
-            .drive(subject)
+            .drive(currLoaction)
             .disposed(by: self.disposeBag)
     }
     

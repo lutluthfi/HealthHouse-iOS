@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIColor {
+public extension UIColor {
     
     /// Initialize UIColor with a hex of string.
     ///
@@ -46,7 +46,7 @@ extension UIColor {
     
 }
 
-extension UIColor {
+public extension UIColor {
     
     var hex: String {
         var r: CGFloat = 0

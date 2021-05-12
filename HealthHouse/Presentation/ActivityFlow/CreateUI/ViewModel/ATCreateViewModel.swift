@@ -82,7 +82,7 @@ extension DefaultATCreateViewModel {
         let response = LBListViewModelResponse()
         response.selectedLabels
             .do(onNext: { [unowned self] in
-                self._selectedLabels.append(contentsOf: $0)
+                self._selectedLabels = $0
             })
             .bind(to: self.showedSelectedLabels)
             .disposed(by: self.disposeBag)

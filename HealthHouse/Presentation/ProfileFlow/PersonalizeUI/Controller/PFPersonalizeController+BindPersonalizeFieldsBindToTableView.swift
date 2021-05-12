@@ -13,9 +13,9 @@ import UIKit
 // MARK: BindPersonalizeFieldsBindToTableView
 extension PFPersonalizeController {
     
-    func bindSectionsToTableView(observable: Observable<[[RowDomain]]>, tableView: UITableView) {
+    func bindSectionsToTableView(sections: Observable<[[RowDomain]]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
-        observable
+        sections
             .observe(on: ConcurrentMainScheduler.instance)
             .map({ $0.map { SectionModel(model: "", items: $0) } })
             .bind(to: tableView.rx.items(dataSource: dataSource))
@@ -29,38 +29,38 @@ extension PFPersonalizeController {
             case .dateOfBirth:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupDateOfBirthHHTextFieldTableCell(cell, item: item)
-                self.bindDateOfBirthToTextField(observable: self._dateOfBirth, textField: cell.textField)
+                self.bindDateOfBirthToTextField(dateOfBirth: self._dateOfBirth, textField: cell.textField)
                 return cell
             case .firstName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupFirstNameHHTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, relay: self._firstName)
+                self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._firstName)
                 return cell
             case .gender:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupGenderHHTextFieldTableCell(cell, item: item)
-                self.bindGenderToTextField(relay: self._gender, textField: cell.textField)
+                self.bindGenderToTextField(gender: self._gender, textField: cell.textField)
                 return cell
             case .lastName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupLastNameHHTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, relay: self._lastName)
+                self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._lastName)
                 return cell
             case .mobileNumber:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupMobileNumberHHTextFieldTableCell(cell, item: item)
-                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(relay: self._countryDialingCode,
+                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(CountryDialingCode: self._countryDialingCode,
                                                                                   textField: cell.promptTextField,
                                                                                   picker: self.personalizeView.countryDialignCodePicker)
                 self.bindMobileNumberTextFieldEditingChangedToMobileNumber(textField: cell.textField,
-                                                                           relay: self._mobileNumbder)
+                                                                           mobileNumber: self._mobileNumbder)
                 return cell
             case .photo:
                 let cell = HHPhotoProfileTableCell()
                 self.bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: self._firstOrLastNameOrPhoto,
                                                                          cell: cell)
-                self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, relay: self._photo)
-                self.bindPhotoToPhotoImageView(relay: self._photo, imageView: cell.photoImageView)
+                self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, photo: self._photo)
+                self.bindPhotoToPhotoImageView(photo: self._photo, imageView: cell.photoImageView)
                 return cell
             default:
                 fatalError("PFPersonalizeController -> FieldDomain (\(item)) is not available")

@@ -57,7 +57,7 @@ extension DefaultActivityFlowCoordinator {
     private func initCreateUI(request: ATCreateViewModelRequest) -> UIViewController {
         let presentLBListUI: (LBListViewModelRequest, LBListViewModelResponse) -> Void = { (request, response) in
             let coordinator = self.flowFactory.makeLabelFlowCoordinator()
-            let instructor = LabelFlowCoordinatorInstructor.presentListUI(request, response, .required)
+            let instructor = LabelFlowCoordinatorInstructor.presentListUI(request, response, .standard)
             coordinator.start(with: instructor)
         }
         let presentLCSearchUI: (LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void = { (request, response) in
@@ -74,7 +74,7 @@ extension DefaultActivityFlowCoordinator {
     func pushToCreateUI(request: ATCreateViewModelRequest) {
         guaranteeMainThread {
             let controller = self.initCreateUI(request: request)
-            self.navigationController.pushViewController(controller, animated: true)
+            self.navigationController.pushWithSmart(to: controller)
         }
     }
     

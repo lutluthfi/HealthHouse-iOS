@@ -7,13 +7,13 @@
 
 import UIKit
 
-extension Int {
+public extension Int {
     
     static let loadingIndicatorTag = Int(9991)
     
 }
 
-extension UIView {
+public extension UIView {
     
     func hideLoadingIndicator() {
         guard let indicatorView = self.subviews.first(where: { $0.tag == .loadingIndicatorTag }) else { return }

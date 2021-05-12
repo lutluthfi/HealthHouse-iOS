@@ -13,9 +13,9 @@ import UIKit
 // MARK: BindSectionsToTableView
 extension ATCreateController {
     
-    func bindSectionsToTableView(relay: BehaviorRelay<[SectionDomain<RowDomain>]>, tableView: UITableView) {
+    func bindSectionsToTableView(sections: BehaviorRelay<[SectionDomain<RowDomain>]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
-        relay
+        sections
             .asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
@@ -44,7 +44,7 @@ extension ATCreateController {
                 cell.imageView?.image = UIImage(named: "calendar.round.color")
                 cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
-                self.bindDateToDateLabel(relay: self._date, label: cell.detailTextLabel!)
+                self.bindDateToDateLabel(date: self._date, label: cell.detailTextLabel!)
                 return cell
             case .datePicker:
                 let cell = self.makeHHDatePickerTableCell()
@@ -52,7 +52,7 @@ extension ATCreateController {
                 if #available(iOS 13.4, *) {
                     cell.datePicker.preferredDatePickerStyle = .wheels
                 }
-                self.bindDatePickerToDateOrTime(picker: cell.datePicker, relay: self._date)
+                self.bindDatePickerToDateOrTime(picker: cell.datePicker, dateOrTime: self._date)
                 return cell
             case .explanation:
                 let cell = HHTextViewTableCell()
@@ -70,7 +70,7 @@ extension ATCreateController {
                 let cell = self.makeSubtitleTableCell()
                 cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
-                self.bindSelectedLocationViewModelToLocationLabel(relay: self.viewModel.selectedLocation,
+                self.bindSelectedLocationViewModelToLocationLabel(selectedLocation: self.viewModel.selectedLocation,
                                                                   label: cell.detailTextLabel!)
                 return cell
             case .practitioner:
@@ -82,7 +82,7 @@ extension ATCreateController {
                 cell.imageView?.image = UIImage(named: "clock.round.color")
                 cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
-                self.bindTimeToTimeLabel(relay: self._time, label: cell.detailTextLabel!)
+                self.bindTimeToTimeLabel(time: self._time, label: cell.detailTextLabel!)
                 return cell
             case .timePicker:
                 let cell = self.makeHHDatePickerTableCell()
@@ -90,7 +90,7 @@ extension ATCreateController {
                 if #available(iOS 13.4, *) {
                     cell.datePicker.preferredDatePickerStyle = .wheels
                 }
-                self.bindDatePickerToDateOrTime(picker: cell.datePicker, relay: self._time)
+                self.bindDatePickerToDateOrTime(picker: cell.datePicker, dateOrTime: self._time)
                 return cell
             case .title:
                 let cell = makeHHTextFieldTableCell(with: item, style: .plain)

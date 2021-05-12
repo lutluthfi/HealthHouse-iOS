@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Calendar {
+public extension Calendar {
     
     func getDays(inWeek week: Date) -> [Date] {
         guard let weekInterval = self.dateInterval(of: .weekOfMonth, for: week) else { return [] }

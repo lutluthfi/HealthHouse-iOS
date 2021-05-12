@@ -18,7 +18,7 @@ protocol LBListViewFunction {
 
 // MARK: LBListViewSubview
 protocol LBListViewSubview {
-    var addBarButtonItem: UIBarButtonItem { get }
+    var createBarButtonItem: UIBarButtonItem { get }
     var doneBarButtonItem: UIBarButtonItem { get }
     var selectedCountBarButtonItem: UIBarButtonItem { get }
     var tableView: UITableView { get }
@@ -35,7 +35,7 @@ protocol LBListView: LBListViewFunction, LBListViewSubview, LBListViewVariable {
 final class DefaultLBListView: UIView, LBListView {
 
     // MARK: LBListViewSubview
-    lazy var addBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: nil)
+    lazy var createBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: nil)
     lazy var doneBarButtonItem = UIBarButtonItem.done
     lazy var selectedCountBarButtonItem: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "",
@@ -102,7 +102,7 @@ extension DefaultLBListView {
                         toolbarItems: inout [UIBarButtonItem]?) {
         navigationController?.isToolbarHidden = false
         navigationItem.title = "Label"
-        navigationItem.leftBarButtonItem = self.addBarButtonItem
+        navigationItem.leftBarButtonItem = self.createBarButtonItem
         navigationItem.rightBarButtonItem = self.doneBarButtonItem
         toolbarItems = [.flexible, self.selectedCountBarButtonItem, .flexible]
     }

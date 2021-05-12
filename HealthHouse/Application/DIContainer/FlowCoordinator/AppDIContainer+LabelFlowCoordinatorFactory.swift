@@ -9,6 +9,25 @@ import UIKit
 
 extension AppDIContainer: LabelFlowCoordinatorFactory { }
 
+// MARK: CreateUI
+extension AppDIContainer {
+    
+    public func makeCreateController(request: LBCreateViewModelRequest,
+                                     response: LBCreateViewModelResponse,
+                                     route: LBCreateViewModelRoute) -> UIViewController {
+        let viewModel = self.makeCreateViewModel(request: request, response: response, route: route)
+        return LBCreateController.create(with: viewModel)
+    }
+    
+    private func makeCreateViewModel(request: LBCreateViewModelRequest,
+                                      response: LBCreateViewModelResponse,
+                                      route: LBCreateViewModelRoute) -> LBCreateViewModel {
+        return DefaultLBCreateViewModel(request: request, response: response, route: route)
+    }
+    
+}
+
+// MARK: ListUI
 extension AppDIContainer {
     
     public func makeListController(request: LBListViewModelRequest,

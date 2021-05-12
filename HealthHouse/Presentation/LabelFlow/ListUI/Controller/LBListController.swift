@@ -39,15 +39,18 @@ final class LBListController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindSelectedLabelsToSelectedCountBarButtonItem(relay: self._selectedLabels,
+        self.bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: self._selectedLabels,
                                                             barButtonItem: self.listView.selectedCountBarButtonItem)
+        self.bindCreateBarButtonItemTap(barButtonItem: self.listView.createBarButtonItem)
         self.bindDoneBarButtonItemTap(barButtonItem: self.listView.doneBarButtonItem)
         self.bindTableViewModelDeselected(tableView: self.listView.tableView)
         self.bindTableViewModelSelected(tableView: self.listView.tableView)
         self.bindTableViewItemSelected(tableView: self.listView.tableView)
         self.bindTableViewItemDeselected(tableView: self.listView.tableView)
         self.bindTableViewWillDisplayCell(tableView: self.listView.tableView)
-        self.bindShowedLabelsToTableView(relay: self.viewModel.showedLabels, tableView: self.listView.tableView)
+        self.bindShowedLabelsToTableView(showedLabels: self.viewModel.showedLabels, tableView: self.listView.tableView)
+        self.bindShowedLabelsToSelectedLabels(showedLabels: self.viewModel.showedLabels,
+                                              selectedLabels: self._selectedLabels)
         self.viewModel.viewDidLoad()
     }
     
@@ -62,6 +65,21 @@ final class LBListController: UITableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.listView.viewWillDisappear()
+    }
+    
+}
+
+// MARK: BindAddBarButtonItemTap
+extension LBListController {
+    
+    func bindCreateBarButtonItemTap(barButtonItem: UIBarButtonItem) {
+        barButtonItem.rx
+            .tap
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+                self.viewModel.presentLBCreateUI()
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }
@@ -85,12 +103,12 @@ extension LBListController {
     
 }
 
-// MARK: BindSelectedLabelsToNavigationItemPrompt
+// MARK: BindSelectedLabelsToSelectedCountBarButtonItem
 extension LBListController {
     
-    func bindSelectedLabelsToSelectedCountBarButtonItem(relay: BehaviorRelay<[LabelDomain]>,
+    func bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: BehaviorRelay<[LabelDomain]>,
                                                         barButtonItem: UIBarButtonItem) {
-        relay
+        selectedLabels
             .asDriver()
             .map({ $0.count })
             .map({
@@ -100,6 +118,21 @@ extension LBListController {
                 return isGreaterThanZero ? "\($0) \(label) Selected" : ""
             })
             .drive(barButtonItem.rx.title)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindShowedLabelsToSelectedLabels
+extension LBListController {
+    
+    func bindShowedLabelsToSelectedLabels(showedLabels: PublishRelay<[SelectableDomain<LabelDomain>]>,
+                                          selectedLabels: BehaviorRelay<[LabelDomain]>) {
+        showedLabels
+            .asDriver(onErrorJustReturn: [])
+            .map({ $0.filter({ $0.selected }) })
+            .map({ $0.map({ $0.value }) })
+            .drive(selectedLabels)
             .disposed(by: self.disposeBag)
     }
     

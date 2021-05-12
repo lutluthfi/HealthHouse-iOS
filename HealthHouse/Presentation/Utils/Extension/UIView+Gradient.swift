@@ -7,12 +7,12 @@
 
 import UIKit
 
-enum GradientDirection {
+public enum GradientDirection {
     case leadingToTrailing
     case bottomToTop
 }
 
-extension UIView {
+public extension UIView {
     
     func gradient(direction: GradientDirection = .leadingToTrailing, colors: [UIColor]) {
         let gradientLayer = CAGradientLayer()

@@ -9,7 +9,7 @@ import RxKeyboard
 import RxSwift
 import UIKit
 
-extension UIScrollView {
+public extension UIScrollView {
     
     func bindKeyboardHeight(disposeBag: DisposeBag) {
         RxKeyboard.instance

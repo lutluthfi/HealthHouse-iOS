@@ -48,7 +48,7 @@ public final class HHTextFieldTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(reuseIdentifier: String?, style: HHTextFieldTableCellStyle) {
+    init(reuseIdentifier: String? = HHTextFieldTableCell.identifier, style: HHTextFieldTableCellStyle) {
         self._style = style
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         self.subviewWillAdd(style: style)

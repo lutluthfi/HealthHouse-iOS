@@ -7,15 +7,15 @@
 
 import UIKit
 
-struct StringImageProperties {
+public struct StringImageProperties {
     
-    let color: UIColor
-    let scale: CGFloat
-    let size: CGFloat
+    public let color: UIColor
+    public let scale: CGFloat
+    public let size: CGFloat
     
 }
 
-extension String {
+public extension String {
     
     func image(properties: StringImageProperties) -> UIImage? {
         let outputImageSize = CGSize(width: properties.size, height: properties.size)

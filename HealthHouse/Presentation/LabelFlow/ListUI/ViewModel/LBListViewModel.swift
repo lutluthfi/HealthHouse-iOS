@@ -25,6 +25,7 @@ public struct LBListViewModelRequest {
 
 // MARK: LBListViewModelRoute
 public struct LBListViewModelRoute {
+    var presentLBCreateUI: ((LBCreateViewModelRequest, LBCreateViewModelResponse) -> Void)?
 }
 
 // MARK: LBListViewModelInput
@@ -33,6 +34,7 @@ protocol LBListViewModelInput {
     func doDone(selectedLabels: [LabelDomain])
     func doRemove(label: LabelDomain)
     func doSelect(label: LabelDomain)
+    func presentLBCreateUI()
 }
 
 // MARK: LBListViewModelOutput
@@ -98,12 +100,17 @@ extension DefaultLBListViewModel {
     }
     
     func doRemove(label: LabelDomain) {
-//        self.showedLabels.accept(self._currSelectedLabels)
     }
     
     func doSelect(label: LabelDomain) {
         guard !self._currSelectedLabels.contains(label) else { return }
         self._currSelectedLabels.append(label)
+    }
+    
+    func presentLBCreateUI() {
+        let request = LBCreateViewModelRequest()
+        let response = LBCreateViewModelResponse()
+        self.route.presentLBCreateUI?(request, response)
     }
     
 }

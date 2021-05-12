@@ -11,6 +11,7 @@ import RxDataSources
 // MARK: SectionDomain
 public struct SectionDomain<Item: Equatable&IdentifiableType> {
     
+    public var footer: String?
     public var header: String
     public var items: [Item]
     

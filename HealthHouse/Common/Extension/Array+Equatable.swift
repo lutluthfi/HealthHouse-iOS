@@ -9,6 +9,17 @@ import Foundation
 
 extension Array where Element: Equatable {
     
+    mutating func appendOnlyNew(_ newElement: Element) {
+        guard !self.contains(newElement) else { return }
+        self.append(newElement)
+    }
+    
+    mutating func appendOnlyNew(contentsOf newElements: [Element]) {
+        for newElement in newElements {
+            self.appendOnlyNew(newElement)
+        }
+    }
+    
     mutating func insert(_ newElement: Element, afterFirstIndexOf element: Element) {
         guard self.contains(element) else { return }
         let index = self.firstIndex(of: element)!
@@ -19,6 +30,11 @@ extension Array where Element: Equatable {
         guard self.contains(element) else { return }
         let index = self.firstIndex(of: element)!
         self.insert(newElement, at: index)
+    }
+    
+    mutating func insertOnlyNew(contentsOf newElements: [Element], at index: Int) {
+        let _newElements = newElements.filter({ !self.contains($0) })
+        self.insert(contentsOf: _newElements, at: index)
     }
     
     mutating func remove(firstIndexOf element: Element) {

@@ -11,70 +11,63 @@ import UIKit
 
 // MARK: LNWelcomeController
 final class LNWelcomeController: UIViewController {
-
+    
     // MARK: DI Variable
-    lazy var _view: LNWelcomeView = DefaultLNWelcomeView()
+    lazy var disposeBag = DisposeBag()
+    lazy var welcomeView: LNWelcomeView = DefaultLNWelcomeView()
     var viewModel: LNWelcomeViewModel!
-    let disposeBag = DisposeBag()
-
+    lazy var _view: UIView = (self.welcomeView as! UIView)
+    
     // MARK: Common Variable
-
-
+    
+    
     // MARK: Create Function
     class func create(with viewModel: LNWelcomeViewModel) -> LNWelcomeController {
         let controller = LNWelcomeController()
         controller.viewModel = viewModel
         return controller
     }
-
+    
     // MARK: UIViewController Function
     override func loadView() {
-        self.view = (self._view as! UIView)
+        self.view = self._view
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bind(to: self._view)
-        self.bind(to: self.viewModel)
+        self.bindContinueButtonBindTap(button: self.welcomeView.continueButton)
         self.viewModel.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self._view.viewWillAppear(navigationBar: self.navigationController?.navigationBar,
-                                  navigationItem: self.navigationItem,
-                                  tabBarController: self.tabBarController)
+        self.welcomeView.viewWillAppear(navigationBar: self.navigationController?.navigationBar,
+                                        navigationItem: self.navigationItem,
+                                        tabBarController: self.tabBarController)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self._view.showContinueButton { _ in }
+        self.welcomeView.showContinueButton { _ in }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self._view.viewWillDisappear()
-    }
-
-    // MARK: Subscribe View Function
-    private func bind(to view: LNWelcomeView) {
-        self.subscribeContinueButtonBindTap(view.continueButton)
-    }
-    
-    // MARK: Subscribe ViewModel Function
-    private func bind(to viewModel: LNWelcomeViewModel) {
+        self.welcomeView.viewWillDisappear()
     }
     
 }
 
-// MARK: Observe ViewModel Function
+// MARK: BindContinueButtonBindTap
 extension LNWelcomeController {
     
-    func subscribeContinueButtonBindTap(_ button: UIButton) {
-        button.rx.tap.bind(onNext: { [unowned self] in
-            self.viewModel.doContinue()
-        })
-        .disposed(by: self.disposeBag)
+    func bindContinueButtonBindTap(button: UIButton) {
+        button.rx
+            .tap
+            .bind(onNext: { [unowned self] in
+                self.viewModel.doContinue()
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

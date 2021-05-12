@@ -18,7 +18,7 @@ final class ATCreateController: UITableViewController {
 
     // MARK: DI Variable
     lazy var createView: ATCreateView = DefaultATCreateView()
-    let disposeBag = DisposeBag()
+    lazy var disposeBag = DisposeBag()
     let locationManager = CLLocationManager()
     var viewModel: ATCreateViewModel!
 
@@ -45,21 +45,11 @@ final class ATCreateController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewModel.showedSelectedLabels
-            .asDriver()
-            .map({ $0.map({ RowDomain(identify: "\(LabelDomain.self)-\($0.identity)", value: $0) }) })
-            .drive(onNext: { [unowned self] (labelRows) in
-                var _sections = self.createView.sections.value
-                var labelSection = _sections[4]
-                labelSection.items.append(contentsOf: labelRows)
-                _sections[4] = labelSection
-                self.createView.sections.accept(_sections)
-            })
-            .disposed(by: self.disposeBag)
+        self.bindShowedSelectedLabelsViewModelToSections(showedSelectedLabels: self.viewModel.showedSelectedLabels,
+                                                         sections: self.createView.sections)
         self.bindTableViewDelegate(tableView: self.createView.tableView)
-        self.bindSectionsToTableView(relay: self.createView.sections, tableView: self.createView.tableView)
+        self.bindSectionsToTableView(sections: self.createView.sections, tableView: self.createView.tableView)
         self.viewModel.viewDidLoad()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,15 +69,15 @@ final class ATCreateController: UITableViewController {
 // MARK: BindDatePickerToDateOrTime
 extension ATCreateController {
     
-    func bindDatePickerToDateOrTime(picker: UIDatePicker, relay: BehaviorRelay<Date>) {
-        relay
+    func bindDatePickerToDateOrTime(picker: UIDatePicker, dateOrTime: BehaviorRelay<Date>) {
+        dateOrTime
             .asDriver()
             .drive(picker.rx.date)
             .disposed(by: self.disposeBag)
         picker.rx
             .date
             .asDriver()
-            .drive(relay)
+            .drive(dateOrTime)
             .disposed(by: self.disposeBag)
     }
     
@@ -96,7 +86,7 @@ extension ATCreateController {
 // MARK: BindDateToDateLabel
 extension ATCreateController {
     
-    func bindDateToDateLabel(relay: BehaviorRelay<Date>, label: UILabel) {
+    func bindDateToDateLabel(date: BehaviorRelay<Date>, label: UILabel) {
         let formats: [Date.FormatterComponent] = [.dayOfWeekWideName,
                                                   .comma,
                                                   .whitespace,
@@ -106,7 +96,7 @@ extension ATCreateController {
                                                   .comma,
                                                   .whitespace,
                                                   .yearFullDigits]
-        relay
+        date
             .asDriver()
             .map({ $0.formatted(components: formats) })
             .drive(label.rx.text)
@@ -153,11 +143,33 @@ extension ATCreateController {
 // MARK: BindSelectedLocationViewModelToLocationLabel
 extension ATCreateController {
     
-    func bindSelectedLocationViewModelToLocationLabel(relay: PublishRelay<MKMapItem>, label: UILabel) {
-        relay
+    func bindSelectedLocationViewModelToLocationLabel(selectedLocation: PublishRelay<MKMapItem>, label: UILabel) {
+        selectedLocation
             .subscribe(on: MainScheduler.instance)
             .map({ $0.name })
             .bind(to: label.rx.text)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindShowedSelectedLabelsToSections
+extension ATCreateController {
+    
+    func bindShowedSelectedLabelsViewModelToSections(showedSelectedLabels: BehaviorRelay<[LabelDomain]>,
+                                                     sections: BehaviorRelay<[SectionDomain<RowDomain>]>) {
+        showedSelectedLabels
+            .asDriver()
+            .map({ $0.map({ RowDomain(identify: "\(LabelDomain.self)-\($0.identity)", value: $0) }) })
+            .drive(onNext: { [unowned sections] (labelRows) in
+                var _sections = sections.value
+                var _labelSection = _sections[4]
+                let _labelField = _labelSection.items[0]
+                let _labelRows: [RowDomain] = labelRows
+                _labelSection.items = [_labelField] + _labelRows
+                _sections[4] = _labelSection
+                sections.accept(_sections)
+            })
             .disposed(by: self.disposeBag)
     }
     
@@ -181,9 +193,9 @@ extension ATCreateController {
 // MARK: BindTimeToTimeLabel
 extension ATCreateController {
     
-    func bindTimeToTimeLabel(relay: BehaviorRelay<Date>, label: UILabel) {
+    func bindTimeToTimeLabel(time: BehaviorRelay<Date>, label: UILabel) {
         let formats: [Date.FormatterComponent] = [.hour12Padding, .colon, .minutePadding, .whitespace, .meridiem]
-        relay
+        time
             .asDriver()
             .map({ $0.formatted(components: formats) })
             .drive(label.rx.text)

@@ -11,9 +11,7 @@ import UIKit
 final class LNPostController: UIViewController {
 
     // MARK: DI Variable
-    lazy var _view: LNPostView = {
-        return DefaultLNPostView()
-    }()
+    lazy var _view: LNPostView = DefaultLNPostView()
     var viewModel: LNPostViewModel!
 
     // MARK: Common Variable

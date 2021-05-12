@@ -45,14 +45,12 @@ final class DefaultATCreateView: UIView, ATCreateView {
     }()
     
     // MARK: ATCreateViewVariable
-    let sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [
-        SectionDomain(header: "Title", items: [.title]),
-        SectionDomain(header: "Date and Time", items: [.date, .time]),
-        SectionDomain(header: "Health Practition", items: [.practitioner, .location]),
-        SectionDomain(header: "Attachment", items: [.attachment]),
-        SectionDomain(header: "Label", items: [.label]),
-        SectionDomain(header: "Explanation", items: [.explanation])
-    ])
+    let sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [SectionDomain(header: "Title", items: [.title]),
+                                                                     SectionDomain(header: "Date and Time", items: [.date, .time]),
+                                                                     SectionDomain(header: "Health Practition", items: [.practitioner, .location]),
+                                                                     SectionDomain(header: "Attachment", items: [.attachment]),
+                                                                     SectionDomain(header: "Label", items: [.label]),
+                                                                     SectionDomain(header: "Explanation", items: [.explanation])])
     
     // MARK: Init Function
     required init?(coder: NSCoder) {
