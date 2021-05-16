@@ -1,5 +1,5 @@
 //
-//  LabelEntity+CoreDataClass.swift
+//  FlagEntity+CoreDataClass.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
@@ -9,12 +9,12 @@
 import Foundation
 import CoreData
 
-@objc(LabelEntity)
-public class LabelEntity: NSManagedObject {
+@objc(FlagEntity)
+public class FlagEntity: NSManagedObject {
 
-    public static let entityName = String(describing: LabelEntity.self)
+    public static let entityName = String(describing: FlagEntity.self)
     
-    public convenience init(_ domain: LabelDomain, insertInto context: NSManagedObjectContext) {
+    public convenience init(_ domain: FlagDomain, insertInto context: NSManagedObjectContext) {
         self.init(context: context)
         self.createdAt = domain.createdAt
         self.updatedAt = domain.updatedAt
@@ -26,10 +26,10 @@ public class LabelEntity: NSManagedObject {
 }
 
 
-public extension LabelEntity {
+public extension FlagEntity {
     
-    func toDomain() -> LabelDomain {
-        return LabelDomain(coreID: self.objectID,
+    func toDomain() -> FlagDomain {
+        return FlagDomain(coreID: self.objectID,
                            createdAt: self.createdAt,
                            updatedAt: self.updatedAt,
                            hexcolor: self.hexcolor,
@@ -38,12 +38,12 @@ public extension LabelEntity {
     
 }
 
-public extension LabelEntity {
+public extension FlagEntity {
     
     @discardableResult
-    func createUpdate(with newObject: LabelDomain, context: NSManagedObjectContext) -> LabelEntity {
+    func createUpdate(with newObject: FlagDomain, context: NSManagedObjectContext) -> FlagEntity {
         guard self.objectID == newObject.coreID else {
-            return LabelEntity(newObject, insertInto: context)
+            return FlagEntity(newObject, insertInto: context)
         }
         self.updatedAt = Date().toInt64()
         

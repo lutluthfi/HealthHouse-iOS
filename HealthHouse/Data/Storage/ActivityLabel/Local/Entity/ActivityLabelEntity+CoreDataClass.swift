@@ -29,7 +29,7 @@ extension ActivityLabelEntity {
     
     func toDomain(context: NSManagedObjectContext) -> ActivityLabelDomain {
         let activityEntity = context.object(with: self.activityID) as! ActivityEntity
-        let labelEntities = self.labelsID.compactMap({ context.object(with: $0) as? LabelEntity })
+        let labelEntities = self.labelsID.compactMap({ context.object(with: $0) as? FlagEntity })
         let activityDomain = activityEntity.toDomain(context: context)
         let labelDomains = labelEntities.map({ $0.toDomain() })
         return ActivityLabelDomain(coreID: self.objectID,

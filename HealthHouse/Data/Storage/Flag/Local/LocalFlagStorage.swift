@@ -9,12 +9,12 @@ import CoreData
 import Foundation
 import RxSwift
 
-// MARK: LocalActivityStorage
-public protocol LocalLabelStorage: CoreDataLabelStorage {
+// MARK: LocalFlagStorage
+public protocol LocalFlagStorage: CoreDataFlagStorage {
 }
 
-// MARK: DefaultLocalActivityStorage
-public class DefaultLocalLabelStorage: LocalLabelStorage {
+// MARK: DefaultLocalFlagStorage
+public class DefaultLocalFlagStorage: LocalFlagStorage {
     
     let coreDataStorage: CoreDataStorageShared
     
@@ -24,14 +24,14 @@ public class DefaultLocalLabelStorage: LocalLabelStorage {
     
 }
 
-// MARK: CoreDataLabelStorage
-extension DefaultLocalLabelStorage {
+// MARK: CoreDataFlagStorage
+extension DefaultLocalFlagStorage {
     
-    public func fetchAllInCoreData() -> Observable<[LabelDomain]> {
+    public func fetchAllInCoreData() -> Observable<[FlagDomain]> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             do {
                 let context = self.coreDataStorage.context
-                let request: NSFetchRequest = LabelEntity.fetchRequest()
+                let request: NSFetchRequest = FlagEntity.fetchRequest()
                 let entities = try context.fetch(request)
                 let domains = entities.map { $0.toDomain() }
                 observer.onNext(domains)
@@ -46,17 +46,17 @@ extension DefaultLocalLabelStorage {
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
-    public func insertIntoCoreData(_ label: LabelDomain) -> Observable<LabelDomain> {
+    public func insertIntoCoreData(_ label: FlagDomain) -> Observable<FlagDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             do {
                 let context = self.coreDataStorage.context
-                let inserted: LabelEntity
-                let request: NSFetchRequest = LabelEntity.fetchRequest()
+                let inserted: FlagEntity
+                let request: NSFetchRequest = FlagEntity.fetchRequest()
                 let entities = try context.fetch(request)
                 if let oldEntity = entities.first(where: { $0.objectID == label.coreID }) {
                     inserted = oldEntity.createUpdate(with: label, context: context)
                 } else {
-                    inserted = LabelEntity(label, insertInto: context)
+                    inserted = FlagEntity(label, insertInto: context)
                 }
                 try context.save()
                 let insertedDomain = inserted.toDomain()
@@ -72,10 +72,10 @@ extension DefaultLocalLabelStorage {
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
-    public func removeInCoreData(_ label: LabelDomain) -> Observable<LabelDomain> {
+    public func removeInCoreData(_ label: FlagDomain) -> Observable<FlagDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             guard let coreID = label.coreID else {
-                let message = "LocalLabelStorage: Failed to execute removeInCoreData() caused by coreID is not available"
+                let message = "LocalFlagStorage: Failed to execute removeInCoreData() caused by coreID is not available"
                 let error = PlainError(description: message)
                 let coreDataError = CoreDataStorageError.deleteError(error)
                 observer.onError(coreDataError)

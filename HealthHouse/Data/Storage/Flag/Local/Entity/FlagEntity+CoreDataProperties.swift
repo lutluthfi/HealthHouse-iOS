@@ -1,5 +1,5 @@
 //
-//  LabelEntity+CoreDataProperties.swift
+//  FlagEntity+CoreDataProperties.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
@@ -10,10 +10,10 @@ import Foundation
 import CoreData
 
 
-extension LabelEntity {
+extension FlagEntity {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<LabelEntity> {
-        return NSFetchRequest<LabelEntity>(entityName: "LabelEntity")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<FlagEntity> {
+        return NSFetchRequest<FlagEntity>(entityName: "FlagEntity")
     }
 
     @NSManaged public var createdAt: Int64
@@ -24,5 +24,5 @@ extension LabelEntity {
 
 }
 
-extension LabelEntity: Identifiable {
+extension FlagEntity: Identifiable {
 }

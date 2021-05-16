@@ -25,7 +25,7 @@ public class ATCreateViewModelResponse {
 
 // MARK: ATCreateViewModelRoute
 public struct ATCreateViewModelRoute {
-    var presentLBListUI: ((LBListViewModelRequest, LBListViewModelResponse) -> Void)?
+    var presentLBListUI: ((FLListViewModelRequest, FLListViewModelResponse) -> Void)?
     var presentLCSearchUI: ((LCSearchViewModelRequest, LCSearchViewModelResponse) -> Void)?
 }
 
@@ -39,7 +39,7 @@ protocol ATCreateViewModelInput {
 // MARK: ATCreateViewModelOutput
 protocol ATCreateViewModelOutput {
     var selectedLocation: PublishRelay<MKMapItem> { get }
-    var showedSelectedLabels: BehaviorRelay<[LabelDomain]> { get }
+    var showedSelectedLabels: BehaviorRelay<[FlagDomain]> { get }
 }
 
 // MARK: ATCreateViewModel
@@ -57,11 +57,11 @@ final class DefaultATCreateViewModel: ATCreateViewModel {
     
 
     // MARK: Common Variable
-    var _selectedLabels: [LabelDomain] = []
+    var _selectedLabels: [FlagDomain] = []
 
     // MARK: Output ViewModel
     let selectedLocation = PublishRelay<MKMapItem>()
-    let showedSelectedLabels = BehaviorRelay<[LabelDomain]>(value: [])
+    let showedSelectedLabels = BehaviorRelay<[FlagDomain]>(value: [])
 
     // MARK: Init Function
     init(request: ATCreateViewModelRequest,
@@ -79,7 +79,7 @@ extension DefaultATCreateViewModel {
     }
     
     func presentLBListUI() {
-        let response = LBListViewModelResponse()
+        let response = FLListViewModelResponse()
         response.selectedLabels
             .do(onNext: { [unowned self] in
                 self._selectedLabels = $0
@@ -87,7 +87,7 @@ extension DefaultATCreateViewModel {
             .bind(to: self.showedSelectedLabels)
             .disposed(by: self.disposeBag)
         let selectedLabels = self._selectedLabels
-        let request = LBListViewModelRequest(selectedLabels: selectedLabels)
+        let request = FLListViewModelRequest(selectedLabels: selectedLabels)
         self.route.presentLBListUI?(request, response)
     }
     

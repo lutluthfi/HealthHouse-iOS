@@ -13,12 +13,12 @@ import XCTest
 class LocalLabelStorageTests: XCTestCase {
     
     private lazy var sut = self.makeLocalLabelStorageSUT()
-    private var insertedLabel: LabelDomain!
+    private var insertedLabel: FlagDomain!
     
     override func setUp() {
         super.setUp()
         let coreDataStorage = self.sut.coreDataStorage
-        self.insertedLabel = LabelDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
+        self.insertedLabel = FlagDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
     }
     
     override func tearDown() {
@@ -41,7 +41,7 @@ extension LocalLabelStorageTests {
     }
     
     func test_insertIntoCoreData_whenLabelHasCoreID_shouldInsertedIntoCoreData() throws {
-        let updatedObject = LabelDomain(coreID: self.insertedLabel.coreID,
+        let updatedObject = FlagDomain(coreID: self.insertedLabel.coreID,
                                         createdAt: self.insertedLabel.createdAt,
                                         updatedAt: self.insertedLabel.updatedAt,
                                         hexcolor: "000",
@@ -58,7 +58,7 @@ extension LocalLabelStorageTests {
     }
     
     func test_insertIntoCoreData_whenLabelHasNotCoreID_shouldInsertedIntoCoreData() throws {
-        let insertedObject = LabelDomain.stubElement
+        let insertedObject = FlagDomain.stubElement
         
         let result = try self.sut.localLabelStorage
             .insertIntoCoreData(insertedObject)
@@ -81,14 +81,14 @@ extension LocalLabelStorageTests {
     }
     
     func test_removeInCoreData_whenLabelNotInCoreData_thenThrowsError() throws {
-        let removedObject = LabelDomain.stubElement
+        let removedObject = FlagDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.localLabelStorage
                                 .removeInCoreData(removedObject)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalLabelStorage: Failed to execute removeInCoreData() caused by coreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalFlagStorage: Failed to execute removeInCoreData() caused by coreID is not available")
         }
     }
     
@@ -100,7 +100,7 @@ public struct LocalLabelStorageSUT {
     public let semaphore: DispatchSemaphore
     public let disposeBag: DisposeBag
     public let coreDataStorage: CoreDataStorageSharedMock
-    public let localLabelStorage: LocalLabelStorage
+    public let localLabelStorage: LocalFlagStorage
     
 }
 
@@ -110,7 +110,7 @@ public extension XCTest {
         let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
         let coreDataStorage = self.makeCoreDataStorageMock()
-        let localActivityStorage = DefaultLocalLabelStorage(coreDataStorage: coreDataStorage)
+        let localActivityStorage = DefaultLocalFlagStorage(coreDataStorage: coreDataStorage)
         return LocalLabelStorageSUT(semaphore: semaphore,
                                     disposeBag: disposeBag,
                                     coreDataStorage: coreDataStorage,

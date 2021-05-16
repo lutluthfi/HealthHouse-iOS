@@ -10,45 +10,45 @@ import RxDataSources
 import RxSwift
 import UIKit
 
-// MARK: LBListController
-final class LBListController: UITableViewController {
+// MARK: FLListController
+final class FLListController: UITableViewController {
     
     // MARK: DI Variable
-    let disposeBag = DisposeBag()
-    lazy var listView: LBListView = DefaultLBListView()
-    var viewModel: LBListViewModel!
+    lazy var disposeBag = DisposeBag()
+    lazy var _view: FLListView = DefaultFLListView()
+    var viewModel: FLListViewModel!
     
     // MARK: Common Variable
     let _isTableEditing = BehaviorRelay<Bool>(value: false)
-    let _selectedLabels = BehaviorRelay<[LabelDomain]>(value: [])
+    let _selectedLabels = BehaviorRelay<[FlagDomain]>(value: [])
     
     // MARK: Create Function
-    class func create(with viewModel: LBListViewModel) -> LBListController {
-        let controller = LBListController()
+    class func create(with viewModel: FLListViewModel) -> FLListController {
+        let controller = FLListController()
         controller.viewModel = viewModel
         return controller
     }
     
     // MARK: UIViewController Function
     override func loadView() {
-        self.listView.tableView.rx
+        self._view.tableView.rx
             .setDelegate(self)
             .disposed(by: self.disposeBag)
-        self.view = self.listView.tableView
+        self.view = self._view.tableView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: self._selectedLabels,
-                                                            barButtonItem: self.listView.selectedCountBarButtonItem)
-        self.bindCreateBarButtonItemTap(barButtonItem: self.listView.createBarButtonItem)
-        self.bindDoneBarButtonItemTap(barButtonItem: self.listView.doneBarButtonItem)
-        self.bindTableViewModelDeselected(tableView: self.listView.tableView)
-        self.bindTableViewModelSelected(tableView: self.listView.tableView)
-        self.bindTableViewItemSelected(tableView: self.listView.tableView)
-        self.bindTableViewItemDeselected(tableView: self.listView.tableView)
-        self.bindTableViewWillDisplayCell(tableView: self.listView.tableView)
-        self.bindShowedLabelsToTableView(showedLabels: self.viewModel.showedLabels, tableView: self.listView.tableView)
+                                                            barButtonItem: self._view.selectedCountBarButtonItem)
+        self.bindCreateBarButtonItemTap(barButtonItem: self._view.createBarButtonItem)
+        self.bindDoneBarButtonItemTap(barButtonItem: self._view.doneBarButtonItem)
+        self.bindTableViewModelDeselected(tableView: self._view.tableView)
+        self.bindTableViewModelSelected(tableView: self._view.tableView)
+        self.bindTableViewItemSelected(tableView: self._view.tableView)
+        self.bindTableViewItemDeselected(tableView: self._view.tableView)
+        self.bindTableViewWillDisplayCell(tableView: self._view.tableView)
+        self.bindShowedLabelsToTableView(showedLabels: self.viewModel.showedLabels, tableView: self._view.tableView)
         self.bindShowedLabelsToSelectedLabels(showedLabels: self.viewModel.showedLabels,
                                               selectedLabels: self._selectedLabels)
         self.viewModel.viewDidLoad()
@@ -56,7 +56,7 @@ final class LBListController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.listView.viewWillAppear(navigationController: self.navigationController,
+        self._view.viewWillAppear(navigationController: self.navigationController,
                                      navigationItem: self.navigationItem,
                                      tabBarController: self.tabBarController,
                                      toolbarItems: &self.toolbarItems)
@@ -64,13 +64,13 @@ final class LBListController: UITableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.listView.viewWillDisappear()
+        self._view.viewWillDisappear()
     }
     
 }
 
 // MARK: BindAddBarButtonItemTap
-extension LBListController {
+extension FLListController {
     
     func bindCreateBarButtonItemTap(barButtonItem: UIBarButtonItem) {
         barButtonItem.rx
@@ -85,7 +85,7 @@ extension LBListController {
 }
 
 // MARK: BindDoneBarButtonItemTap
-extension LBListController {
+extension FLListController {
     
     func bindDoneBarButtonItemTap(barButtonItem: UIBarButtonItem) {
         barButtonItem.rx
@@ -104,9 +104,9 @@ extension LBListController {
 }
 
 // MARK: BindSelectedLabelsToSelectedCountBarButtonItem
-extension LBListController {
+extension FLListController {
     
-    func bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: BehaviorRelay<[LabelDomain]>,
+    func bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: BehaviorRelay<[FlagDomain]>,
                                                         barButtonItem: UIBarButtonItem) {
         selectedLabels
             .asDriver()
@@ -124,10 +124,10 @@ extension LBListController {
 }
 
 // MARK: BindShowedLabelsToSelectedLabels
-extension LBListController {
+extension FLListController {
     
-    func bindShowedLabelsToSelectedLabels(showedLabels: PublishRelay<[SelectableDomain<LabelDomain>]>,
-                                          selectedLabels: BehaviorRelay<[LabelDomain]>) {
+    func bindShowedLabelsToSelectedLabels(showedLabels: PublishRelay<[SelectableDomain<FlagDomain>]>,
+                                          selectedLabels: BehaviorRelay<[FlagDomain]>) {
         showedLabels
             .asDriver(onErrorJustReturn: [])
             .map({ $0.filter({ $0.selected }) })
@@ -139,7 +139,7 @@ extension LBListController {
 }
 
 // MARK: BindTableViewItemDeselected
-extension LBListController {
+extension FLListController {
     
     func bindTableViewItemDeselected(tableView: UITableView) {
         tableView.rx
@@ -155,7 +155,7 @@ extension LBListController {
 }
 
 // MARK: BindTableViewItemSelected
-extension LBListController {
+extension FLListController {
     
     func bindTableViewItemSelected(tableView: UITableView) {
         tableView.rx
@@ -173,14 +173,14 @@ extension LBListController {
 }
 
 // MARK: BindTableViewModelDeselected
-extension LBListController {
+extension FLListController {
     
     func bindTableViewModelDeselected(tableView: UITableView) {
         tableView.rx
-            .modelDeselected(SelectableDomain<LabelDomain>.self)
+            .modelDeselected(SelectableDomain<FlagDomain>.self)
             .asDriver()
             .map({ $0.value })
-            .map({ [unowned self] (label) -> [LabelDomain] in
+            .map({ [unowned self] (label) -> [FlagDomain] in
                 var value = self._selectedLabels.value
                 value.remove(firstIndexOf: label)
                 return value
@@ -192,14 +192,14 @@ extension LBListController {
 }
 
 // MARK: BindTableViewModelSelected
-extension LBListController {
+extension FLListController {
     
     func bindTableViewModelSelected(tableView: UITableView) {
         tableView.rx
-            .modelSelected(SelectableDomain<LabelDomain>.self)
+            .modelSelected(SelectableDomain<FlagDomain>.self)
             .asDriver()
             .map({ $0.value })
-            .map({ [unowned self] (label) -> [LabelDomain] in
+            .map({ [unowned self] (label) -> [FlagDomain] in
                 var value = self._selectedLabels.value
                 value.append(label)
                 return value
@@ -211,7 +211,7 @@ extension LBListController {
 }
 
 // MARK: BindTableViewWillDisplayCell
-extension LBListController {
+extension FLListController {
     
     func bindTableViewWillDisplayCell(tableView: UITableView) {
         tableView.rx
@@ -227,7 +227,7 @@ extension LBListController {
     
 }
 
-extension LBListController {
+extension FLListController {
     
     override func tableView(_ tableView: UITableView,
                             trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

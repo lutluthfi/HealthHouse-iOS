@@ -1,5 +1,5 @@
 //
-//  LabelFlowCoordinator.swift
+//  FlagFlowCoordinator.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/05/21.
@@ -9,33 +9,33 @@
 import Foundation
 import UIKit
 
-// MARK: LabelFlowCoordinatorFactory
-public protocol LabelFlowCoordinatorFactory  {
-    func makeCreateController(request: LBCreateViewModelRequest,
-                              response: LBCreateViewModelResponse,
-                              route: LBCreateViewModelRoute) -> UIViewController
-    func makeListController(request: LBListViewModelRequest,
-                            response: LBListViewModelResponse,
-                            route: LBListViewModelRoute) -> UIViewController
+// MARK: FlagFlowCoordinatorFactory
+public protocol FlagFlowCoordinatorFactory  {
+    func makeCreateController(request: FLCreateViewModelRequest,
+                              response: FLCreateViewModelResponse,
+                              route: FLCreateViewModelRoute) -> UIViewController
+    func makeListController(request: FLListViewModelRequest,
+                            response: FLListViewModelResponse,
+                            route: FLListViewModelRoute) -> UIViewController
 }
 
-// MARK: LabelFlowCoordinator
-public protocol LabelFlowCoordinator {
-    func start(with instructor: LabelFlowCoordinatorInstructor)
+// MARK: FlagFlowCoordinator
+public protocol FlagFlowCoordinator {
+    func start(with instructor: FlagFlowCoordinatorInstructor)
 }
 
-// MARK: LabelFlowCoordinatorInstructor
-public enum LabelFlowCoordinatorInstructor {
-    case presentCreateUI(LBCreateViewModelRequest, LBCreateViewModelResponse, UIPresentProperties)
-    case presentListUI(LBListViewModelRequest, LBListViewModelResponse, UIPresentProperties)
+// MARK: FlagFlowCoordinatorInstructor
+public enum FlagFlowCoordinatorInstructor {
+    case presentCreateUI(FLCreateViewModelRequest, FLCreateViewModelResponse, UIPresentProperties)
+    case presentListUI(FLListViewModelRequest, FLListViewModelResponse, UIPresentProperties)
 }
 
-// MARK: DefaultLabelFlowCoordinator
-public final class DefaultLabelFlowCoordinator {
+// MARK: DefaultFlagFlowCoordinator
+public final class DefaultFlagFlowCoordinator {
 
     // MARK: DI Variable
     let navigationController: UINavigationController
-    let controllerFactory: LabelFlowCoordinatorFactory
+    let controllerFactory: FlagFlowCoordinatorFactory
     let flowFactory: FlowCoordinatorFactory
 
     // MARK: Init Funciton
@@ -47,9 +47,9 @@ public final class DefaultLabelFlowCoordinator {
     
 }
 
-extension DefaultLabelFlowCoordinator: LabelFlowCoordinator {
+extension DefaultFlagFlowCoordinator: FlagFlowCoordinator {
     
-    public func start(with instructor: LabelFlowCoordinatorInstructor) {
+    public func start(with instructor: FlagFlowCoordinatorInstructor) {
         switch instructor {
         case .presentCreateUI(let request, let response, let presentProperties):
             self.presentCreateUI(request: request, response: response, presentProperties: presentProperties)
@@ -61,19 +61,19 @@ extension DefaultLabelFlowCoordinator: LabelFlowCoordinator {
 }
 
 // MARK: CreateUI
-extension DefaultLabelFlowCoordinator {
+extension DefaultFlagFlowCoordinator {
     
-    private func initCreateUI(request: LBCreateViewModelRequest,
-                              response: LBCreateViewModelResponse) -> UIViewController {
-        let route = LBCreateViewModelRoute()
+    private func initCreateUI(request: FLCreateViewModelRequest,
+                              response: FLCreateViewModelResponse) -> UIViewController {
+        let route = FLCreateViewModelRoute()
         let controller = self.controllerFactory.makeCreateController(request: request,
                                                                      response: response,
                                                                      route: route)
         return controller
     }
     
-    func presentCreateUI(request: LBCreateViewModelRequest,
-                         response: LBCreateViewModelResponse,
+    func presentCreateUI(request: FLCreateViewModelRequest,
+                         response: FLCreateViewModelResponse,
                          presentProperties: UIPresentProperties) {
         guaranteeMainThread {
             let controller = self.initCreateUI(request: request, response: response)
@@ -85,8 +85,8 @@ extension DefaultLabelFlowCoordinator {
         }
     }
     
-    func pushToCreateUI(request: LBCreateViewModelRequest,
-                        response: LBCreateViewModelResponse) {
+    func pushToCreateUI(request: FLCreateViewModelRequest,
+                        response: FLCreateViewModelResponse) {
         guaranteeMainThread {
             let controller = self.initCreateUI(request: request, response: response)
             self.navigationController.pushWithSmart(to: controller)
@@ -96,22 +96,22 @@ extension DefaultLabelFlowCoordinator {
 }
 
 // MARK: ListUI
-extension DefaultLabelFlowCoordinator {
+extension DefaultFlagFlowCoordinator {
     
-    private func initListUI(request: LBListViewModelRequest, response: LBListViewModelResponse) -> UIViewController {
-        let presentLBCreateUI = { (request: LBCreateViewModelRequest, response: LBCreateViewModelResponse) in
-            let instructor = LabelFlowCoordinatorInstructor.presentCreateUI(request, response, .standard)
+    private func initListUI(request: FLListViewModelRequest, response: FLListViewModelResponse) -> UIViewController {
+        let presentLBCreateUI = { (request: FLCreateViewModelRequest, response: FLCreateViewModelResponse) in
+            let instructor = FlagFlowCoordinatorInstructor.presentCreateUI(request, response, .standard)
             self.start(with: instructor)
         }
-        let route = LBListViewModelRoute(presentLBCreateUI: presentLBCreateUI)
+        let route = FLListViewModelRoute(presentLBCreateUI: presentLBCreateUI)
         let controller = self.controllerFactory.makeListController(request: request,
                                                                    response: response,
                                                                    route: route)
         return controller
     }
     
-    func presentListUI(request: LBListViewModelRequest,
-                       response: LBListViewModelResponse,
+    func presentListUI(request: FLListViewModelRequest,
+                       response: FLListViewModelResponse,
                        presentProperties: UIPresentProperties) {
         guaranteeMainThread {
             let controller = self.initListUI(request: request, response: response)

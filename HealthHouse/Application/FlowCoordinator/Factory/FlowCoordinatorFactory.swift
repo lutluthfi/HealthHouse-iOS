@@ -11,13 +11,13 @@ public protocol FlowCoordinatorFactory {
     
     func makeActivityFlowCoordinator() -> ActivityFlowCoordinator
     
-    func makeLocationFlowCoordinator() -> LocationFlowCoordinator
+    func makeFlagFlowCoordinator() -> FlagFlowCoordinator
     
     func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator
     
-    func makeLabelFlowCoordinator() -> LabelFlowCoordinator
-    
     func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator
+    
+    func makeLocationFlowCoordinator() -> LocationFlowCoordinator
     
     func makeProfileFlowCoordinator() -> ProfileFlowCoordinator
     

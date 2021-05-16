@@ -1,5 +1,5 @@
 //
-//  LBListView.swift
+//  FLListView.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/05/21.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-// MARK: LBListViewFunction
-protocol LBListViewFunction {
+// MARK: FLListViewFunction
+protocol FLListViewFunction {
     func viewWillAppear(navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?,
@@ -16,25 +16,27 @@ protocol LBListViewFunction {
     func viewWillDisappear()
 }
 
-// MARK: LBListViewSubview
-protocol LBListViewSubview {
+// MARK: FLListViewSubview
+protocol FLListViewSubview {
     var createBarButtonItem: UIBarButtonItem { get }
     var doneBarButtonItem: UIBarButtonItem { get }
     var selectedCountBarButtonItem: UIBarButtonItem { get }
     var tableView: UITableView { get }
 }
 
-// MARK: LBListViewVariable
-protocol LBListViewVariable {
+// MARK: FLListViewVariable
+protocol FLListViewVariable {
+    var asView: UIView { get }
 }
 
-// MARK: LBListView
-protocol LBListView: LBListViewFunction, LBListViewSubview, LBListViewVariable { }
+// MARK: FLListView
+protocol FLListView: FLListViewFunction, FLListViewSubview, FLListViewVariable { }
 
-// MARK: DefaultLBListView
-final class DefaultLBListView: UIView, LBListView {
+// MARK: DefaultFLListView
+final class DefaultFLListView: UIView, FLListView {
 
-    // MARK: LBListViewSubview
+    // MARK: FLListViewSubview
+    lazy var asView: UIView = (self as UIView)
     lazy var createBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: nil)
     lazy var doneBarButtonItem = UIBarButtonItem.done
     lazy var selectedCountBarButtonItem: UIBarButtonItem = {
@@ -55,7 +57,7 @@ final class DefaultLBListView: UIView, LBListView {
         return tableView
     }()
 
-    // MARK: LBListViewVariable
+    // MARK: FLListViewVariable
     
     // MARK: Init Function
     required init?(coder: NSCoder) {
@@ -77,7 +79,7 @@ final class DefaultLBListView: UIView, LBListView {
 }
 
 // MARK: Internal Function
-extension DefaultLBListView {
+extension DefaultFLListView {
     
     func subviewWillAdd() {
     }
@@ -94,14 +96,14 @@ extension DefaultLBListView {
 }
 
 // MARK: LBListViewFunction
-extension DefaultLBListView {
+extension DefaultFLListView {
     
     func viewWillAppear(navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?,
                         toolbarItems: inout [UIBarButtonItem]?) {
         navigationController?.isToolbarHidden = false
-        navigationItem.title = "Label"
+        navigationItem.title = "Flag"
         navigationItem.leftBarButtonItem = self.createBarButtonItem
         navigationItem.rightBarButtonItem = self.doneBarButtonItem
         toolbarItems = [.flexible, self.selectedCountBarButtonItem, .flexible]

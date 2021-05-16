@@ -1,5 +1,5 @@
 //
-//  LBCreateView.swift
+//  FLCreateView.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 11/05/21.
@@ -10,32 +10,34 @@ import RxCocoa
 import RxSwift
 import UIKit
 
-// MARK: LBCreateViewFunction
-protocol LBCreateViewFunction {
+// MARK: FLCreateViewFunction
+protocol FLCreateViewFunction {
     func viewWillAppear(navigationBar: UINavigationBar?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?)
     func viewWillDisappear()
 }
 
-// MARK: LBCreateViewSubview
-protocol LBCreateViewSubview {
+// MARK: FLCreateViewSubview
+protocol FLCreateViewSubview {
     var createBarButtonItem: UIBarButtonItem { get }
     var tableView: UITableView { get }
 }
 
-// MARK: LBCreateViewVariable
-protocol LBCreateViewVariable {
+// MARK: FLCreateViewVariable
+protocol FLCreateViewVariable {
+    var asView: UIView { get }
     var sections: BehaviorRelay<[SectionDomain<RowDomain>]> { get }
 }
 
-// MARK: LBCreateView
-protocol LBCreateView: LBCreateViewFunction, LBCreateViewSubview, LBCreateViewVariable { }
+// MARK: FLCreateView
+protocol FLCreateView: FLCreateViewFunction, FLCreateViewSubview, FLCreateViewVariable { }
 
-// MARK: DefaultLBCreateView
-final class DefaultLBCreateView: UIView, LBCreateView {
+// MARK: DefaultFLCreateView
+final class DefaultFLCreateView: UIView, FLCreateView {
 
-    // MARK: LBCreateViewSubview
+    // MARK: FLCreateViewSubview
+    lazy var asView: UIView = (self as UIView)
     lazy var createBarButtonItem = UIBarButtonItem(title: "Create",
                                                    style: .done,
                                                    target: self,
@@ -47,7 +49,7 @@ final class DefaultLBCreateView: UIView, LBCreateView {
         return tableView
     }()
 
-    // MARK: LBCreateViewVariable
+    // MARK: FLCreateViewVariable
     lazy var sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [SectionDomain(footer: "The new label must be unique. Respresents a collection of activities that have been or will be created to make it easier for you to filter activities.",
                                                                                         header: "Title",
                                                                                         items: [.title])])
@@ -72,7 +74,7 @@ final class DefaultLBCreateView: UIView, LBCreateView {
 }
 
 // MARK: Internal Function
-extension DefaultLBCreateView {
+extension DefaultFLCreateView {
     
     func subviewWillAdd() {
     }
@@ -88,13 +90,13 @@ extension DefaultLBCreateView {
     
 }
 
-// MARK: LBCreateViewFunction
-extension DefaultLBCreateView {
+// MARK: FLCreateViewFunction
+extension DefaultFLCreateView {
     
     func viewWillAppear(navigationBar: UINavigationBar?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?) {
-        navigationItem.title = "New Label"
+        navigationItem.title = "New Flag"
         navigationItem.rightBarButtonItem = self.createBarButtonItem
     }
     

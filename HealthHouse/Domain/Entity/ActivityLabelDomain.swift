@@ -14,6 +14,6 @@ public struct ActivityLabelDomain: EntityDomain {
     public let updatedAt: Int64
     
     public let activity: ActivityDomain
-    public let labels: [LabelDomain]
+    public let labels: [FlagDomain]
     
 }

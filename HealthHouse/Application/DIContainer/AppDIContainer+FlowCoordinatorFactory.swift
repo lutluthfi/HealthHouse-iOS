@@ -21,8 +21,8 @@ extension AppDIContainer: FlowCoordinatorFactory {
         return DefaultHealthDiaryFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeLabelFlowCoordinator() -> LabelFlowCoordinator {
-        return DefaultLabelFlowCoordinator(navigationController: self.navigationController, factory: self)
+    public func makeFlagFlowCoordinator() -> FlagFlowCoordinator {
+        return DefaultFlagFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
     public func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator {

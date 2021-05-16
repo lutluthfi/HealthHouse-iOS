@@ -12,7 +12,7 @@ public typealias ControllerFactory =
     ActivityFlowCoordinatorFactory&
     LocationFlowCoordinatorFactory&
     HealthDiaryFlowCoordinatorFactory&
-    LabelFlowCoordinatorFactory&
+    FlagFlowCoordinatorFactory&
     LaunchFlowCoordinatorFactory&
     ProfileFlowCoordinatorFactory
 

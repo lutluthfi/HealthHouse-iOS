@@ -17,7 +17,7 @@
         <attribute name="labelsID" optional="YES" attributeType="Transformable"/>
         <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="LabelEntity" representedClassName="LabelEntity" syncable="YES">
+    <entity name="FlagEntity" representedClassName="FlagEntity" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="hexcolor" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -45,10 +45,10 @@
         <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="ActivityEntity" positionX="-63" positionY="-18" width="128" height="164"/>
-        <element name="ActivityLabelEntity" positionX="-45" positionY="99" width="128" height="89"/>
-        <element name="LabelEntity" positionX="-63" positionY="54" width="128" height="89"/>
-        <element name="MedicationEntity" positionX="-36" positionY="81" width="128" height="164"/>
-        <element name="ProfileEntity" positionX="-54" positionY="63" width="128" height="149"/>
+        <element name="ActivityEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="ActivityLabelEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="FlagEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="MedicationEntity" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="ProfileEntity" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

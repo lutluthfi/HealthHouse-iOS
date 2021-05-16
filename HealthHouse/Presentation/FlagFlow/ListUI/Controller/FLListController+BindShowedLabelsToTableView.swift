@@ -1,5 +1,5 @@
 //
-//  LBListController+BindShowedLabelsToTableView.swift
+//  FLListController+BindShowedLabelsToTableView.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 08/05/21.
@@ -10,9 +10,9 @@ import RxDataSources
 import RxSwift
 
 // MARK: BindShowedLabelsToTableView
-extension LBListController {
+extension FLListController {
     
-    func bindShowedLabelsToTableView(showedLabels: PublishRelay<[SelectableDomain<LabelDomain>]>,
+    func bindShowedLabelsToTableView(showedLabels: PublishRelay<[SelectableDomain<FlagDomain>]>,
                                      tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         showedLabels
@@ -22,8 +22,8 @@ extension LBListController {
             .disposed(by: self.disposeBag)
     }
     
-    func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<LabelDomain>>> {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<LabelDomain>>>
+    func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<FlagDomain>>> {
+        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<FlagDomain>>>
         { (_, tableView, index, item) -> UITableViewCell in
             let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
             cell.selectionStyle = .none
@@ -33,7 +33,7 @@ extension LBListController {
                 tableView.deselectRow(at: index, animated: true)
             }
             cell.textLabel?.text = item.value.name
-            let circleBadgeFill = UIImage(systemName: "tag.circle.fill")
+            let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
             cell.imageView?.image = circleBadgeFill
             cell.imageView?.tintColor = UIColor(hex: item.value.hexcolor)
             return cell

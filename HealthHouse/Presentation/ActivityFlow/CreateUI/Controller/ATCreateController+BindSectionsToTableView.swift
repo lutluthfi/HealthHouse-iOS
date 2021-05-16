@@ -24,11 +24,11 @@ extension ATCreateController {
     private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>> {
         let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>>(animationConfiguration: AnimationConfiguration(insertAnimation: .bottom, reloadAnimation: .bottom, deleteAnimation: .bottom))
         { [unowned self] (_, tableView, _, item) -> UITableViewCell in
-            if let label = item.value as? LabelDomain {
+            if let label = item.value as? FlagDomain {
                 let cell = makeDefaultTableCell()
                 cell.selectionStyle = .none
                 cell.textLabel?.text = label.name
-                let circleBadgeFill = UIImage(systemName: "tag.circle.fill")
+                let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
                 cell.imageView?.image = circleBadgeFill
                 cell.imageView?.tintColor = UIColor(hex: label.hexcolor)
                 return cell
