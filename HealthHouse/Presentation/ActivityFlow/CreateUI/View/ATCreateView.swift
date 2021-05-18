@@ -49,7 +49,7 @@ final class DefaultATCreateView: UIView, ATCreateView {
                                                                      SectionDomain(header: "Date and Time", items: [.date, .time]),
                                                                      SectionDomain(header: "Health Practition", items: [.practitioner, .location]),
                                                                      SectionDomain(header: "Attachment", items: [.attachment]),
-                                                                     SectionDomain(header: "Label", items: [.label]),
+                                                                     SectionDomain(header: "Flag", items: [.flag]),
                                                                      SectionDomain(header: "Explanation", items: [.explanation])])
     
     // MARK: Init Function

@@ -1,5 +1,5 @@
 //
-//  LocalLabelStorageTests.swift
+//  LocalFlagStorageTests.swift
 //  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 02/05/21.
@@ -10,9 +10,9 @@ import RxSwift
 import XCTest
 @testable import Health_House
 
-class LocalLabelStorageTests: XCTestCase {
+class LocalFlagStorageTests: XCTestCase {
     
-    private lazy var sut = self.makeLocalLabelStorageSUT()
+    private lazy var sut = self.makeLocalFlagStorageSUT()
     private var insertedLabel: FlagDomain!
     
     override func setUp() {
@@ -28,7 +28,7 @@ class LocalLabelStorageTests: XCTestCase {
     
 }
 
-extension LocalLabelStorageTests {
+extension LocalFlagStorageTests {
     
     func test_fetchAllInCoreData_shouldFetchedInCoreData() throws {
         let result = try self.sut.localLabelStorage
@@ -40,12 +40,12 @@ extension LocalLabelStorageTests {
         XCTAssertTrue(result.contains(self.insertedLabel))
     }
     
-    func test_insertIntoCoreData_whenLabelHasCoreID_shouldInsertedIntoCoreData() throws {
+    func test_insertIntoCoreData_whenFlagHasCoreID_shouldInsertedIntoCoreData() throws {
         let updatedObject = FlagDomain(coreID: self.insertedLabel.coreID,
-                                        createdAt: self.insertedLabel.createdAt,
-                                        updatedAt: self.insertedLabel.updatedAt,
-                                        hexcolor: "000",
-                                        name: "Label Updated Test")
+                                       createdAt: self.insertedLabel.createdAt,
+                                       updatedAt: self.insertedLabel.updatedAt,
+                                       hexcolor: "000",
+                                       name: "Label Updated Test")
         
         let result = try self.sut.localLabelStorage
             .insertIntoCoreData(updatedObject)
@@ -57,7 +57,7 @@ extension LocalLabelStorageTests {
         XCTAssertEqual(updatedObject.name, result.name)
     }
     
-    func test_insertIntoCoreData_whenLabelHasNotCoreID_shouldInsertedIntoCoreData() throws {
+    func test_insertIntoCoreData_whenFlagHasNotCoreID_shouldInsertedIntoCoreData() throws {
         let insertedObject = FlagDomain.stubElement
         
         let result = try self.sut.localLabelStorage
@@ -69,7 +69,7 @@ extension LocalLabelStorageTests {
         XCTAssertEqual(insertedObject.name, result.name)
     }
     
-    func test_removeInCoreData_whenLabelInCoreData_thenRemovedInCoreData() throws {
+    func test_removeInCoreData_whenFlagInCoreData_thenRemovedInCoreData() throws {
         let removedObject = self.insertedLabel!
         
         let result = try self.sut.localLabelStorage
@@ -80,7 +80,7 @@ extension LocalLabelStorageTests {
         XCTAssertEqual(removedObject.coreID, result.coreID)
     }
     
-    func test_removeInCoreData_whenLabelNotInCoreData_thenThrowsError() throws {
+    func test_removeInCoreData_whenFlagNotInCoreData_thenThrowsError() throws {
         let removedObject = FlagDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.localLabelStorage
@@ -94,8 +94,8 @@ extension LocalLabelStorageTests {
     
 }
 
-// MARK: LocalLabelStorageSUT
-public struct LocalLabelStorageSUT {
+// MARK: LocalFlagStorageSUT
+public struct LocalFlagStorageSUT {
     
     public let semaphore: DispatchSemaphore
     public let disposeBag: DisposeBag
@@ -106,15 +106,15 @@ public struct LocalLabelStorageSUT {
 
 public extension XCTest {
     
-    func makeLocalLabelStorageSUT() -> LocalLabelStorageSUT {
+    func makeLocalFlagStorageSUT() -> LocalFlagStorageSUT {
         let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
         let coreDataStorage = self.makeCoreDataStorageMock()
         let localActivityStorage = DefaultLocalFlagStorage(coreDataStorage: coreDataStorage)
-        return LocalLabelStorageSUT(semaphore: semaphore,
-                                    disposeBag: disposeBag,
-                                    coreDataStorage: coreDataStorage,
-                                    localLabelStorage: localActivityStorage)
+        return LocalFlagStorageSUT(semaphore: semaphore,
+                                   disposeBag: disposeBag,
+                                   coreDataStorage: coreDataStorage,
+                                   localLabelStorage: localActivityStorage)
     }
     
 }

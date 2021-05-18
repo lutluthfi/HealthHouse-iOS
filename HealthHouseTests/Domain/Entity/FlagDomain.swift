@@ -5,8 +5,49 @@
 //  Created by Arif Luthfiansyah on 02/05/21.
 //
 
-import Foundation
+import XCTest
 @testable import Health_House
+
+// MARK: StubCollection
+extension FlagDomain {
+    
+    @discardableResult
+    static func stubCollectionCoreData(coreDataStorage: CoreDataStorageSharedMock) -> [FlagDomain] {
+        let now = Date()
+        let flags = [FlagDomain(coreID: nil,
+                                createdAt: now.toInt64(),
+                                updatedAt: now.toInt64(),
+                                hexcolor: UIColor.red.hex,
+                                name: "Flag Stub Collection 1"),
+                     FlagDomain(coreID: nil,
+                                createdAt: now.toInt64(),
+                                updatedAt: now.toInt64(),
+                                hexcolor: UIColor.red.hex,
+                                name: "Flag Stub Collection 2"),
+                     FlagDomain(coreID: nil,
+                                createdAt: now.toInt64(),
+                                updatedAt: now.toInt64(),
+                                hexcolor: UIColor.red.hex,
+                                name: "Flag Stub Collection 3"),
+                     FlagDomain(coreID: nil,
+                                createdAt: now.toInt64(),
+                                updatedAt: now.toInt64(),
+                                hexcolor: UIColor.red.hex,
+                                name: "Flag Stub Collection 4"),
+                     FlagDomain(coreID: nil,
+                                createdAt: now.toInt64(),
+                                updatedAt: now.toInt64(),
+                                hexcolor: UIColor.red.hex,
+                                name: "Flag Stub Collection 5")]
+        let entities = flags.map { FlagEntity($0, insertInto: coreDataStorage.context) }
+        coreDataStorage.saveContext()
+        let _flags = entities
+            .map { $0.toDomain() }
+            .sorted(by: { $0.name < $1.name })
+        return _flags
+    }
+    
+}
 
 // MARK: StubElement
 extension FlagDomain {

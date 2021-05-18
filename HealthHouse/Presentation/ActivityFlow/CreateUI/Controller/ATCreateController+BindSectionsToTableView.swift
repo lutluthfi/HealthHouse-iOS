@@ -61,7 +61,7 @@ extension ATCreateController {
                 self.bindTextViewDidChangeToPlaceholderLabelHidden(textView: cell.textView,
                                                                    label: cell.placeholderLabel)
                 return cell
-            case .label:
+            case .flag:
                 let cell = self.makeSubtitleTableCell()
                 cell.selectionStyle = .none
                 cell.textLabel?.text = item.identify

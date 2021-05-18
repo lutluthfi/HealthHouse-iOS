@@ -55,6 +55,7 @@ extension DefaultLocalActivityStorage {
                 observer.onError(coreDataError)
                 return Disposables.create()
             }
+            
             do {
                 let context = self.coreDataStorage.context
                 let request: NSFetchRequest = ActivityEntity.fetchRequest()
@@ -67,6 +68,7 @@ extension DefaultLocalActivityStorage {
                 let coreDataError = CoreDataStorageError.readError(error)
                 observer.onError(coreDataError)
             }
+            
             return Disposables.create()
         }
         .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
@@ -154,8 +156,8 @@ extension DefaultLocalActivityStorage {
             
             do {
                 let context = self.coreDataStorage.context
-                let removedObject = context.object(with: coreID)
-                context.delete(removedObject)
+                let removedEntity = context.object(with: coreID)
+                context.delete(removedEntity)
                 try context.save()
                 observer.onNext(activity)
                 observer.onCompleted()

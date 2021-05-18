@@ -31,11 +31,11 @@ public struct RowDomain {
     public static var dateOfBirth: RowDomain {
         return RowDomain(identify: "Date of Birth", value: "Date of Birth")
     }
+    public static var flag: RowDomain {
+        return RowDomain(identify: "Flag", value: [])
+    }
     public static var gender: RowDomain {
         return RowDomain(identify: "Gender", value: "Gender")
-    }
-    public static var label: RowDomain {
-        return RowDomain(identify: "Label", value: [])
     }
     public static var location: RowDomain {
         return RowDomain(identify: "Location", value: "Location")

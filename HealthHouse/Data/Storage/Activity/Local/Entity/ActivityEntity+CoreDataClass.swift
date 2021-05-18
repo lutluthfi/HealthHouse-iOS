@@ -57,6 +57,7 @@ extension ActivityEntity {
             return ActivityEntity(newObject, insertInto: context)
         }
         self.updatedAt = Date().toInt64()
+        
         self.doDate = newObject.doDate
         self.explanation = newObject.explanation
         self.isArchived = newObject.isArchived

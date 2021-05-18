@@ -114,7 +114,7 @@ extension FLListController {
             .map({
                 let isGreaterThanOne = $0 > 1
                 let isGreaterThanZero = $0 > 0
-                let label = isGreaterThanOne ? "Labels" : "Label"
+                let label = isGreaterThanOne ? "Flags" : "Flag"
                 return isGreaterThanZero ? "\($0) \(label) Selected" : ""
             })
             .drive(barButtonItem.rx.title)

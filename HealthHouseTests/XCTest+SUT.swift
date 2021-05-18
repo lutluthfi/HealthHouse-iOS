@@ -41,9 +41,13 @@ public extension XCTest {
         let activityEntities = try! context.fetch(activityRequest)
         activityEntities.forEach { context.delete($0) }
         
-        let labelRequest: NSFetchRequest = FlagEntity.fetchRequest()
-        let labelEntities = try! context.fetch(labelRequest)
-        labelEntities.forEach { context.delete($0) }
+        let flagRequest: NSFetchRequest = FlagEntity.fetchRequest()
+        let flagEntities = try! context.fetch(flagRequest)
+        flagEntities.forEach { context.delete($0) }
+        
+        let activityFlagRequest: NSFetchRequest = ActivityFlagEntity.fetchRequest()
+        let activityFlagEntities = try! context.fetch(activityFlagRequest)
+        activityFlagEntities.forEach { context.delete($0) }
         
         coreDataStorage.saveContext()
     }

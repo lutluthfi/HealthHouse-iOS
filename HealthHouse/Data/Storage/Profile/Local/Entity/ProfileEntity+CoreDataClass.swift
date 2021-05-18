@@ -52,12 +52,14 @@ extension ProfileEntity {
             return ProfileEntity(newObject, insertInto: context)
         }
         self.updatedAt = Date().toInt64()
+        
         self.dateOfBirth = newObject.dateOfBirth
         self.firstName = newObject.firstName
         self.gender = newObject.gender.rawValue
         self.lastName = newObject.lastName
         self.mobileNumber = newObject.mobileNumbder
         self.photoBase64String = newObject.photoBase64String
+        
         return self
     }
     

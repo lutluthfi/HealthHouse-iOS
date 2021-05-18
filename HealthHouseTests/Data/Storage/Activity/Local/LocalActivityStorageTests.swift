@@ -146,31 +146,31 @@ extension LocalActivityStorageTests {
     func test_insertIntoCoreData_whenActivityNotAlreadyInserted_thenInsertedIntoCoreDataWithCreate() throws {
         let timeout = self.sut.coreDataStorage.insertElementTimeout
         
-        let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
+        let activity = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
         
         let result = try self.sut.localActivityStorage
-            .insertIntoCoreData(object)
+            .insertIntoCoreData(activity)
             .toBlocking(timeout: timeout)
             .single()
         
         XCTAssertNotNil(result.coreID)
-        XCTAssertEqual(result.title, object.title)
+        XCTAssertEqual(result.title, activity.title)
     }
     
     func test_insertIntoCoreData_whenActivityAlreadyInserted_thenInsertedIntoCoreDataWithUpdate() throws {
         let timeout = self.sut.coreDataStorage.insertElementTimeout
         
-        let object = self.insertedActivity!
-        let updateObject = ActivityDomain(coreID: object.coreID,
-                                          createdAt: object.createdAt,
-                                          updatedAt: object.updatedAt,
-                                          doDate: object.doDate,
+        let activity = try XCTUnwrap(self.insertedActivity)
+        let updateObject = ActivityDomain(coreID: activity.coreID,
+                                          createdAt: activity.createdAt,
+                                          updatedAt: activity.updatedAt,
+                                          doDate: activity.doDate,
                                           explanation: "Activity Updated Test",
                                           isArchived: false,
                                           isPinned: false,
                                           photoFileNames: [],
                                           title: "Activity Updated Test",
-                                          profile: object.profile)
+                                          profile: activity.profile)
         
         let result = try self.sut.localActivityStorage
             .insertIntoCoreData(updateObject)
@@ -180,7 +180,7 @@ extension LocalActivityStorageTests {
         XCTAssertNotNil(result.coreID)
         XCTAssertEqual(result.coreID, updateObject.coreID)
         XCTAssertEqual(result.title, updateObject.title)
-        XCTAssertNotEqual(result.title, object.title)
+        XCTAssertNotEqual(result.title, activity.title)
     }
     
 }
@@ -202,10 +202,10 @@ extension LocalActivityStorageTests {
     func test_removeInCoreData_whenActivityHasCoreID_thenThrowsCoreDataDeleteError() {
         let timeout = self.sut.coreDataStorage.removeElementTimeout
         
-        let object = ActivityDomain.stubRemoveElementCoreData(coreDataStorage: self.sut.coreDataStorage).0
+        let activity = ActivityDomain.stubRemoveElementCoreData(coreDataStorage: self.sut.coreDataStorage).0
         
         XCTAssertThrowsError(try self.sut.localActivityStorage
-                                .removeInCoreData(object)
+                                .removeInCoreData(activity)
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
@@ -216,24 +216,21 @@ extension LocalActivityStorageTests {
 }
 
 // MARK: LocalActivityStorageSUT
-public struct LocalActivityStorageSUT {
+struct LocalActivityStorageSUT {
     
-    public let semaphore: DispatchSemaphore
-    public let disposeBag: DisposeBag
-    public let coreDataStorage: CoreDataStorageSharedMock
-    public let localActivityStorage: LocalActivityStorage
+    let disposeBag: DisposeBag
+    let coreDataStorage: CoreDataStorageSharedMock
+    let localActivityStorage: LocalActivityStorage
     
 }
 
-public extension XCTest {
+extension XCTest {
     
     func makeLocalActivityStorageSUT() -> LocalActivityStorageSUT {
-        let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
         let coreDataStorage = self.makeCoreDataStorageMock()
         let localActivityStorage = DefaultLocalActivityStorage(coreDataStorage: coreDataStorage)
-        return LocalActivityStorageSUT(semaphore: semaphore,
-                                       disposeBag: disposeBag,
+        return LocalActivityStorageSUT(disposeBag: disposeBag,
                                        coreDataStorage: coreDataStorage,
                                        localActivityStorage: localActivityStorage)
     }

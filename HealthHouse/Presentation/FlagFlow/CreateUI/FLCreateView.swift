@@ -50,7 +50,7 @@ final class DefaultFLCreateView: UIView, FLCreateView {
     }()
 
     // MARK: FLCreateViewVariable
-    lazy var sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [SectionDomain(footer: "The new label must be unique. Respresents a collection of activities that have been or will be created to make it easier for you to filter activities.",
+    lazy var sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [SectionDomain(footer: "The new flag must be unique. Respresents a collection of activities that have been or will be created to make it easier for you to filter activities.",
                                                                                         header: "Title",
                                                                                         items: [.title])])
     
