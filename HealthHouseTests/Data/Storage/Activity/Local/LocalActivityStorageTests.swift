@@ -39,7 +39,7 @@ class LocalActivityStorageTests: XCTestCase {
     }
     
     private func removeStub() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
     }
 
 }

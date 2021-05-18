@@ -8,7 +8,5 @@
 import Foundation
 
 public protocol CountryDialingCodeUseCaseFactory {
-    
     func makeFetchCountryDialingCodeUseCase() -> FetchCountryDialingCodeUseCase
-    
 }

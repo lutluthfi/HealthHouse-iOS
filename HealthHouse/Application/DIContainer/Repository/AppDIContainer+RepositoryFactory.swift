@@ -17,6 +17,11 @@ extension AppDIContainer: RepositoryFactory {
         return DefaultCountryDialingCodeRepository(remoteCountryDialingCodeStorage: self.remoteCountryDialingCodeStorage)
     }
     
+    public func makeFlagRepository() -> FlagRepository {
+        return DefaultFlagRepository(localActivityFlagStorage: self.localActivityFlagStorage,
+                                     localFlagStorage: self.localFlagStorage)
+    }
+    
     public func makeProfileRepository() -> ProfileRepository {
         return DefaultProfileRepository(localProfileStorage: self.localProfileStorage)
     }

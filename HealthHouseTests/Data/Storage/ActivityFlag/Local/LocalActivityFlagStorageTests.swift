@@ -33,7 +33,7 @@ class LocalActivityFlagStorageTests: XCTestCase {
     }
     
     override func tearDown() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
         super.tearDown()
     }
     
@@ -226,9 +226,8 @@ struct LocalActivityFlagStorageSUT {
 
 extension XCTest {
     
-    func makeLocalActivityFlagStorageSUT() -> LocalActivityFlagStorageSUT {
+    func makeLocalActivityFlagStorageSUT(coreDataStorage: CoreDataStorageSharedMock = CoreDataStorageMock()) -> LocalActivityFlagStorageSUT {
         let disposeBag = self.makeDisposeBag()
-        let coreDataStorage = self.makeCoreDataStorageMock()
         let localActivityFlagStorage = DefaultLocalActivityFlagStorage(coreDataStorage: coreDataStorage)
         return LocalActivityFlagStorageSUT(disposeBag: disposeBag,
                                            coreDataStorage: coreDataStorage,

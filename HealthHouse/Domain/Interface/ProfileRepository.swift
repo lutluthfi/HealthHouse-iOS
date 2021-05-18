@@ -14,7 +14,7 @@ public protocol ProfileRepository {
     
     func fetchProfile(in storagePoint: StoragePoint) -> Observable<ProfileDomain>
     
-    func insertProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain>
+    func insertUpdateProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain>
     
     func removeProfile(_ profile: ProfileDomain, in storagePoint: StoragePoint) -> Observable<ProfileDomain>
     

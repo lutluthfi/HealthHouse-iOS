@@ -21,7 +21,7 @@ class ProfileRepositoryTests: XCTestCase {
     }
     
     override func tearDown() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
         super.tearDown()
     }
     
@@ -57,7 +57,7 @@ extension ProfileRepositoryTests {
     
     func test_fetchAllProfile_whenStorageUserDefault_thenThrowsError() throws {
         XCTAssertThrowsError(try self.sut.repository
-                                .fetchAllProfile(in: .userDefault)
+                                .fetchAllProfile(in: .userDefaults)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
@@ -69,7 +69,7 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         let result = try self.sut.repository
-            .insertProfile(object, into: .coreData)
+            .insertUpdateProfile(object, into: .coreData)
             .toBlocking()
             .single()
         
@@ -81,11 +81,11 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.repository
-                                .insertProfile(object, into: .remote)
+                                .insertUpdateProfile(object, into: .remote)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
-            XCTAssertEqual(error.localizedDescription, "ProfileRepository -> insertProfile() is not available for Remote")
+            XCTAssertEqual(error.localizedDescription, "ProfileRepository -> insertUpdateProfile() is not available for Remote")
         }
     }
     
@@ -93,7 +93,7 @@ extension ProfileRepositoryTests {
         let object = self.insertedProfile!
         
         let result = try self.sut.repository
-            .insertProfile(object, into: .userDefault)
+            .insertUpdateProfile(object, into: .userDefaults)
             .toBlocking()
             .single()
         
@@ -104,7 +104,7 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.repository
-                                .insertProfile(object, into: .userDefault)
+                                .insertUpdateProfile(object, into: .userDefaults)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
@@ -139,7 +139,7 @@ extension ProfileRepositoryTests {
         let object = self.insertedProfile!
         
         XCTAssertThrowsError(try self.sut.repository
-                                .removeProfile(object, in: .userDefault)
+                                .removeProfile(object, in: .userDefaults)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)

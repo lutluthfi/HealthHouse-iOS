@@ -29,7 +29,7 @@ public extension XCTest {
         return UserDefaults(suiteName: #file)!
     }
     
-    func removeCoreDataStorage() {
+    func clearCoreDataStorage() {
         let coreDataStorage = self.makeCoreDataStorageMock()
         let context = coreDataStorage.context
         

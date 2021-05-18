@@ -28,7 +28,7 @@ extension DefaultActivityRepository: ActivityRepository {
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity()",
                                                               object: [ActivityDomain].self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity()",
                                                                    object: [ActivityDomain].self)
@@ -44,7 +44,7 @@ extension DefaultActivityRepository: ActivityRepository {
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:)",
                                                               object: [ActivityDomain].self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity(ownedBy:)",
                                                                    object: [ActivityDomain].self)
@@ -61,25 +61,25 @@ extension DefaultActivityRepository: ActivityRepository {
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:, onDoDate:)",
                                                               object: [ActivityDomain].self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity(ownedBy:, onDoDate:)",
                                                                    object: [ActivityDomain].self)
         }
     }
     
-    public func insertActivity(_ activity: ActivityDomain,
+    public func insertUpdateActivity(_ activity: ActivityDomain,
                                into storagePoint: StoragePoint) -> Observable<ActivityDomain> {
         switch storagePoint {
         case .coreData:
             return self.localActivityStorage.insertIntoCoreData(activity)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
-                                                              function: "insertActivity()",
+                                                              function: "insertUpdateActivity()",
                                                               object: ActivityDomain.self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
-                                                                   function: "insertActivity()",
+                                                                   function: "insertUpdateActivity()",
                                                                    object: ActivityDomain.self)
         }
     }

@@ -8,9 +8,6 @@
 import Foundation
 
 public protocol ActivityUseCaseFactory {
-    
     func makeCreateUpdateActivityUseCase() -> CreateUpdateActivityUseCase
-    
     func makeFetchAllActivityByProfileUseCase() -> FetchAllActivityByProfileUseCase
-    
 }

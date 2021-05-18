@@ -41,7 +41,7 @@ class CountryDialingCodeRepositoryTests: XCTestCase {
     }
     
     func test_fetchAllCountryDialingCode_whenStoragePointUserDefaults_thenThrowsPlainError() throws {
-        let storagePoint = StoragePoint.userDefault
+        let storagePoint = StoragePoint.userDefaults
         
         XCTAssertThrowsError(try self.sut.countryDialingCodeRepository
                                 .fetchAllCountryDialingCode(in: storagePoint)

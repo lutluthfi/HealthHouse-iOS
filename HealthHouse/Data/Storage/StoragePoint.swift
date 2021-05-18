@@ -11,7 +11,7 @@ import RxSwift
 public enum StoragePoint {
     case coreData
     case remote
-    case userDefault
+    case userDefaults
 }
 
 public extension StoragePoint {

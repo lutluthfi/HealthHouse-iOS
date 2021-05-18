@@ -22,7 +22,7 @@ class LocalFlagStorageTests: XCTestCase {
     }
     
     override func tearDown() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
         super.tearDown()
     }
     
@@ -31,7 +31,7 @@ class LocalFlagStorageTests: XCTestCase {
 extension LocalFlagStorageTests {
     
     func test_fetchAllInCoreData_shouldFetchedInCoreData() throws {
-        let result = try self.sut.localLabelStorage
+        let result = try self.sut.localFlagStorage
             .fetchAllInCoreData()
             .toBlocking()
             .single()
@@ -47,7 +47,7 @@ extension LocalFlagStorageTests {
                                        hexcolor: "000",
                                        name: "Label Updated Test")
         
-        let result = try self.sut.localLabelStorage
+        let result = try self.sut.localFlagStorage
             .insertIntoCoreData(updatedObject)
             .toBlocking()
             .single()
@@ -60,7 +60,7 @@ extension LocalFlagStorageTests {
     func test_insertIntoCoreData_whenFlagHasNotCoreID_shouldInsertedIntoCoreData() throws {
         let insertedObject = FlagDomain.stubElement
         
-        let result = try self.sut.localLabelStorage
+        let result = try self.sut.localFlagStorage
             .insertIntoCoreData(insertedObject)
             .toBlocking()
             .single()
@@ -72,7 +72,7 @@ extension LocalFlagStorageTests {
     func test_removeInCoreData_whenFlagInCoreData_thenRemovedInCoreData() throws {
         let removedObject = self.insertedLabel!
         
-        let result = try self.sut.localLabelStorage
+        let result = try self.sut.localFlagStorage
             .removeInCoreData(removedObject)
             .toBlocking()
             .single()
@@ -80,10 +80,10 @@ extension LocalFlagStorageTests {
         XCTAssertEqual(removedObject.coreID, result.coreID)
     }
     
-    func test_removeInCoreData_whenFlagNotInCoreData_thenThrowsError() throws {
+    func test_removeInCoreData_whenFlagNotInCoreData_thenThrowsErrorCausedByNotAvailable() throws {
         let removedObject = FlagDomain.stubElement
         
-        XCTAssertThrowsError(try self.sut.localLabelStorage
+        XCTAssertThrowsError(try self.sut.localFlagStorage
                                 .removeInCoreData(removedObject)
                                 .toBlocking()
                                 .single()) { (error) in
@@ -95,26 +95,25 @@ extension LocalFlagStorageTests {
 }
 
 // MARK: LocalFlagStorageSUT
-public struct LocalFlagStorageSUT {
+struct LocalFlagStorageSUT {
     
     public let semaphore: DispatchSemaphore
     public let disposeBag: DisposeBag
     public let coreDataStorage: CoreDataStorageSharedMock
-    public let localLabelStorage: LocalFlagStorage
+    public let localFlagStorage: LocalFlagStorage
     
 }
 
-public extension XCTest {
+extension XCTest {
     
-    func makeLocalFlagStorageSUT() -> LocalFlagStorageSUT {
+    func makeLocalFlagStorageSUT(coreDataStorage: CoreDataStorageSharedMock = CoreDataStorageMock()) -> LocalFlagStorageSUT {
         let semaphore = self.makeSempahore()
         let disposeBag = self.makeDisposeBag()
-        let coreDataStorage = self.makeCoreDataStorageMock()
         let localActivityStorage = DefaultLocalFlagStorage(coreDataStorage: coreDataStorage)
         return LocalFlagStorageSUT(semaphore: semaphore,
                                    disposeBag: disposeBag,
                                    coreDataStorage: coreDataStorage,
-                                   localLabelStorage: localActivityStorage)
+                                   localFlagStorage: localActivityStorage)
     }
     
 }

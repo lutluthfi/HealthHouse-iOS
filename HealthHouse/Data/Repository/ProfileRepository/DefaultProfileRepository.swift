@@ -28,22 +28,22 @@ extension DefaultProfileRepository: ProfileRepository {
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
                                                               function: "fetchAllProfile()",
                                                               object: [ProfileDomain].self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "fetchAllProfile()",
                                                                    object: [ProfileDomain].self)
         }
     }
     
-    public func insertProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain> {
+    public func insertUpdateProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain> {
         switch storagePoint  {
         case .coreData:
             return self.localProfileStorage.insertIntoCoreData(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
-                                                              function: "insertProfile()",
+                                                              function: "insertUpdateProfile()",
                                                               object: ProfileDomain.self)
-        case .userDefault:
+        case .userDefaults:
             return self.localProfileStorage.insertIntoUserDefaults(profile)
         }
     }
@@ -56,7 +56,7 @@ extension DefaultProfileRepository: ProfileRepository {
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
                                                               function: "removeProfile()",
                                                               object: ProfileDomain.self)
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "removeProfile()",
                                                                    object: ProfileDomain.self)

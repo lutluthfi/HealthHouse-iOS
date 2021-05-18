@@ -19,7 +19,7 @@ public protocol ActivityRepository {
                           onDoDate doDate: Int64,
                           in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
     
-    func insertActivity(_ activity: ActivityDomain,
-                        into storagePoint: StoragePoint) -> Observable<ActivityDomain>
+    func insertUpdateActivity(_ activity: ActivityDomain,
+                              into storagePoint: StoragePoint) -> Observable<ActivityDomain>
     
 }

@@ -41,9 +41,7 @@ extension FlagDomain {
                                 name: "Flag Stub Collection 5")]
         let entities = flags.map { FlagEntity($0, insertInto: coreDataStorage.context) }
         coreDataStorage.saveContext()
-        let _flags = entities
-            .map { $0.toDomain() }
-            .sorted(by: { $0.name < $1.name })
+        let _flags = entities.map { $0.toDomain() }
         return _flags
     }
     

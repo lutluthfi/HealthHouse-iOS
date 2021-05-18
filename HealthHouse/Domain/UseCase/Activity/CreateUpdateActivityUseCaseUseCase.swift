@@ -56,7 +56,7 @@ extension DefaultCreateUpdateActivityUseCase: CreateUpdateActivityUseCase {
     public func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Observable<CreateUpdateActivityUseCaseResponse> {
         let activity = ActivityDomain.make(from: request)
         return self.activityRepository
-            .insertActivity(activity, into: .coreData)
+            .insertUpdateActivity(activity, into: .coreData)
             .map { CreateUpdateActivityUseCaseResponse(activity: $0) }
     }
     

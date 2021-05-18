@@ -46,17 +46,17 @@ extension DefaultLocalFlagStorage {
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
-    public func insertIntoCoreData(_ label: FlagDomain) -> Observable<FlagDomain> {
+    public func insertIntoCoreData(_ flag: FlagDomain) -> Observable<FlagDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
             do {
                 let context = self.coreDataStorage.context
                 let inserted: FlagEntity
                 let request: NSFetchRequest = FlagEntity.fetchRequest()
                 let entities = try context.fetch(request)
-                if let oldEntity = entities.first(where: { $0.objectID == label.coreID }) {
-                    inserted = oldEntity.createUpdate(with: label, context: context)
+                if let oldEntity = entities.first(where: { $0.objectID == flag.coreID }) {
+                    inserted = oldEntity.createUpdate(with: flag, context: context)
                 } else {
-                    inserted = FlagEntity(label, insertInto: context)
+                    inserted = FlagEntity(flag, insertInto: context)
                 }
                 try context.save()
                 let insertedDomain = inserted.toDomain()
@@ -72,9 +72,9 @@ extension DefaultLocalFlagStorage {
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
-    public func removeInCoreData(_ label: FlagDomain) -> Observable<FlagDomain> {
+    public func removeInCoreData(_ flag: FlagDomain) -> Observable<FlagDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            guard let coreID = label.coreID else {
+            guard let coreID = flag.coreID else {
                 let message = "LocalFlagStorage: Failed to execute removeInCoreData() caused by coreID is not available"
                 let error = PlainError(description: message)
                 let coreDataError = CoreDataStorageError.deleteError(error)
@@ -87,7 +87,7 @@ extension DefaultLocalFlagStorage {
                 let removedObject = context.object(with: coreID)
                 context.delete(removedObject)
                 try context.save()
-                observer.onNext(label)
+                observer.onNext(flag)
                 observer.onCompleted()
             } catch {
                 let coreDataError = CoreDataStorageError.deleteError(error)

@@ -32,7 +32,7 @@ class FetchAllActivityByProfileUseCaseTests: XCTestCase {
     }
     
     private func removeStub() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
     }
 
 }

@@ -60,7 +60,7 @@ extension ATCreateController {
                 self.rxMediaPicker
                     .selectImage(source: .photoLibrary, editable: true)
                     .bind(onNext: { (originalImage, editadImage) in
-                        print(editadImage)
+//                        print(editadImage)
                     })
                     .disposed(by: self.disposeBag)
             }

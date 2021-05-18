@@ -28,7 +28,7 @@ extension DefaultCountryDialingCodeRepository: CountryDialingCodeRepository {
                                                                 object: [CountryDialingCodeDomain].self)
         case .remote:
             return self.remoteCountryDialingCodeStorage.fetchAllInRemote()
-        case .userDefault:
+        case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: CountryDialingCodeRepository.self,
                                                                    function: "fetchAllCountryDialingCode()",
                                                                    object: [CountryDialingCodeDomain].self)

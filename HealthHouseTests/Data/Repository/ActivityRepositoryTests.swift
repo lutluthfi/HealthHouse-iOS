@@ -33,7 +33,7 @@ class ActivityRepositoryTests: XCTestCase {
     }
     
     private func removeStub() {
-        self.removeCoreDataStorage()
+        self.clearCoreDataStorage()
     }
     
 }
@@ -57,7 +57,7 @@ extension ActivityRepositoryTests {
         let timeout = self.sut.coreDataStorage.removeElementTimeout
         
         XCTAssertThrowsError(try self.sut.activityRepository
-                                .fetchAllActivity(in: .userDefault)
+                                .fetchAllActivity(in: .userDefaults)
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
@@ -101,7 +101,7 @@ extension ActivityRepositoryTests {
         let profile = self.insertedActivity.1
         
         XCTAssertThrowsError(try self.sut.activityRepository
-                                .fetchAllActivity(ownedBy: profile, in: .userDefault)
+                                .fetchAllActivity(ownedBy: profile, in: .userDefaults)
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
@@ -175,7 +175,7 @@ extension ActivityRepositoryTests {
         let doDate = Date().toInt64()
         
         XCTAssertThrowsError(try self.sut.activityRepository
-                                .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .userDefault)
+                                .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .userDefaults)
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
@@ -209,7 +209,7 @@ extension ActivityRepositoryTests {
         let storagePoint = StoragePoint.coreData
         
         let result = try self.sut.activityRepository
-            .insertActivity(object, into: storagePoint)
+            .insertUpdateActivity(object, into: storagePoint)
             .toBlocking(timeout: timeout)
             .single()
         
@@ -222,11 +222,11 @@ extension ActivityRepositoryTests {
         let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
         
         XCTAssertThrowsError(try self.sut.activityRepository
-                                .insertActivity(object, into: .userDefault)
+                                .insertUpdateActivity(object, into: .userDefaults)
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
-            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> insertActivity() is not available for UserDefaults")
+            XCTAssertEqual(error.localizedDescription, "ActivityRepository -> insertUpdateActivity() is not available for UserDefaults")
         }
     }
     

@@ -59,7 +59,7 @@ extension DefaultCreateProfileUseCase: CreateProfileUseCase {
     public func execute(_ request: CreateProfileUseCaseRequest) -> Observable<CreateProfileUseCaseResponse> {
         let profile = ProfileDomain.create(from: request)
         return self.profileRepository
-            .insertProfile(profile, into: .coreData)
+            .insertUpdateProfile(profile, into: .coreData)
             .map { CreateProfileUseCaseResponse(profile: $0) }
     }
     

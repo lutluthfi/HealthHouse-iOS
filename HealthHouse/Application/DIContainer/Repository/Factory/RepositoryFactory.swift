@@ -8,11 +8,8 @@
 import Foundation
 
 public protocol RepositoryFactory {
-    
     func makeActivityRepository() -> ActivityRepository
-    
     func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository
-    
+    func makeFlagRepository() -> FlagRepository
     func makeProfileRepository() -> ProfileRepository
-    
 }

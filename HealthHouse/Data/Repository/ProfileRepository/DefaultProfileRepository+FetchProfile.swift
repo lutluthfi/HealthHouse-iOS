@@ -20,7 +20,7 @@ extension DefaultProfileRepository {
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "fetchProfile()",
                                                                    object: ProfileDomain.self)
-        case .userDefault:
+        case .userDefaults:
             return self.localProfileStorage
                 .fetchInUserDefaults()
                 .flatMap(self.fetchFirstProfileBy(coreID:))

@@ -11,8 +11,8 @@ public protocol CoreDataFlagStorage {
     
     func fetchAllInCoreData() -> Observable<[FlagDomain]>
     
-    func insertIntoCoreData(_ label: FlagDomain) -> Observable<FlagDomain>
+    func insertIntoCoreData(_ flag: FlagDomain) -> Observable<FlagDomain>
     
-    func removeInCoreData(_ label: FlagDomain) -> Observable<FlagDomain>
+    func removeInCoreData(_ flag: FlagDomain) -> Observable<FlagDomain>
     
 }
