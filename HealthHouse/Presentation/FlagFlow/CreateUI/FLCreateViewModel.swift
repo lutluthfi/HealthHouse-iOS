@@ -46,7 +46,7 @@ final class DefaultFLCreateViewModel: FLCreateViewModel {
     let route: FLCreateViewModelRoute
 
     // MARK: UseCase Variable
-
+    let createUpdateFlagUseCase: CreateUpdateFlagUseCase
 
 
     // MARK: Common Variable
@@ -59,10 +59,12 @@ final class DefaultFLCreateViewModel: FLCreateViewModel {
     // MARK: Init Function
     init(request: FLCreateViewModelRequest,
          response: FLCreateViewModelResponse,
-         route: FLCreateViewModelRoute) {
+         route: FLCreateViewModelRoute,
+         createUpdateFlagUseCase: CreateUpdateFlagUseCase) {
         self.request = request
         self.response = response
         self.route = route
+        self.createUpdateFlagUseCase = createUpdateFlagUseCase
     }
     
 }

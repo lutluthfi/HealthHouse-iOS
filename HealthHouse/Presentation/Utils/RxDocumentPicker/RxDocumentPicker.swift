@@ -37,7 +37,7 @@ extension RxDocumentPicker {
     open func selectDocuments(allowsMultipleSelection: Bool = true,
                               documentTypes: [RxDocumentPickerDocumentType],
                               in pickerMode: UIDocumentPickerMode = .open) -> Observable<[URL]> {
-        Observable.create { [unowned self] (observer) -> Disposable in
+        return Observable.create { [unowned self] (observer) -> Disposable in
             self.currentAction = RxDocumentPickerAction.documents(observer: observer)
             
             let _documentTypes = documentTypes.map({ $0.value })

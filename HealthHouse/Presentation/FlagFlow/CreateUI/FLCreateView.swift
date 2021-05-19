@@ -52,7 +52,18 @@ final class DefaultFLCreateView: UIView, FLCreateView {
     // MARK: FLCreateViewVariable
     lazy var sections = BehaviorRelay<[SectionDomain<RowDomain>]>(value: [SectionDomain(footer: "The new flag must be unique. Respresents a collection of activities that have been or will be created to make it easier for you to filter activities.",
                                                                                         header: "Title",
-                                                                                        items: [.title])])
+                                                                                        items: [.title]),
+                                                                          SectionDomain(footer: "Please provide the flag color so that it is easier to show.",
+                                                                                        header: "",
+                                                                                        items: [RowDomain(identify: "Indigo", value: UIColor.systemIndigo),
+                                                                                                RowDomain(identify: "Purple", value: UIColor.systemPurple),
+                                                                                                RowDomain(identify: "Pink", value: UIColor.systemPink),
+                                                                                                RowDomain(identify: "Red", value: UIColor.systemRed),
+                                                                                                RowDomain(identify: "Orange", value: UIColor.systemOrange),
+                                                                                                RowDomain(identify: "Yellow", value: UIColor.systemYellow),
+                                                                                                RowDomain(identify: "Green", value: UIColor.systemGreen),
+                                                                                                RowDomain(identify: "Teal", value: UIColor.systemTeal),
+                                                                                                RowDomain(identify: "Blue", value: UIColor.systemBlue)])])
     
     // MARK: Init Function
     required init?(coder: NSCoder) {

@@ -65,7 +65,7 @@ fileprivate extension FlagDomain {
         return FlagDomain(coreID: request.coreID,
                           createdAt: now,
                           updatedAt: now,
-                          hexcolor: request.color.hex,
+                          hexcolor: request.color.hexString(),
                           name: request.name)
     }
     

@@ -45,7 +45,7 @@ extension CreateUpdateFlagUseCaseTests {
     
     func test_execute_whenFlagHasCoreID_thenUpdated() throws {
         let flag = try XCTUnwrap(self.insertedFlag)
-        let request = CreateUpdateFlagUseCaseRequest(coreID: flag.coreID, color: UIColor(hex: flag.hexcolor), name: "Update Flag")
+        let request = CreateUpdateFlagUseCaseRequest(coreID: flag.coreID, color: UIColor(flag.hexcolor), name: "Update Flag")
         
         let result = try self.sut.useCase
             .execute(request)

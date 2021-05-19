@@ -82,12 +82,12 @@ extension DefaultFLListViewModel {
         let showedlabels = [FlagDomain(coreID: nil,
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
-                                        hexcolor: UIColor.red.hex,
+                                        hexcolor: UIColor.red.hexString(),
                                         name: "Annual MCU"),
                             FlagDomain(coreID: nil,
                                         createdAt: Date().toInt64(),
                                         updatedAt: Date().toInt64(),
-                                        hexcolor: UIColor.orange.hex,
+                                        hexcolor: UIColor.orange.hexString(),
                                         name: "Rontgen")]
         let showedSelectableLabels = showedlabels.map({
             SelectableDomain(identify: $0.name, selected: selectedLabels.contains($0), value: $0)

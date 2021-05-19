@@ -36,6 +36,7 @@ final class FLCreateController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.bindCreateBarButtonItem(barButtonItem: self._view.createBarButtonItem)
         self.bindSectionsToTableView(relay: self._view.sections, tableView: self._view.tableView)
         self.viewModel.viewDidLoad()
     }
@@ -54,6 +55,18 @@ final class FLCreateController: UITableViewController {
     
 }
 
+extension FLCreateController {
+    
+    func bindCreateBarButtonItem(barButtonItem: UIBarButtonItem) {
+        barButtonItem.rx.tap
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
 // MARK: BindSectionsToTableView
 extension FLCreateController {
     
@@ -68,11 +81,20 @@ extension FLCreateController {
     private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>> {
         let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>>
         { (_, _, _, item) -> UITableViewCell in
-            let cell = HHTextFieldTableCell(style: .plain)
-            cell.textField.placeholder = item.identify
-            cell.textField.autocapitalizationType = .words
-            cell.textField.clearButtonMode = .whileEditing
-            return cell
+            if let color = item.value as? UIColor {
+                let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
+                cell.textLabel?.text = item.identify
+                let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
+                cell.imageView?.image = circleBadgeFill
+                cell.imageView?.tintColor = color
+                return cell
+            } else {
+                let cell = HHTextFieldTableCell(style: .plain)
+                cell.textField.placeholder = item.identify
+                cell.textField.autocapitalizationType = .words
+                cell.textField.clearButtonMode = .whileEditing
+                return cell
+            }
         }
         dataSource.titleForFooterInSection = { [unowned self] (_dataSource, row) -> String? in
             let model = self._view.sections.value[row]
@@ -83,3 +105,6 @@ extension FLCreateController {
     }
     
 }
+
+// MARK: RxColorPickerDelegate
+extension FLCreateController: RxColorPickerDelegate { }

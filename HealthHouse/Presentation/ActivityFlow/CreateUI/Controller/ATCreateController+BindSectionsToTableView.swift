@@ -30,7 +30,7 @@ extension ATCreateController {
                 cell.textLabel?.text = label.name
                 let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
                 cell.imageView?.image = circleBadgeFill
-                cell.imageView?.tintColor = UIColor(hex: label.hexcolor)
+                cell.imageView?.tintColor = UIColor(label.hexcolor)
                 return cell
             }
             switch item {

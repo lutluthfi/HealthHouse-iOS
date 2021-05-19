@@ -13,6 +13,9 @@ public struct RowDomain {
     public static var attachment: RowDomain {
         return RowDomain(identify: "Attachment", value: "Attachment")
     }
+    public static var color: RowDomain {
+        return RowDomain(identify: "Color", value: "Color")
+    }
     public static var date: RowDomain {
         return RowDomain(identify: "Date", value: "Date")
     }
@@ -32,7 +35,7 @@ public struct RowDomain {
         return RowDomain(identify: "Date of Birth", value: "Date of Birth")
     }
     public static var flag: RowDomain {
-        return RowDomain(identify: "Flag", value: [])
+        return RowDomain(identify: "Flag", value: "Flag")
     }
     public static var gender: RowDomain {
         return RowDomain(identify: "Gender", value: "Gender")

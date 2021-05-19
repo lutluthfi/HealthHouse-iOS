@@ -35,7 +35,7 @@ extension FLListController {
             cell.textLabel?.text = item.value.name
             let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
             cell.imageView?.image = circleBadgeFill
-            cell.imageView?.tintColor = UIColor(hex: item.value.hexcolor)
+            cell.imageView?.tintColor = UIColor(item.value.hexcolor)
             return cell
         }
         dataSource.canEditRowAtIndexPath = { (dataSource, index) -> Bool in

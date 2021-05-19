@@ -22,7 +22,10 @@ extension AppDIContainer {
     private func makeCreateViewModel(request: FLCreateViewModelRequest,
                                       response: FLCreateViewModelResponse,
                                       route: FLCreateViewModelRoute) -> FLCreateViewModel {
-        return DefaultFLCreateViewModel(request: request, response: response, route: route)
+        return DefaultFLCreateViewModel(request: request,
+                                        response: response,
+                                        route: route,
+                                        createUpdateFlagUseCase: self.makeCreateUpdateFlagUseCase())
     }
     
 }
