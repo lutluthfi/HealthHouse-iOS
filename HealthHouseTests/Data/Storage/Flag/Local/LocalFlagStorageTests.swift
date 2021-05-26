@@ -40,21 +40,36 @@ extension LocalFlagStorageTests {
         XCTAssertTrue(result.contains(self.insertedLabel))
     }
     
-    func test_insertIntoCoreData_whenFlagHasCoreID_shouldInsertedIntoCoreData() throws {
+    func test_insertIntoCoreData_whenFlagHasCoreIDAndNameNoChanges_shouldInsertedIntoCoreData() throws {
+        let updatedObject = FlagDomain(coreID: nil,
+                                       createdAt: self.insertedLabel.createdAt,
+                                       updatedAt: self.insertedLabel.updatedAt,
+                                       hexcolor: "000",
+                                       name: self.insertedLabel.name)
+        
+        XCTAssertThrowsError(try self.sut.localFlagStorage
+                                .insertIntoCoreData(updatedObject)
+                                .toBlocking()
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoCoreData() caused by Flag is already created")
+        }
+    }
+    
+    func test_insertIntoCoreData_whenFlagHasCoreIDAndNameChanges_shouldInsertedIntoCoreData() throws {
         let updatedObject = FlagDomain(coreID: self.insertedLabel.coreID,
                                        createdAt: self.insertedLabel.createdAt,
                                        updatedAt: self.insertedLabel.updatedAt,
                                        hexcolor: "000",
                                        name: "Label Updated Test")
         
-        let result = try self.sut.localFlagStorage
-            .insertIntoCoreData(updatedObject)
-            .toBlocking()
-            .single()
-        
-        XCTAssertNotNil(result.coreID)
-        XCTAssertEqual(updatedObject.coreID, result.coreID)
-        XCTAssertEqual(updatedObject.name, result.name)
+        XCTAssertThrowsError(try self.sut.localFlagStorage
+                                .insertIntoCoreData(updatedObject)
+                                .toBlocking()
+                                .single()) { (error) in
+            XCTAssertTrue(error is CoreDataStorageError)
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoCoreData() caused by flagCoreID is already exist")
+        }
     }
     
     func test_insertIntoCoreData_whenFlagHasNotCoreID_shouldInsertedIntoCoreData() throws {

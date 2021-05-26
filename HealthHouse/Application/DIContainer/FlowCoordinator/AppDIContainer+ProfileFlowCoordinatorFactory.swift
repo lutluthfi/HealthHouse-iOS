@@ -22,7 +22,8 @@ extension AppDIContainer {
         return DefaultPFPersonalizeViewModel(request: request,
                                              route: route,
                                              createProfileUseCase: self.makeCreateProfileUseCase(),
-                                             fetchCountryDialingCodeUseCase: self.makeFetchCountryDialingCodeUseCase())
+                                             fetchCountryDialingCodeUseCase: self.makeFetchCountryDialingCodeUseCase(),
+                                             setCurrentProfileUseCase: self.makeSetCurrentProfileUseCase())
     }
     
 }

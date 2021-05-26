@@ -46,8 +46,7 @@ extension DefaultUserDefaultsProfileStorage: UserDefaultsProfileStorage {
             observer.onCompleted()
             return Disposables.create()
         }
-        .observe(on: SerialDispatchQueueScheduler(qos: .background))
-        .subscribe(on: MainScheduler.instance)
+        .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
     public func insertIntoUserDefaults(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
@@ -62,8 +61,7 @@ extension DefaultUserDefaultsProfileStorage: UserDefaultsProfileStorage {
             }
             return Disposables.create()
         }
-        .observe(on: SerialDispatchQueueScheduler(qos: .background))
-        .subscribe(on: MainScheduler.instance)
+        .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
 }

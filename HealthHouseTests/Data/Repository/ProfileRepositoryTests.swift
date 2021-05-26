@@ -69,7 +69,7 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         let result = try self.sut.repository
-            .insertUpdateProfile(object, into: .coreData)
+            .insertProfile(object, into: .coreData)
             .toBlocking()
             .single()
         
@@ -81,11 +81,11 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.repository
-                                .insertUpdateProfile(object, into: .remote)
+                                .insertProfile(object, into: .remote)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
-            XCTAssertEqual(error.localizedDescription, "ProfileRepository -> insertUpdateProfile() is not available for Remote")
+            XCTAssertEqual(error.localizedDescription, "ProfileRepository -> insertProfile() is not available for Remote")
         }
     }
     
@@ -93,7 +93,7 @@ extension ProfileRepositoryTests {
         let object = self.insertedProfile!
         
         let result = try self.sut.repository
-            .insertUpdateProfile(object, into: .userDefaults)
+            .insertProfile(object, into: .userDefaults)
             .toBlocking()
             .single()
         
@@ -104,7 +104,7 @@ extension ProfileRepositoryTests {
         let object = ProfileDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.repository
-                                .insertUpdateProfile(object, into: .userDefaults)
+                                .insertProfile(object, into: .userDefaults)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)

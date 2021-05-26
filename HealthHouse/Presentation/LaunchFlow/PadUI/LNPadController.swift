@@ -42,7 +42,7 @@ final class LNPadController: UITabBarController {
         super.viewWillAppear(animated)
         self.bindControllersViewModelToViewControllers(controllers: self.viewModel.controllers)
         self.padView.viewWillAppear(view: self.view,
-                                    navigationBar: self.navigationController?.navigationBar,
+                                    navigationController: self.navigationController,
                                     navigationItem: self.navigationItem,
                                     tabBarController: self.tabBarController)
     }

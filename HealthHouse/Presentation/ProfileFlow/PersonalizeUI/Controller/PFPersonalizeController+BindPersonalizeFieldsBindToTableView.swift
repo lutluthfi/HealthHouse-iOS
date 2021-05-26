@@ -33,7 +33,7 @@ extension PFPersonalizeController {
                 return cell
             case .firstName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
-                self.setupFirstNameHHTextFieldTableCell(cell, item: item)
+                self.setupFirstOrLastNameHHTextFieldTableCell(cell, item: item)
                 self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._firstName)
                 return cell
             case .gender:
@@ -43,15 +43,15 @@ extension PFPersonalizeController {
                 return cell
             case .lastName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
-                self.setupLastNameHHTextFieldTableCell(cell, item: item)
+                self.setupFirstOrLastNameHHTextFieldTableCell(cell, item: item)
                 self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._lastName)
                 return cell
             case .mobileNumber:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupMobileNumberHHTextFieldTableCell(cell, item: item)
-                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(CountryDialingCode: self._countryDialingCode,
+                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(countryDialingCode: self._countryDialingCode,
                                                                                   textField: cell.promptTextField,
-                                                                                  picker: self.personalizeView.countryDialignCodePicker)
+                                                                                  picker: self._view.countryDialignCodePicker)
                 self.bindMobileNumberTextFieldEditingChangedToMobileNumber(textField: cell.textField,
                                                                            mobileNumber: self._mobileNumbder)
                 return cell
@@ -82,11 +82,11 @@ extension PFPersonalizeController {
     
     func setupDateOfBirthHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
-        cell.textField.inputView = self.personalizeView.dateOfBirthPicker
+        cell.textField.inputView = self._view.dateOfBirthPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupFirstNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+    func setupFirstOrLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
@@ -94,19 +94,13 @@ extension PFPersonalizeController {
     
     func setupGenderHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
-        cell.textField.inputView = self.personalizeView.genderPicker
+        cell.textField.inputView = self._view.genderPicker
         cell.textField.clearButtonMode = .never
-    }
-    
-    func setupLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
-        cell.promptTextField.text = item.identify
-        cell.textField.keyboardType = .alphabet
-        cell.textField.autocapitalizationType = .words
     }
     
     func setupMobileNumberHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
         cell.promptTextField.isEnabled = true
-        cell.promptTextField.inputView = self.personalizeView.countryDialignCodePicker
+        cell.promptTextField.inputView = self._view.countryDialignCodePicker
         cell.textField.keyboardType = .numberPad
     }
     

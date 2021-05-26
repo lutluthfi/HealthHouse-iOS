@@ -29,8 +29,8 @@ public struct CreateProfileUseCaseResponse {
 
 public struct CreateProfileUseCaseRequest {
 
-    public let firstName: String
     public let dateOfBirth: Date
+    public let firstName: String
     public let gender: GenderDomain
     public let lastName: String
     public let mobileNumber: String
@@ -39,9 +39,7 @@ public struct CreateProfileUseCaseRequest {
 }
 
 public protocol CreateProfileUseCase {
-    
     func execute(_ request: CreateProfileUseCaseRequest) -> Observable<CreateProfileUseCaseResponse>
-
 }
 
 public final class DefaultCreateProfileUseCase {
@@ -59,8 +57,8 @@ extension DefaultCreateProfileUseCase: CreateProfileUseCase {
     public func execute(_ request: CreateProfileUseCaseRequest) -> Observable<CreateProfileUseCaseResponse> {
         let profile = ProfileDomain.create(from: request)
         return self.profileRepository
-            .insertUpdateProfile(profile, into: .coreData)
-            .map { CreateProfileUseCaseResponse(profile: $0) }
+            .insertProfile(profile, into: .coreData)
+            .map({ CreateProfileUseCaseResponse(profile: $0) })
     }
     
 }

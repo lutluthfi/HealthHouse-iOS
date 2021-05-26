@@ -15,12 +15,12 @@ enum FLListViewModelResult {
 
 // MARK: FLListViewModelResponse
 public struct FLListViewModelResponse {
-    public let selectedLabels = PublishRelay<[FlagDomain]>()
+    public let selectedFlags = PublishRelay<[FlagDomain]>()
 }
 
 // MARK: FLListViewModelRequest
 public struct FLListViewModelRequest {
-    public let selectedLabels: [FlagDomain]
+    public let selectedFlags: [FlagDomain]
 }
 
 // MARK: FLListViewModelRoute
@@ -31,6 +31,7 @@ public struct FLListViewModelRoute {
 // MARK: FLListViewModelInput
 protocol FLListViewModelInput {
     func viewDidLoad()
+    func viewWillAppear()
     func doDone(selectedLabels: [FlagDomain])
     func doRemove(label: FlagDomain)
     func doSelect(label: FlagDomain)
@@ -39,7 +40,7 @@ protocol FLListViewModelInput {
 
 // MARK: FLListViewModelOutput
 protocol FLListViewModelOutput {
-    var showedLabels: PublishRelay<[SelectableDomain<FlagDomain>]> { get }
+    var showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]> { get }
 }
 
 // MARK: FLListViewModel
@@ -54,22 +55,41 @@ final class DefaultFLListViewModel: FLListViewModel {
     let route: FLListViewModelRoute
     
     // MARK: UseCase Variable
-    
-    
+    let fetchAllFlagUseCase: FetchAllFlagUseCase
+    let fetchProfileUseCase: FetchCurrentProfileUseCase
     
     // MARK: Common Variable
+    lazy var disposeBag = DisposeBag()
     var _currSelectedLabels: [FlagDomain] = []
     
     // MARK: Output ViewModel
-    let showedLabels = PublishRelay<[SelectableDomain<FlagDomain>]>()
+    let showedFlags = PublishRelay<[SelectableDomain<FlagDomain>]>()
     
     // MARK: Init Function
     init(request: FLListViewModelRequest,
          response: FLListViewModelResponse,
-         route: FLListViewModelRoute) {
+         route: FLListViewModelRoute,
+         fetchAllFlagUseCase: FetchAllFlagUseCase,
+         fetchProfileUseCase: FetchCurrentProfileUseCase) {
         self.request = request
         self.response = response
         self.route = route
+        self.fetchAllFlagUseCase = fetchAllFlagUseCase
+        self.fetchProfileUseCase = fetchProfileUseCase
+    }
+    
+    func doFetchCurrentProfileUseCase() -> Observable<ProfileDomain> {
+        let request = FetchCurrentProfileUseCaseRequest()
+        return self.fetchProfileUseCase
+            .execute(request)
+            .compactMap({ $0.profile })
+    }
+    
+    func doFetchAllFlaguseCase(ownedBy profile: ProfileDomain) -> Observable<[FlagDomain]> {
+        let request = FetchAllFlagUseCaseRequest(ownedBy: profile)
+        return self.fetchAllFlagUseCase
+            .execute(request)
+            .map({ $0.flags })
     }
     
 }
@@ -78,25 +98,21 @@ final class DefaultFLListViewModel: FLListViewModel {
 extension DefaultFLListViewModel {
     
     func viewDidLoad() {
-        let selectedLabels = self.request.selectedLabels
-        let showedlabels = [FlagDomain(coreID: nil,
-                                        createdAt: Date().toInt64(),
-                                        updatedAt: Date().toInt64(),
-                                        hexcolor: UIColor.red.hexString(),
-                                        name: "Annual MCU"),
-                            FlagDomain(coreID: nil,
-                                        createdAt: Date().toInt64(),
-                                        updatedAt: Date().toInt64(),
-                                        hexcolor: UIColor.orange.hexString(),
-                                        name: "Rontgen")]
-        let showedSelectableLabels = showedlabels.map({
-            SelectableDomain(identify: $0.name, selected: selectedLabels.contains($0), value: $0)
-        })
-        self.showedLabels.accept(showedSelectableLabels)
+    }
+    
+    func viewWillAppear() {
+        let selectedFlags = self.request.selectedFlags
+        self.doFetchCurrentProfileUseCase()
+            .flatMap(self.doFetchAllFlaguseCase(ownedBy:))
+            .map({ $0.map({ SelectableDomain(identify: $0.name,
+                                             selected: selectedFlags.contains($0),
+                                             value: $0) }) })
+            .bind(to: self.showedFlags)
+            .disposed(by: self.disposeBag)
     }
     
     func doDone(selectedLabels: [FlagDomain]) {
-        self.response.selectedLabels.accept(selectedLabels)
+        self.response.selectedFlags.accept(selectedLabels)
     }
     
     func doRemove(label: FlagDomain) {

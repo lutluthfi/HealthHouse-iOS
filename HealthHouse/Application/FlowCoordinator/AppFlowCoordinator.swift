@@ -6,7 +6,7 @@
 //  Copyright (c) 2021 All rights reserved.
 //
 
-import Foundation
+import RxSwift
 import UIKit
 
 // MARK: AppFlowCoordinator
@@ -23,13 +23,18 @@ enum AppFlowCoordinatorInstructor {
 final class DefaultAppFlowCoordinator {
 
     // MARK: DI Variable
+    lazy var disposeBag = DisposeBag()
     let navigationController: UINavigationController
     let flowFactory: FlowCoordinatorFactory
+    let fetchCurrentProfileUseCase: FetchCurrentProfileUseCase
 
     // MARK: Init Funciton
-    init(navigationController: UINavigationController, presentationFactory: PresentationFactory) {
+    init(navigationController: UINavigationController,
+         presentationFactory: PresentationFactory,
+         fetchCurrentProfileUseCase: FetchCurrentProfileUseCase) {
         self.navigationController = navigationController
         self.flowFactory = presentationFactory
+        self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
     }
     
 }
@@ -39,14 +44,13 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
     func start(with instructor: AppFlowCoordinatorInstructor) {
         switch instructor {
         case .default:
-            let request = ATCreateViewModelRequest()
-            let instructor = ActivityFlowCoordinatorInstructor.pushToCreateUI(request)
-            self.flowFactory.makeActivityFlowCoordinator().start(with: instructor)
+//            let request = ATCreateViewModelRequest()
+//            let instructor = ActivityFlowCoordinatorInstructor.pushToCreateUI(request)
+//            self.flowFactory.makeActivityFlowCoordinator().start(with: instructor)
             
 //            The original flow of the app
-//            let request = LNWelcomeViewModelRequest()
-//            let instructor = LaunchFlowCoordinatorInstructor.pushToWelcomeUI(request)
-//            self.flowFactory.makeLaunchFlowCoordinator().start(with: instructor)
+            let instructor = LaunchFlowCoordinatorInstructor.pushToPadUI
+            self.flowFactory.makeLaunchFlowCoordinator().start(with: instructor)
         }
     }
     

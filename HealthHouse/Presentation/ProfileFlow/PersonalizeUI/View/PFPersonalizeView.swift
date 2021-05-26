@@ -29,6 +29,7 @@ protocol PFPersonalizeViewSubview {
 
 // MARK: PFPersonalizeViewVariable
 protocol PFPersonalizeViewVariable {
+    var asView: UIView { get }
     var sections: [[RowDomain]] { get }
 }
 
@@ -56,10 +57,12 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.estimatedRowHeight = CGFloat(44)
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.keyboardDismissMode = .onDrag
         return tableView
     }()
     
     // MARK: PFPersonalizeViewVariable
+    lazy var asView: UIView = (self as UIView)
     let sections: [[RowDomain]] = [[.photo],
                                    [.firstName, .lastName],
                                    [.dateOfBirth],

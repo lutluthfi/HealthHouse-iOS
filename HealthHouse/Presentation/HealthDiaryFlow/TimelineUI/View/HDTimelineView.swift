@@ -28,8 +28,9 @@ protocol HDTimelineViewSubview {
 
 // MARK: HDTimelineViewVariable
 protocol HDTimelineViewVariable {
+    var asView: UIView { get }
     var HDTLActivityTableCellIdentifier: String { get }
-    var calendarItems: Observable<[HDTLCalendarItemDomain]> { get }
+    var calendarItems: Observable<[HDTLCalendarItemModel]> { get }
 }
 
 // MARK: HDTimelineView
@@ -86,13 +87,14 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
     }()
 
     // MARK: HDTimelineViewVariable
+    lazy var asView: UIView = (self as UIView)
     let HDTLActivityTableCellIdentifier: String = "HDTLActivityTableCell"
-    let calendarItems = Observable<[HDTLCalendarItemDomain]>.create { (observer) -> Disposable in
+    let calendarItems = Observable<[HDTLCalendarItemModel]>.create { (observer) -> Disposable in
         let calendar = Calendar.current
         let startDate = Date(timeIntervalSince1970: 0)
         let endDate = calendar.date(byAdding: .year, value: 10, to: Date())!
         let yearInterval = DateInterval(start: startDate, end: endDate)
-        let dayCalendarItems = HDTLCalendarItemDomain.generateDays(inYear: yearInterval)
+        let dayCalendarItems = HDTLCalendarItemModel.generateDays(inYear: yearInterval)
         observer.onNext(dayCalendarItems)
         observer.onCompleted()
         return Disposables.create()
@@ -121,13 +123,13 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
 extension DefaultHDTimelineView {
     
     func subviewDidLayout() {
-        self.calendarCollectionView.snp.makeConstraints { (make) in
+        self.calendarCollectionView.snp.remakeConstraints { (make) in
             make.height.equalTo(44)
             make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
             make.top.equalTo(self.dayHeaderStackView.snp.bottom)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
         }
-        self.timelineTableView.snp.makeConstraints { (make) in
+        self.timelineTableView.snp.remakeConstraints { (make) in
             make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
             make.top.equalTo(self.calendarSeparatorView.snp.bottom)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)

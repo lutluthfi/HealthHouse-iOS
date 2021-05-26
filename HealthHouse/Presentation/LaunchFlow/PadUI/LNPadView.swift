@@ -11,7 +11,7 @@ import UIKit
 protocol LNPadViewFunction {
     func viewDidLoad(view: UIView)
     func viewWillAppear(view: UIView,
-                        navigationBar: UINavigationBar?,
+                        navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?)
     func viewDidAppear(view: UIView)
@@ -68,10 +68,10 @@ extension DefaultLNPadView {
     }
     
     func viewWillAppear(view: UIView,
-                        navigationBar: UINavigationBar?,
+                        navigationController: UINavigationController?,
                         navigationItem: UINavigationItem,
                         tabBarController: UITabBarController?) {
-        // do nothing
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     func viewDidAppear(view: UIView) {

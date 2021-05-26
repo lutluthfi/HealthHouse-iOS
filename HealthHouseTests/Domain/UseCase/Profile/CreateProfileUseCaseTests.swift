@@ -20,8 +20,8 @@ class CreateProfileUseCaseTests: XCTestCase {
         let mobileNumber = "1234567890"
         let photo = UIImage()
         
-        let request = CreateProfileUseCaseRequest(firstName: firstName,
-                                                  dateOfBirth: dateOfBirth,
+        let request = CreateProfileUseCaseRequest(dateOfBirth: dateOfBirth,
+                                                  firstName: firstName,
                                                   gender: gender,
                                                   lastName: lastName,
                                                   mobileNumber: mobileNumber,
@@ -43,10 +43,8 @@ class CreateProfileUseCaseTests: XCTestCase {
 }
 
 struct CreateProfileUseCaseSUT {
-    
     let profileRepository: ProfileRepository
     let useCase: CreateProfileUseCase
-    
 }
 
 extension XCTest {

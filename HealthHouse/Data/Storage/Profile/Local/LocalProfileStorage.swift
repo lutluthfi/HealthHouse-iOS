@@ -32,47 +32,47 @@ extension DefaultLocalProfileStorage {
     
     public func fetchAllInCoreData() -> Observable<[ProfileDomain]> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            do {
-                let context = self.coreDataStorage.context
-                let request: NSFetchRequest = ProfileEntity.fetchRequest()
-                let entities = try context.fetch(request)
-                let domains = entities.map { $0.toDomain() }
-                observer.onNext(domains)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.readError(error)
-                observer.onError(coreDataError)
+            self.coreDataStorage.performBackground { (context) in
+                do {
+                    let request: NSFetchRequest = ProfileEntity.fetchRequest()
+                    let entities = try context.fetch(request)
+                    let domains = entities.map { $0.toDomain() }
+                    observer.onNext(domains)
+                    observer.onCompleted()
+                } catch {
+                    let coreDataError = CoreDataStorageError.readError(error)
+                    observer.onError(coreDataError)
+                }
             }
             return Disposables.create()
         }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     
     public func insertIntoCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            do {
-                let context = self.coreDataStorage.context
-                let inserted: ProfileEntity
-                let request: NSFetchRequest = ProfileEntity.fetchRequest()
-                let entities = try context.fetch(request)
-                if let oldEntity = entities.first(where: { $0.objectID == profile.coreID }) {
-                    inserted = oldEntity.createUpdate(with: profile, context: context)
-                } else {
-                    inserted = ProfileEntity(profile, insertInto: context)
+            self.coreDataStorage.performBackground { (context) in
+                do {
+                    let inserted: ProfileEntity
+                    let request: NSFetchRequest = ProfileEntity.fetchRequest()
+                    let entities = try context.fetch(request)
+                    if let oldEntity = entities.first(where: { $0.objectID == profile.coreID }) {
+                        inserted = oldEntity.createUpdate(with: profile, context: context)
+                    } else {
+                        inserted = ProfileEntity(profile, insertInto: context)
+                    }
+                    try context.save()
+                    let insertedDomain = inserted.toDomain()
+                    observer.onNext(insertedDomain)
+                    observer.onCompleted()
+                } catch {
+                    let coreDataError = CoreDataStorageError.saveError(error)
+                    observer.onError(coreDataError)
                 }
-                try context.save()
-                let insertedDomain = inserted.toDomain()
-                observer.onNext(insertedDomain)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.saveError(error)
-                observer.onError(coreDataError)
             }
             return Disposables.create()
         }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+        .observe(on: ConcurrentMainScheduler.instance)
     }
     
     public func removeInCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
@@ -85,20 +85,20 @@ extension DefaultLocalProfileStorage {
                 return Disposables.create()
             }
             
-            do {
-                let context = self.coreDataStorage.context
-                let removedObject = context.object(with: coreID)
-                context.delete(removedObject)
-                try context.save()
-                observer.onNext(profile)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
+            self.coreDataStorage.performBackground { (context) in
+                do {
+                    let removedObject = context.object(with: coreID)
+                    context.delete(removedObject)
+                    try context.save()
+                    observer.onNext(profile)
+                    observer.onCompleted()
+                } catch {
+                    let coreDataError = CoreDataStorageError.deleteError(error)
+                    observer.onError(coreDataError)
+                }
             }
             return Disposables.create()
         }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
         .subscribe(on: ConcurrentMainScheduler.instance)
     }
     

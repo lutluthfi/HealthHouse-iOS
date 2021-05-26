@@ -46,6 +46,7 @@ final class DefaultFLCreateView: UIView, FLCreateView {
         let tableView = UITableView(frame: UIScreen.main.fixedCoordinateSpace.bounds, style: .grouped)
         tableView.rowHeight = CGFloat(44)
         tableView.keyboardDismissMode = .onDrag
+        tableView.allowsMultipleSelection = false
         return tableView
     }()
 

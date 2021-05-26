@@ -115,7 +115,7 @@ extension FlagRepositoryTests {
         let flag = FlagDomain.stubElement
         
         let result = try self.sut.flagRepository
-            .insertUpdateFlag(flag, in: .coreData)
+            .insertFlag(flag, in: .coreData)
             .toBlocking()
             .single()
         
@@ -128,11 +128,11 @@ extension FlagRepositoryTests {
         let flag = FlagDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.flagRepository
-                                .insertUpdateFlag(flag, in: .remote)
+                                .insertFlag(flag, in: .remote)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
-            XCTAssertEqual(error.localizedDescription, "FlagRepository -> insertUpdateFlag() is not available for Remote")
+            XCTAssertEqual(error.localizedDescription, "FlagRepository -> insertFlag() is not available for Remote")
         }
     }
     
@@ -140,11 +140,11 @@ extension FlagRepositoryTests {
         let flag = FlagDomain.stubElement
         
         XCTAssertThrowsError(try self.sut.flagRepository
-                                .insertUpdateFlag(flag, in: .userDefaults)
+                                .insertFlag(flag, in: .userDefaults)
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is PlainError)
-            XCTAssertEqual(error.localizedDescription, "FlagRepository -> insertUpdateFlag() is not available for UserDefaults")
+            XCTAssertEqual(error.localizedDescription, "FlagRepository -> insertFlag() is not available for UserDefaults")
         }
     }
     

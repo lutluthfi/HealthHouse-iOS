@@ -22,10 +22,10 @@ extension ATCreateController {
     }
     
     private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>> {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>>(animationConfiguration: AnimationConfiguration(insertAnimation: .bottom, reloadAnimation: .bottom, deleteAnimation: .bottom))
+        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>>
         { [unowned self] (_, tableView, _, item) -> UITableViewCell in
             if let label = item.value as? FlagDomain {
-                let cell = makeDefaultTableCell()
+                let cell = makeDefaultTableCell(with: item)
                 cell.selectionStyle = .none
                 cell.textLabel?.text = label.name
                 let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
@@ -35,15 +35,14 @@ extension ATCreateController {
             }
             switch item {
             case .attachment:
-                let cell = self.makeSubtitleTableCell()
+                let cell = self.makeSubtitleTableCell(with: item)
                 cell.selectionStyle = .none
-                cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
                 return cell
             case .date:
-                let cell = self.makeValue1TableCell()
+                let cell = self.makeValue1TableCell(with: item)
+                cell.selectionStyle = .none
                 cell.imageView?.image = UIImage(named: "calendar.round.color")
-                cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
                 self.bindDateToDateLabel(date: self._date, label: cell.detailTextLabel!)
                 return cell
@@ -62,14 +61,12 @@ extension ATCreateController {
                                                                    label: cell.placeholderLabel)
                 return cell
             case .flag:
-                let cell = self.makeSubtitleTableCell()
+                let cell = self.makeSubtitleTableCell(with: item)
                 cell.selectionStyle = .none
-                cell.textLabel?.text = item.identify
                 cell.accessoryType = .disclosureIndicator
                 return cell
             case .location:
-                let cell = self.makeSubtitleTableCell()
-                cell.textLabel?.text = item.identify
+                let cell = self.makeSubtitleTableCell(with: item)
                 cell.accessoryType = .disclosureIndicator
                 self.bindSelectedLocationViewModelToLocationLabel(selectedLocation: self.viewModel.selectedLocation,
                                                                   label: cell.detailTextLabel!)
@@ -79,9 +76,9 @@ extension ATCreateController {
                 cell.textField.autocapitalizationType = .words
                 return cell
             case .time:
-                let cell = self.makeValue1TableCell()
+                let cell = self.makeValue1TableCell(with: item)
+                cell.selectionStyle = .none
                 cell.imageView?.image = UIImage(named: "clock.round.color")
-                cell.textLabel?.text = item.identify
                 cell.detailTextLabel?.text = ""
                 self.bindTimeToTimeLabel(time: self._time, label: cell.detailTextLabel!)
                 return cell
@@ -98,8 +95,7 @@ extension ATCreateController {
                 cell.textField.autocapitalizationType = .words
                 return cell
             default:
-                let cell = self.makeDefaultTableCell()
-                cell.textLabel?.text = item.identify
+                let cell = self.makeDefaultTableCell(with: item)
                 return cell
             }
         }
@@ -118,18 +114,21 @@ extension ATCreateController {
         return cell
     }
     
-    private func makeDefaultTableCell() -> UITableViewCell {
+    private func makeDefaultTableCell(with item: RowDomain) -> UITableViewCell {
         let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
+        cell.textLabel?.text = item.identify
         return cell
     }
     
-    private func makeSubtitleTableCell() -> UITableViewCell {
+    private func makeSubtitleTableCell(with item: RowDomain) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "SubtitleTableCell")
+        cell.textLabel?.text = item.identify
         return cell
     }
     
-    private func makeValue1TableCell() -> UITableViewCell {
+    private func makeValue1TableCell(with item: RowDomain) -> UITableViewCell {
         let cell = UITableViewCell(style: .value1, reuseIdentifier: "Value1TableCell")
+        cell.textLabel?.text = item.identify
         return cell
     }
     

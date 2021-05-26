@@ -12,10 +12,10 @@ import RxSwift
 // MARK: BindShowedLabelsToTableView
 extension FLListController {
     
-    func bindShowedLabelsToTableView(showedLabels: PublishRelay<[SelectableDomain<FlagDomain>]>,
-                                     tableView: UITableView) {
+    func bindShowedFlagsToTableView(showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]>,
+                                    tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
-        showedLabels
+        showedFlags
             .asDriver(onErrorJustReturn: [])
             .map({ [SectionDomain(header: "", items: $0)] })
             .drive(tableView.rx.items(dataSource: dataSource))

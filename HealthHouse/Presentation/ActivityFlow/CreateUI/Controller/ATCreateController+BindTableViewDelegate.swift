@@ -55,7 +55,6 @@ extension ATCreateController {
                     .disposed(by: self.disposeBag)
             }
             filesAction.setValue(UIImage(systemName: "doc.text.magnifyingglass"), forKey: "image")
-            filesAction.setValue(UIImage(systemName: "doc.text.magnifyingglass"), forKey: "image")
             let photosAction = UIAlertAction(title: "Photos", style: .default) { [unowned self] (action) in
                 self.rxMediaPicker
                     .selectImage(source: .photoLibrary, editable: true)
@@ -109,7 +108,7 @@ extension ATCreateController {
             self.createView.sections.accept(newFields)
             tableView.endUpdates()
         case .flag:
-            self.viewModel.presentLBListUI()
+            self.viewModel.presentFLListUI()
         case .location:
             tableView.deselectRow(at: indexPath, animated: true)
             self.onIndexLocationDidSelect(by: tableView, at: indexPath)

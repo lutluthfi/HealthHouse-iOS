@@ -1,5 +1,5 @@
 //
-//  CreateUpdateFlagUseCaseUseCase.swift
+//  CreateFlagUseCase.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 18/05/21.
@@ -9,11 +9,11 @@
 import Foundation
 import RxSwift
 
-public enum CreateUpdateFlagUseCaseError: LocalizedError {
+public enum CreateFlagUseCaseError: LocalizedError {
     
 }
 
-extension CreateUpdateFlagUseCaseError {
+extension CreateFlagUseCaseError {
     
     public var errorDescription: String? {
         switch self {
@@ -22,21 +22,21 @@ extension CreateUpdateFlagUseCaseError {
     
 }
 
-public struct CreateUpdateFlagUseCaseResponse {
+public struct CreateFlagUseCaseResponse {
     public let flag: FlagDomain
 }
 
-public struct CreateUpdateFlagUseCaseRequest {
+public struct CreateFlagUseCaseRequest {
     public let coreID: CoreID?
     public let color: UIColor
     public let name: String
 }
 
-public protocol CreateUpdateFlagUseCase {
-    func execute(_ request: CreateUpdateFlagUseCaseRequest) -> Observable<CreateUpdateFlagUseCaseResponse>
+public protocol CreateFlagUseCase {
+    func execute(_ request: CreateFlagUseCaseRequest) -> Observable<CreateFlagUseCaseResponse>
 }
 
-public final class DefaultCreateUpdateFlagUseCase {
+public final class DefaultCreateFlagUseCase {
 
     let flagRepository: FlagRepository
     
@@ -46,13 +46,13 @@ public final class DefaultCreateUpdateFlagUseCase {
 
 }
 
-extension DefaultCreateUpdateFlagUseCase: CreateUpdateFlagUseCase {
+extension DefaultCreateFlagUseCase: CreateFlagUseCase {
 
-    public func execute(_ request: CreateUpdateFlagUseCaseRequest) -> Observable<CreateUpdateFlagUseCaseResponse> {
+    public func execute(_ request: CreateFlagUseCaseRequest) -> Observable<CreateFlagUseCaseResponse> {
         let flag = FlagDomain.make(from: request)
         return self.flagRepository
-            .insertUpdateFlag(flag, in: .coreData)
-            .map({ CreateUpdateFlagUseCaseResponse(flag: $0) })
+            .insertFlag(flag, in: .coreData)
+            .map({ CreateFlagUseCaseResponse(flag: $0) })
     }
     
 }
@@ -60,7 +60,7 @@ extension DefaultCreateUpdateFlagUseCase: CreateUpdateFlagUseCase {
 
 fileprivate extension FlagDomain {
     
-    static func make(from request: CreateUpdateFlagUseCaseRequest) -> FlagDomain {
+    static func make(from request: CreateFlagUseCaseRequest) -> FlagDomain {
         let now = Date().toInt64()
         return FlagDomain(coreID: request.coreID,
                           createdAt: now,

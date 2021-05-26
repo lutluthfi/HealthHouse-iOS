@@ -43,7 +43,11 @@ extension AppDIContainer {
     private func makeListViewModel(request: FLListViewModelRequest,
                                    response: FLListViewModelResponse,
                                    route: FLListViewModelRoute) -> FLListViewModel {
-        return DefaultFLListViewModel(request: request, response: response, route: route)
+        return DefaultFLListViewModel(request: request,
+                                      response: response,
+                                      route: route,
+                                      fetchAllFlagUseCase: self.makeFetchAllFlagUseCase(),
+                                      fetchProfileUseCase: self.makeFetchProfileUseCase())
     }
     
 }

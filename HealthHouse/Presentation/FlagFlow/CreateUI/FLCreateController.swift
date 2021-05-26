@@ -20,7 +20,9 @@ final class FLCreateController: UITableViewController {
     var viewModel: FLCreateViewModel!
 
     // MARK: Common Variable
-
+    lazy var _title = BehaviorRelay<String>(value: "")
+    lazy var _color = BehaviorRelay<UIColor?>(value: nil)
+    lazy var _fieldValues = Observable.combineLatest(self._title, self._color)
 
     // MARK: Create Function
     class func create(with viewModel: FLCreateViewModel) -> FLCreateController {
@@ -37,7 +39,10 @@ final class FLCreateController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.bindCreateBarButtonItem(barButtonItem: self._view.createBarButtonItem)
-        self.bindSectionsToTableView(relay: self._view.sections, tableView: self._view.tableView)
+        self.bindSectionsToTableView(sections: self._view.sections, tableView: self._view.tableView)
+        self.bindTableViewItemDeselected(tableView: self._view.tableView)
+        self.bindTableViewItemSelected(tableView: self._view.tableView)
+        self.bindTableViewModelSelectedToColor(tableView: self._view.tableView, color: self._color)
         self.viewModel.viewDidLoad()
     }
     
@@ -55,13 +60,67 @@ final class FLCreateController: UITableViewController {
     
 }
 
+// MARK: BindCreateBarButtonItem
 extension FLCreateController {
     
     func bindCreateBarButtonItem(barButtonItem: UIBarButtonItem) {
         barButtonItem.rx.tap
-            .asDriver()
-            .drive(onNext: { [unowned self] in
+            .withLatestFrom(self._fieldValues)
+            .filter({ $0.1 != nil })
+            .do(onNext: { [unowned self] (fieldValues) in
+                let name = fieldValues.0
+                let hexcolor = fieldValues.1!.hexString()
+                self.viewModel.doCreate(hexcolor: hexcolor, name: name)
             })
+            .bind(onNext: { [unowned self] (_) in
+                self.dismiss(animated: true)
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindTableViewItemDeselected
+extension FLCreateController {
+    
+    func bindTableViewItemDeselected(tableView: UITableView) {
+        tableView.rx
+            .itemDeselected
+            .map({ [unowned tableView] in tableView.cellForRow(at: $0) })
+            .asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { (cell) in
+                cell?.accessoryType = .none
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindTableViewItemSelected
+extension FLCreateController {
+    
+    func bindTableViewItemSelected(tableView: UITableView) {
+        tableView.rx
+            .itemSelected
+            .map({ [unowned tableView] in tableView.cellForRow(at: $0) })
+            .asDriver(onErrorJustReturn: nil)
+            .drive(onNext: { (cell) in
+                cell?.accessoryType = .checkmark
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindTableViewModelSelectedToColor
+extension FLCreateController {
+    
+    func bindTableViewModelSelectedToColor(tableView: UITableView, color: BehaviorRelay<UIColor?>) {
+        tableView.rx
+            .modelSelected(RowDomain.self)
+            .asDriver()
+            .compactMap({ $0.value as? UIColor })
+            .drive(self._color)
             .disposed(by: self.disposeBag)
     }
     
@@ -70,9 +129,9 @@ extension FLCreateController {
 // MARK: BindSectionsToTableView
 extension FLCreateController {
     
-    func bindSectionsToTableView(relay: BehaviorRelay<[SectionDomain<RowDomain>]>, tableView: UITableView) {
+    func bindSectionsToTableView(sections: BehaviorRelay<[SectionDomain<RowDomain>]>, tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
-        relay
+        sections
             .asDriver()
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
@@ -83,6 +142,7 @@ extension FLCreateController {
         { (_, _, _, item) -> UITableViewCell in
             if let color = item.value as? UIColor {
                 let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
+                cell.selectionStyle = .none
                 cell.textLabel?.text = item.identify
                 let circleBadgeFill = UIImage(systemName: "flag.circle.fill")
                 cell.imageView?.image = circleBadgeFill
@@ -93,6 +153,7 @@ extension FLCreateController {
                 cell.textField.placeholder = item.identify
                 cell.textField.autocapitalizationType = .words
                 cell.textField.clearButtonMode = .whileEditing
+                self.bindTextFieldToTitle(textField: cell.textField, title: self._title)
                 return cell
             }
         }
@@ -102,6 +163,18 @@ extension FLCreateController {
             return footer
         }
         return dataSource
+    }
+    
+}
+
+// MARK: BindTextFieldToTitle
+extension FLCreateController {
+    
+    func bindTextFieldToTitle(textField: UITextField, title: BehaviorRelay<String>) {
+        textField.rx.text.orEmpty
+            .asDriver()
+            .drive(self._title)
+            .disposed(by: self.disposeBag)
     }
     
 }

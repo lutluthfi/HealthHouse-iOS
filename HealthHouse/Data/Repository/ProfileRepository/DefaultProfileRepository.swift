@@ -35,13 +35,13 @@ extension DefaultProfileRepository: ProfileRepository {
         }
     }
     
-    public func insertUpdateProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain> {
+    public func insertProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain> {
         switch storagePoint  {
         case .coreData:
             return self.localProfileStorage.insertIntoCoreData(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
-                                                              function: "insertUpdateProfile()",
+                                                              function: "insertProfile()",
                                                               object: ProfileDomain.self)
         case .userDefaults:
             return self.localProfileStorage.insertIntoUserDefaults(profile)

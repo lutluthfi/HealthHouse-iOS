@@ -7,9 +7,12 @@
 //
 
 import Foundation
+import RxRelay
+import RxSwift
 
 // MARK: FLCreateViewModelResult
 enum FLCreateViewModelResult {
+    case createUpdateFlagUseCase(AnyResult<FlagDomain, String>)
 }
 
 // MARK: FLCreateViewModelResponse
@@ -27,11 +30,12 @@ public struct FLCreateViewModelRoute {
 // MARK: FLCreateViewModelInput
 protocol FLCreateViewModelInput {
     func viewDidLoad()
+    func doCreate(hexcolor: String, name: String)
 }
 
 // MARK: FLCreateViewModelOutput
 protocol FLCreateViewModelOutput {
-
+    var result: PublishRelay<FLCreateViewModelResult> { get }
 }
 
 // MARK: FLCreateViewModel
@@ -46,21 +50,19 @@ final class DefaultFLCreateViewModel: FLCreateViewModel {
     let route: FLCreateViewModelRoute
 
     // MARK: UseCase Variable
-    let createUpdateFlagUseCase: CreateUpdateFlagUseCase
-
+    let createUpdateFlagUseCase: CreateFlagUseCase
 
     // MARK: Common Variable
-
-    
+    let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
-    
+    let result = PublishRelay<FLCreateViewModelResult>()
 
     // MARK: Init Function
     init(request: FLCreateViewModelRequest,
          response: FLCreateViewModelResponse,
          route: FLCreateViewModelRoute,
-         createUpdateFlagUseCase: CreateUpdateFlagUseCase) {
+         createUpdateFlagUseCase: CreateFlagUseCase) {
         self.request = request
         self.response = response
         self.route = route
@@ -73,6 +75,24 @@ final class DefaultFLCreateViewModel: FLCreateViewModel {
 extension DefaultFLCreateViewModel {
     
     func viewDidLoad() {
+    }
+    
+    func doCreate(hexcolor: String, name: String) {
+        let request = CreateFlagUseCaseRequest(coreID: nil, hexcolor: hexcolor, name: name)
+        self.createUpdateFlagUseCase
+            .execute(request)
+            .subscribe(onNext: { (response) in
+                let flag = response.flag
+                let success = AnyResult<FlagDomain, String>.success(flag)
+                let result = FLCreateViewModelResult.createUpdateFlagUseCase(success)
+                self.result.accept(result)
+            }, onError: { [unowned self] (error) in
+                let message = error.localizedDescription
+                let failure = AnyResult<FlagDomain, String>.failure(message)
+                let result = FLCreateViewModelResult.createUpdateFlagUseCase(failure)
+                self.result.accept(result)
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

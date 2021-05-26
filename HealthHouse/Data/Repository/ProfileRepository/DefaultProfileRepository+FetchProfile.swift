@@ -10,16 +10,16 @@ import RxSwift
 
 extension DefaultProfileRepository {
     
-    public func fetchProfile(in storagePoint: StoragePoint) -> Observable<ProfileDomain> {
+    public func fetchProfile(in storagePoint: StoragePoint) -> Observable<ProfileDomain?> {
         switch storagePoint  {
         case .coreData:
             return StoragePoint.makeCoreDataStorageNotSupported(class: ProfileRepository.self,
                                                                 function: "fetchProfile()",
-                                                                object: ProfileDomain.self)
+                                                                object: Optional<ProfileDomain>.self)
         case .remote:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "fetchProfile()",
-                                                                   object: ProfileDomain.self)
+                                                                   object: Optional<ProfileDomain>.self)
         case .userDefaults:
             return self.localProfileStorage
                 .fetchInUserDefaults()
@@ -31,24 +31,18 @@ extension DefaultProfileRepository {
 
 private extension DefaultProfileRepository {
     
-    func fetchFirstProfileBy(coreID url: URL?) -> Observable<ProfileDomain> {
+    func fetchFirstProfileBy(coreID url: URL?) -> Observable<ProfileDomain?> {
         self.localProfileStorage
             .fetchAllInCoreData()
-            .flatMap { self.findFirstProfile($0, coreID: url) }
+            .flatMap({ [unowned self] in
+                return self.findFirstProfile($0, coreID: url)
+            })
     }
     
-    func findFirstProfile(_ profiles: [ProfileDomain], coreID url: URL?) -> Observable<ProfileDomain> {
+    func findFirstProfile(_ profiles: [ProfileDomain], coreID url: URL?) -> Observable<ProfileDomain?> {
         return Observable.create { (observer) -> Disposable in
-            let profile = profiles.first { (profile) in
-                return profile.coreID?.uriRepresentation() == url
-            }
-            if let _profile = profile {
-                observer.onNext(_profile)
-            } else {
-                let message = "ProfileRepository: Failed to execute findFirstProfile() caused by coreID is not match"
-                let error = PlainError(description: message)
-                observer.onError(error)
-            }
+            let profile = profiles.first(where: { $0.coreID?.uriRepresentation() == url })
+            observer.onNext(profile)
             return Disposables.create()
         }
     }

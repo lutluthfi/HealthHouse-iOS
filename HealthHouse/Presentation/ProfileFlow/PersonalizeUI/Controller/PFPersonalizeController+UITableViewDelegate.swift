@@ -19,12 +19,12 @@ extension PFPersonalizeController {
 }
 
 // MARK: UITableViewDelegate
-extension PFPersonalizeController: UITableViewDelegate {
+extension PFPersonalizeController {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let section = indexPath.section
         let row = indexPath.row
-        let field = self.personalizeView.sections[section][row]
+        let field = self._view.sections[section][row]
         switch field {
         case .photo:
             return HHPhotoProfileTableCell.height

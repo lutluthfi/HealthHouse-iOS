@@ -48,16 +48,29 @@ extension DefaultLocalFlagStorage {
     
     public func insertIntoCoreData(_ flag: FlagDomain) -> Observable<FlagDomain> {
         return Observable.create { [unowned self] (observer) -> Disposable in
+            guard flag.coreID == nil else {
+                let message = "LocalFlagStorage: Failed to execute insertIntoCoreData() caused by flagCoreID is already exist"
+                let error = PlainError(description: message)
+                let coreDataError = CoreDataStorageError.saveError(error)
+                observer.onError(coreDataError)
+                return Disposables.create()
+            }
+            
             do {
                 let context = self.coreDataStorage.context
                 let inserted: FlagEntity
                 let request: NSFetchRequest = FlagEntity.fetchRequest()
                 let entities = try context.fetch(request)
-                if let oldEntity = entities.first(where: { $0.objectID == flag.coreID }) {
-                    inserted = oldEntity.createUpdate(with: flag, context: context)
-                } else {
-                    inserted = FlagEntity(flag, insertInto: context)
+                
+                guard !entities.contains(where: { $0.name == flag.name }) else {
+                    let message = "LocalFlagStorage: Failed to execute insertIntoCoreData() caused by Flag is already created"
+                    let error = PlainError(description: message)
+                    let coreDataError = CoreDataStorageError.saveError(error)
+                    observer.onError(coreDataError)
+                    return Disposables.create()
                 }
+                
+                inserted = FlagEntity(flag, insertInto: context)
                 try context.save()
                 let insertedDomain = inserted.toDomain()
                 observer.onNext(insertedDomain)

@@ -32,7 +32,7 @@ public struct ATCreateViewModelRoute {
 // MARK: ATCreateViewModelInput
 protocol ATCreateViewModelInput {
     func viewDidLoad()
-    func presentLBListUI()
+    func presentFLListUI()
     func presentLCSearchUI()
 }
 
@@ -78,16 +78,16 @@ extension DefaultATCreateViewModel {
     func viewDidLoad() {
     }
     
-    func presentLBListUI() {
+    func presentFLListUI() {
         let response = FLListViewModelResponse()
-        response.selectedLabels
+        response.selectedFlags
             .do(onNext: { [unowned self] in
                 self._selectedLabels = $0
             })
             .bind(to: self.showedSelectedLabels)
             .disposed(by: self.disposeBag)
         let selectedLabels = self._selectedLabels
-        let request = FLListViewModelRequest(selectedLabels: selectedLabels)
+        let request = FLListViewModelRequest(selectedFlags: selectedLabels)
         self.route.presentLBListUI?(request, response)
     }
     

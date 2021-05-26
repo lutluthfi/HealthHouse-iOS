@@ -13,4 +13,12 @@ extension AppDIContainer: ProfileUseCaseFactory {
         return DefaultCreateProfileUseCase(profileRepository: self.makeProfileRepository())
     }
     
+    public func makeFetchProfileUseCase() -> FetchCurrentProfileUseCase {
+        return DefaultFetchCurrentProfileUseCase(profileRepository: self.makeProfileRepository())
+    }
+    
+    public func makeSetCurrentProfileUseCase() -> SetCurrentProfileUseCase {
+        return DefaultSetCurrentProfileUseCase(profileRepository: self.makeProfileRepository())
+    }
+    
 }

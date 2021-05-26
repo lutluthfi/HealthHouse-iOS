@@ -1,5 +1,5 @@
 //
-//  HDTLCalendarItemDomain.swift
+//  HDTLCalendarItemModel.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 20/04/21.
@@ -8,16 +8,16 @@
 import Foundation
 import RxDataSources
 
-public struct HDTLCalendarItemDomain {
+public struct HDTLCalendarItemModel {
     
     public let date: Date
     public let dateFormatted: String
     
 }
 
-extension HDTLCalendarItemDomain {
+extension HDTLCalendarItemModel {
     
-    public static func generateDays(inYear dateInterval: DateInterval) -> [HDTLCalendarItemDomain] {
+    public static func generateDays(inYear dateInterval: DateInterval) -> [HDTLCalendarItemModel] {
         let calendar = Calendar.current
         let months = calendar.getMonths(inYear: dateInterval)
         var days = months.flatMap { calendar.getDays(inMonth: $0) }
@@ -49,7 +49,7 @@ extension HDTLCalendarItemDomain {
             days.insert(hiddenDay, at: 0)
         }
         
-        let calendarItems = days.map { (day) -> HDTLCalendarItemDomain in
+        let calendarItems = days.map { (day) -> HDTLCalendarItemModel in
             let dayFormatted = day.formatted(components: [.dayOfWeekWideName,
                                                           .comma,
                                                           .whitespace,
@@ -58,7 +58,7 @@ extension HDTLCalendarItemDomain {
                                                           .monthOfYearFullName,
                                                           .whitespace,
                                                           .yearFullDigits])
-            return HDTLCalendarItemDomain(date: day, dateFormatted: dayFormatted)
+            return HDTLCalendarItemModel(date: day, dateFormatted: dayFormatted)
         }
         
         return calendarItems
@@ -66,17 +66,17 @@ extension HDTLCalendarItemDomain {
     
 }
 
-extension HDTLCalendarItemDomain: Equatable {
+extension HDTLCalendarItemModel: Equatable {
     
-    public static func == (lhs: HDTLCalendarItemDomain, rhs: HDTLCalendarItemDomain) -> Bool {
+    public static func == (lhs: HDTLCalendarItemModel, rhs: HDTLCalendarItemModel) -> Bool {
         return lhs.dateFormatted == rhs.dateFormatted
     }
     
 }
 
-public typealias HDTLCalendarItemDomainSectionModel = AnimatableSectionModel<String, HDTLCalendarItemDomain>
+public typealias HDTLCalendarItemModelSectionModel = AnimatableSectionModel<String, HDTLCalendarItemModel>
 
-extension HDTLCalendarItemDomain: IdentifiableType {
+extension HDTLCalendarItemModel: IdentifiableType {
     
     public typealias Identity = String
     

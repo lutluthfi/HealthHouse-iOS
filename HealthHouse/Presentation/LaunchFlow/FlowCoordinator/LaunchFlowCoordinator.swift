@@ -28,7 +28,7 @@ public protocol LaunchFlowCoordinator {
 public enum LaunchFlowCoordinatorInstructor {
     case presentWelcomeUI(LNWelcomeViewModelRequest, UIPresentProperties)
     case pushToWelcomeUI(LNWelcomeViewModelRequest)
-    case pushToPadUI(LNPadViewModelRequest)
+    case pushToPadUI
 }
 
 // MARK: DefaultLaunchFlowCoordinator
@@ -57,8 +57,8 @@ extension DefaultLaunchFlowCoordinator: LaunchFlowCoordinator {
             self.presentWelcomeUI(request: request, properties: properties)
         case .pushToWelcomeUI(let request):
             self.pushToWelcomeUI(request: request)
-        case .pushToPadUI(let request):
-            self.pushToPadUI(request: request)
+        case .pushToPadUI:
+            self.pushToPadUI()
         }
     }
     
@@ -67,15 +67,24 @@ extension DefaultLaunchFlowCoordinator: LaunchFlowCoordinator {
 // MARK: Pad UI
 extension DefaultLaunchFlowCoordinator {
     
-    private func makePadUI(request: LNPadViewModelRequest) -> UITabBarController {
+    private func makePadUI() -> UITabBarController {
+        let hdTimelineController = self.flowFactory
+            .makeHealthDiaryFlowCoordinator()
+            .makeTimelineUI(request: HDTimelineViewModelRequest()) as! HDTimelineController
+        let pfPreviewController = self.flowFactory
+            .makeProfileFlowCoordinator()
+            .makePreviewUI(request: PFPreviewViewModelRequest()) as! PFPreviewController
+        let controllers = LNPadViewModelRequest.Controllers(hdTimelineController: hdTimelineController,
+                                                            pfPreviewController: pfPreviewController)
+        let request = LNPadViewModelRequest(controllers: controllers)
         let route = LNPadViewModelRoute()
         let controller = self.controllerFactory.makeLNPadController(request: request, route: route)
         return controller
     }
     
-    func pushToPadUI(request: LNPadViewModelRequest) {
+    func pushToPadUI() {
         guaranteeMainThread {
-            let controller = self.makePadUI(request: request)
+            let controller = self.makePadUI()
             self.navigationController.pushViewController(controller, animated: true)
         }
     }
@@ -87,16 +96,8 @@ extension DefaultLaunchFlowCoordinator {
     
     private func makeWelcomeUI(request: LNWelcomeViewModelRequest) -> UIViewController {
         let showLNPadUI: () -> Void = {
-            let hdTimelineController = self.flowFactory
-                .makeHealthDiaryFlowCoordinator()
-                .makeTimelineUI(request: HDTimelineViewModelRequest()) as! HDTimelineController
-            let pfPreviewController = self.flowFactory
-                .makeProfileFlowCoordinator()
-                .makePreviewUI(request: PFPreviewViewModelRequest()) as! PFPreviewController
-            let controllers = LNPadViewModelRequest.Controllers(hdTimelineController: hdTimelineController,
-                                                                pfPreviewController: pfPreviewController)
-            let lnPadRequestValue = LNPadViewModelRequest(controllers: controllers)
-            self.start(with: .pushToPadUI(lnPadRequestValue))
+            let instructor = LaunchFlowCoordinatorInstructor.pushToPadUI
+            self.start(with: instructor)
         }
         let showPFPersonalizeUI: (PFPersonalizeViewModelRequest) -> Void = { (request) in
             let instructor = ProfileFlowCoordinatorInstructor.pushToPersonalizeUI(request)

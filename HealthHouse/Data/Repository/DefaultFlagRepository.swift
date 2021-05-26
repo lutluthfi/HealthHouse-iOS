@@ -56,17 +56,17 @@ extension DefaultFlagRepository: FlagRepository {
         }
     }
     
-    public func insertUpdateFlag(_ flag: FlagDomain, in storagePoint: StoragePoint) -> Observable<FlagDomain> {
+    public func insertFlag(_ flag: FlagDomain, in storagePoint: StoragePoint) -> Observable<FlagDomain> {
         switch storagePoint {
         case .coreData:
             return self.localFlagStorage.insertIntoCoreData(flag)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,
-                                                              function: "insertUpdateFlag()",
+                                                              function: "insertFlag()",
                                                               object: FlagDomain.self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: FlagRepository.self,
-                                                                   function: "insertUpdateFlag()",
+                                                                   function: "insertFlag()",
                                                                    object: FlagDomain.self)
         }
     }

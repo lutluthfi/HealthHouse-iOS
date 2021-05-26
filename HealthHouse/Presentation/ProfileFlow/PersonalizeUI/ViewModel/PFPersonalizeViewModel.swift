@@ -5,6 +5,7 @@
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
 
+import RxRelay
 import RxSwift
 
 // MARK: PFPersonalizeViewModelResult
@@ -37,23 +38,24 @@ public struct PFPersonalizeViewModelResponse {
 
 // MARK: PFPersonalizeViewModelRoute
 public struct PFPersonalizeViewModelRoute {
-    
+    var pushToLNPadUI: (() -> Void)?
 }
 
 // MARK: PFPersonalizeViewModelInput
 protocol PFPersonalizeViewModelInput {
     func viewDidLoad()
-    func doCreate(firstName: String,
-                  dateOfBirth: Date,
+    func doCreate(dateOfBirth: Date,
+                  firstName: String,
                   gender: GenderDomain,
                   lastName: String,
                   mobileNumber: String,
                   photo: UIImage?)
+    func pushToHDTimelineUI()
 }
 
 // MARK: PFPersonalizeViewModelOutput
 protocol PFPersonalizeViewModelOutput {
-    var result: PublishSubject<PFPersonalizeViewModelResult> { get }
+    var result: PublishRelay<PFPersonalizeViewModelResult> { get }
     var showedCountryDialingCodes: PublishSubject<[CountryDialingCodeDomain]> { get }
 }
 
@@ -70,23 +72,26 @@ final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
     // MARK: UseCase Variable
     let createProfileUseCase: CreateProfileUseCase
     let fetchCountryDialingCodeUseCase: FetchCountryDialingCodeUseCase
+    let setCurrentProfileUseCase: SetCurrentProfileUseCase
 
     // MARK: Common Variable
     let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
-    let result = PublishSubject<PFPersonalizeViewModelResult>()
+    let result = PublishRelay<PFPersonalizeViewModelResult>()
     let showedCountryDialingCodes = PublishSubject<[CountryDialingCodeDomain]>()
 
     // MARK: Init Function
     init(request: PFPersonalizeViewModelRequest,
          route: PFPersonalizeViewModelRoute,
          createProfileUseCase: CreateProfileUseCase,
-         fetchCountryDialingCodeUseCase: FetchCountryDialingCodeUseCase) {
+         fetchCountryDialingCodeUseCase: FetchCountryDialingCodeUseCase,
+         setCurrentProfileUseCase: SetCurrentProfileUseCase) {
         self.request = request
         self.route = route
         self.createProfileUseCase = createProfileUseCase
         self.fetchCountryDialingCodeUseCase = fetchCountryDialingCodeUseCase
+        self.setCurrentProfileUseCase = setCurrentProfileUseCase
     }
     
 }
@@ -99,32 +104,40 @@ extension DefaultPFPersonalizeViewModel {
                                                      subject: self.showedCountryDialingCodes)
     }
     
-    func doCreate(firstName: String,
-                  dateOfBirth: Date,
+    func doCreate(dateOfBirth: Date,
+                  firstName: String,
                   gender: GenderDomain,
                   lastName: String,
                   mobileNumber: String,
                   photo: UIImage?) {
-        let request = CreateProfileUseCaseRequest(firstName: firstName,
-                                                  dateOfBirth: dateOfBirth,
+        let request = CreateProfileUseCaseRequest(dateOfBirth: dateOfBirth,
+                                                  firstName: firstName,
                                                   gender: gender,
                                                   lastName: lastName,
                                                   mobileNumber: mobileNumber,
                                                   photo: photo)
         self.createProfileUseCase
             .execute(request)
-            .subscribe(onNext: { (response) in
-                let profile = response.profile
+            .map({ $0.profile })
+            .flatMap({ [unowned self] (profile) -> Observable<ProfileDomain> in
+                let request = SetCurrentProfileUseCaseRequest(profile: profile)
+                return self.setCurrentProfileUseCase.execute(request).map({ $0.profile })
+            })
+            .subscribe(onNext: { (profile) in
                 let successMessage = "\(profile.fullName) has been created.\nWe hope you are always healthy 🥳"
                 let success = AnyResult<String, String>.success(successMessage)
                 let result = PFPersonalizeViewModelResult.DoCreate(success)
-                self.result.onNext(result)
+                self.result.accept(result)
             }, onError: { [unowned self] (error) in
                 let failure = AnyResult<String, String>.failure(error.localizedDescription)
                 let result = PFPersonalizeViewModelResult.DoCreate(failure)
-                self.result.onNext(result)
+                self.result.accept(result)
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    func pushToHDTimelineUI() {
+        self.route.pushToLNPadUI?()
     }
     
 }

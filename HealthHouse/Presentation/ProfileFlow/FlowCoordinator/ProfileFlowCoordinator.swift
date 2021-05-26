@@ -65,7 +65,12 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
 extension DefaultProfileFlowCoordinator {
     
     private func makePFPersonalizeUI(request: PFPersonalizeViewModelRequest) -> UIViewController {
-        let route = PFPersonalizeViewModelRoute()
+        let pushToLNPadUI: (() -> Void) = {
+            let instructor = LaunchFlowCoordinatorInstructor.pushToPadUI
+            let coordinator = self.flowFactory.makeLaunchFlowCoordinator()
+            coordinator.start(with: instructor)
+        }
+        let route = PFPersonalizeViewModelRoute(pushToLNPadUI: pushToLNPadUI)
         let controller = self.controllerFactory.makePFPersonalizeController(request: request, route: route)
         return controller
     }

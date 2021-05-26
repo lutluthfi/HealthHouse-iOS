@@ -20,7 +20,7 @@ final class FLListController: UITableViewController {
     
     // MARK: Common Variable
     let _isTableEditing = BehaviorRelay<Bool>(value: false)
-    let _selectedLabels = BehaviorRelay<[FlagDomain]>(value: [])
+    let _selectedFlags = BehaviorRelay<[FlagDomain]>(value: [])
     
     // MARK: Create Function
     class func create(with viewModel: FLListViewModel) -> FLListController {
@@ -39,7 +39,7 @@ final class FLListController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: self._selectedLabels,
+        self.bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: self._selectedFlags,
                                                             barButtonItem: self._view.selectedCountBarButtonItem)
         self.bindCreateBarButtonItemTap(barButtonItem: self._view.createBarButtonItem)
         self.bindDoneBarButtonItemTap(barButtonItem: self._view.doneBarButtonItem)
@@ -48,18 +48,20 @@ final class FLListController: UITableViewController {
         self.bindTableViewItemSelected(tableView: self._view.tableView)
         self.bindTableViewItemDeselected(tableView: self._view.tableView)
         self.bindTableViewWillDisplayCell(tableView: self._view.tableView)
-        self.bindShowedLabelsToTableView(showedLabels: self.viewModel.showedLabels, tableView: self._view.tableView)
-        self.bindShowedLabelsToSelectedLabels(showedLabels: self.viewModel.showedLabels,
-                                              selectedLabels: self._selectedLabels)
+        self.bindShowedFlagsToTableView(showedFlags: self.viewModel.showedFlags,
+                                        tableView: self._view.tableView)
+        self.bindShowedLabelsToSelectedLabels(showedFlags: self.viewModel.showedFlags,
+                                              selectedFlags: self._selectedFlags)
         self.viewModel.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self._view.viewWillAppear(navigationController: self.navigationController,
-                                     navigationItem: self.navigationItem,
-                                     tabBarController: self.tabBarController,
-                                     toolbarItems: &self.toolbarItems)
+                                  navigationItem: self.navigationItem,
+                                  tabBarController: self.tabBarController,
+                                  toolbarItems: &self.toolbarItems)
+        self.viewModel.viewWillAppear()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -90,7 +92,7 @@ extension FLListController {
     func bindDoneBarButtonItemTap(barButtonItem: UIBarButtonItem) {
         barButtonItem.rx
             .tap
-            .withLatestFrom(self._selectedLabels)
+            .withLatestFrom(self._selectedFlags)
             .asDriver(onErrorJustReturn: [])
             .do(onNext: { [unowned self] (labels) in
                 self.viewModel.doDone(selectedLabels: labels)
@@ -126,13 +128,13 @@ extension FLListController {
 // MARK: BindShowedLabelsToSelectedLabels
 extension FLListController {
     
-    func bindShowedLabelsToSelectedLabels(showedLabels: PublishRelay<[SelectableDomain<FlagDomain>]>,
-                                          selectedLabels: BehaviorRelay<[FlagDomain]>) {
-        showedLabels
+    func bindShowedLabelsToSelectedLabels(showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]>,
+                                          selectedFlags: BehaviorRelay<[FlagDomain]>) {
+        showedFlags
             .asDriver(onErrorJustReturn: [])
             .map({ $0.filter({ $0.selected }) })
             .map({ $0.map({ $0.value }) })
-            .drive(selectedLabels)
+            .drive(selectedFlags)
             .disposed(by: self.disposeBag)
     }
     
@@ -160,7 +162,7 @@ extension FLListController {
     func bindTableViewItemSelected(tableView: UITableView) {
         tableView.rx
             .itemSelected
-            .withLatestFrom(self._selectedLabels) { ($0, $1) }
+            .withLatestFrom(self._selectedFlags) { ($0, $1) }
             .filter({ $0.1.count < 5 })
             .map({ [unowned tableView] in tableView.cellForRow(at: $0.0) })
             .asDriver(onErrorJustReturn: nil)
@@ -181,11 +183,11 @@ extension FLListController {
             .asDriver()
             .map({ $0.value })
             .map({ [unowned self] (label) -> [FlagDomain] in
-                var value = self._selectedLabels.value
+                var value = self._selectedFlags.value
                 value.remove(firstIndexOf: label)
                 return value
             })
-            .drive(self._selectedLabels)
+            .drive(self._selectedFlags)
             .disposed(by: self.disposeBag)
     }
     
@@ -200,11 +202,11 @@ extension FLListController {
             .asDriver()
             .map({ $0.value })
             .map({ [unowned self] (label) -> [FlagDomain] in
-                var value = self._selectedLabels.value
+                var value = self._selectedFlags.value
                 value.append(label)
                 return value
             })
-            .drive(self._selectedLabels)
+            .drive(self._selectedFlags)
             .disposed(by: self.disposeBag)
     }
     
@@ -239,6 +241,6 @@ extension FLListController {
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
-
+    
     
 }

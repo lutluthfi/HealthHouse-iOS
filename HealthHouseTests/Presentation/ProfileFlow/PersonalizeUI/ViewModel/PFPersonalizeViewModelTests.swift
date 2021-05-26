@@ -19,8 +19,8 @@ class PFPersonalizeViewModelTests: XCTestCase {
         var _response: PFPersonalizeViewModelResult?
         let subscription = self.sut.viewModel.result.subscribe(onNext: { _response = $0 })
         
-        self.sut.viewModel.doCreate(firstName: "Health",
-                                    dateOfBirth: Date(),
+        self.sut.viewModel.doCreate(dateOfBirth: Date(),
+                                    firstName: "Health",
                                     gender: .male,
                                     lastName: "Diary",
                                     mobileNumber: "1234567890",

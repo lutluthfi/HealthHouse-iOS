@@ -46,6 +46,8 @@ public protocol CoreDataStorageShared {
     
     var removeElementTimeout: TimeInterval { get }
     
+    func performBackground(_ block: @escaping (NSManagedObjectContext) -> Void)
+    
     func saveContext()
     
 }
@@ -100,6 +102,13 @@ extension CoreDataStorage: CoreDataStorageShared {
     
     public var removeElementTimeout: TimeInterval {
         return TimeInterval(5)
+    }
+    
+    public func performBackground(_ block: @escaping (NSManagedObjectContext) -> Void) {
+        let context = self.persistentContainer.viewContext
+        context.performAndWait { [unowned self] in
+            self.persistentContainer.performBackgroundTask(block)
+        }
     }
     
     public func saveContext() {
