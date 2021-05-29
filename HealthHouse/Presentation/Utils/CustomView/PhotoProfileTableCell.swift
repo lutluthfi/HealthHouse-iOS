@@ -1,5 +1,5 @@
 //
-//  HHPhotoProfileTableCell.swift
+//  PhotoProfileTableCell.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 05/04/21.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-public final class HHPhotoProfileTableCell: UITableViewCell {
+public final class PhotoProfileTableCell: UITableViewCell {
 
-    public static let identifier = String(describing: HHPhotoProfileTableCell.self)
+    public static let identifier = String(describing: PhotoProfileTableCell.self)
     public static let height = CGFloat(180)
 
     public lazy var addPhotoButton: UIButton = {
@@ -52,7 +52,7 @@ public final class HHPhotoProfileTableCell: UITableViewCell {
     }
     
     public init() {
-        super.init(style: .default, reuseIdentifier: HHPhotoProfileTableCell.identifier)
+        super.init(style: .default, reuseIdentifier: PhotoProfileTableCell.identifier)
         self.subviewWillAdd()
         self.subviewConstraintWillMake()
         self.viewDidInit()
@@ -105,7 +105,7 @@ public final class HHPhotoProfileTableCell: UITableViewCell {
     
 }
 
-extension HHPhotoProfileTableCell {
+extension PhotoProfileTableCell {
     
     func abbreviationNameDidSet(_ newValue: String) {
         let size = self.photoImageView.frame.size

@@ -64,7 +64,6 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
                         self.flowFactory.makeLaunchFlowCoordinator().start(with: instructor)
                     }
                 })
-                .flatMap(self.localAppConfigStorage.insertFirstLaunchIntoUserDefaults(_:))
                 .subscribe()
                 .disposed(by: self.disposeBag)
         }

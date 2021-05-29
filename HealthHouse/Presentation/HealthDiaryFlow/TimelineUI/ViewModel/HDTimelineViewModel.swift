@@ -47,9 +47,10 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
 
     // MARK: UseCase Variable
     let fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase
+    let fetchCurrentProfileUseCase: FetchCurrentProfileUseCase
 
     // MARK: Common Variable
-    
+    let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
     let showedActivities = PublishSubject<[ActivityDomain]>()
@@ -57,10 +58,22 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
     // MARK: Init Function
     init(request: HDTimelineViewModelRequest,
          route: HDTimelineViewModelRoute,
-         fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase) {
+         fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase,
+         fetchCurrentProfileUseCase: FetchCurrentProfileUseCase) {
         self.request = request
         self.route = route
         self.fetchAllActivityByProfileUseCase = fetchAllActivityByProfileUseCase
+        self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
+    }
+    
+    func doFetchAllActivityByProfileUseCase(ownedBy profile: ProfileDomain) -> Observable<FetchAllActivityByProfileUseCaseResponse> {
+        let request = FetchAllActivityByProfileUseCaseRequest(profile: profile)
+        return self.fetchAllActivityByProfileUseCase.execute(request)
+    }
+    
+    func doFetchCurrentProfileUseCase() -> Observable<FetchCurrentProfileUseCaseResponse> {
+        let request = FetchCurrentProfileUseCaseRequest()
+        return self.fetchCurrentProfileUseCase.execute(request)
     }
     
 }
@@ -69,6 +82,12 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
 extension DefaultHDTimelineViewModel {
     
     func viewDidLoad() {
+        self.doFetchCurrentProfileUseCase()
+            .compactMap({ $0.profile })
+            .flatMap(self.doFetchAllActivityByProfileUseCase(ownedBy:))
+            .map({ $0.activities })
+            .subscribe(self.showedActivities)
+            .disposed(by: self.disposeBag)
     }
     
 }

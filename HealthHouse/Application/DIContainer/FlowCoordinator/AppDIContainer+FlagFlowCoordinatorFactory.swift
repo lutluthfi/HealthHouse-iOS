@@ -47,7 +47,7 @@ extension AppDIContainer {
                                       response: response,
                                       route: route,
                                       fetchAllFlagUseCase: self.makeFetchAllFlagUseCase(),
-                                      fetchProfileUseCase: self.makeFetchProfileUseCase())
+                                      fetchProfileUseCase: self.makeFetchCurrentProfileUseCase())
     }
     
 }

@@ -234,7 +234,7 @@ extension PFPersonalizeController {
 extension PFPersonalizeController {
     
     func bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: Observable<(String, String, UIImage?)>,
-                                                             cell: HHPhotoProfileTableCell) {
+                                                             cell: PhotoProfileTableCell) {
         observable
             .asDriver(onErrorJustReturn: ("", "", nil))
             .drive(onNext: { [unowned cell] (observable) in

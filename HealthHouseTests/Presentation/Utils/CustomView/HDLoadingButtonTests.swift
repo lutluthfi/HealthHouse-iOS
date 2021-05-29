@@ -10,7 +10,7 @@ import XCTest
 
 class HDLoadingButtonTests: XCTestCase {
 
-    private lazy var loadingButton = HDLoadingButton()
+    private lazy var loadingButton = LoadingButton()
     
     func test() {
         

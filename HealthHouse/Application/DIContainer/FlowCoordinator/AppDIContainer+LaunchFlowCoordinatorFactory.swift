@@ -49,7 +49,9 @@ extension AppDIContainer {
     
     private func makeLNWelcomeViewModel(request: LNWelcomeViewModelRequest,
                                         route: LNWelcomeViewModelRoute) -> LNWelcomeViewModel {
-        return DefaultLNWelcomeViewModel(request: request, route: route)
+        return DefaultLNWelcomeViewModel(request: request,
+                                         route: route,
+                                         updateAppConfigFirstLaunchUseCase: self.makeUpdateAppConfigFirstLaunchUseCase())
     }
     
 }

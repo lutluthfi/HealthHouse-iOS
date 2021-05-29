@@ -78,18 +78,14 @@ final class DefaultFLListViewModel: FLListViewModel {
         self.fetchProfileUseCase = fetchProfileUseCase
     }
     
-    func doFetchCurrentProfileUseCase() -> Observable<ProfileDomain> {
+    func doFetchCurrentProfileUseCase() -> Observable<FetchCurrentProfileUseCaseResponse> {
         let request = FetchCurrentProfileUseCaseRequest()
-        return self.fetchProfileUseCase
-            .execute(request)
-            .compactMap({ $0.profile })
+        return self.fetchProfileUseCase.execute(request)
     }
     
-    func doFetchAllFlaguseCase(ownedBy profile: ProfileDomain) -> Observable<[FlagDomain]> {
+    func doFetchAllFlaguseCase(ownedBy profile: ProfileDomain) -> Observable<FetchAllFlagUseCaseResponse> {
         let request = FetchAllFlagUseCaseRequest(ownedBy: profile)
-        return self.fetchAllFlagUseCase
-            .execute(request)
-            .map({ $0.flags })
+        return self.fetchAllFlagUseCase.execute(request)
     }
     
 }
@@ -103,10 +99,11 @@ extension DefaultFLListViewModel {
     func viewWillAppear() {
         let selectedFlags = self.request.selectedFlags
         self.doFetchCurrentProfileUseCase()
+            .compactMap({ $0.profile })
             .flatMap(self.doFetchAllFlaguseCase(ownedBy:))
-            .map({ $0.map({ SelectableDomain(identify: $0.name,
-                                             selected: selectedFlags.contains($0),
-                                             value: $0) }) })
+            .map({ $0.flags.map({ SelectableDomain(identify: $0.name,
+                                                   selected: selectedFlags.contains($0),
+                                                   value: $0) }) })
             .bind(to: self.showedFlags)
             .disposed(by: self.disposeBag)
     }

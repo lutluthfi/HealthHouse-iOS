@@ -13,6 +13,10 @@ extension AppDIContainer: RepositoryFactory {
         return DefaultActivityRepository(localActivityStorage: self.localActivityStorage)
     }
     
+    public func makeAppConfigRepository() -> AppConfigRepository {
+        return DefaultAppCofigRepository(localAppConfigStorage: self.localAppConfigStorage)
+    }
+    
     public func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository {
         return DefaultCountryDialingCodeRepository(remoteCountryDialingCodeStorage: self.remoteCountryDialingCodeStorage)
     }

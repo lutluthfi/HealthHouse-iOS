@@ -1,5 +1,5 @@
 //
-//  HHTextViewTableCell.swift
+//  TextViewTableCell.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 30/04/21.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-public final class HHTextViewTableCell: UITableViewCell {
+public final class TextViewTableCell: UITableViewCell {
     
-    public static let identifier = String(describing: HHTextViewTableCell.self)
+    public static let identifier = String(describing: TextViewTableCell.self)
     
     public lazy var contentContainerView: UIView = {
         let view = UIView()
@@ -36,7 +36,7 @@ public final class HHTextViewTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public init(reuseIdentifier: String? = HHTextViewTableCell.identifier) {
+    public init(reuseIdentifier: String? = TextViewTableCell.identifier) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.subviewWillAdd()
         self.subviewConstraintWillMake()

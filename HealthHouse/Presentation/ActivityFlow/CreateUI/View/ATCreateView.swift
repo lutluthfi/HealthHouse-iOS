@@ -40,7 +40,7 @@ final class DefaultATCreateView: UIView, ATCreateView {
         let tableView = UITableView(frame: UIScreen.main.fixedCoordinateSpace.bounds, style: .insetGrouped)
         tableView.allowsSelection = true
         tableView.keyboardDismissMode = .onDrag
-        tableView.rowHeight = HHTextFieldTableCell.height
+        tableView.rowHeight = TextFieldTableCell.height
         return tableView
     }()
     

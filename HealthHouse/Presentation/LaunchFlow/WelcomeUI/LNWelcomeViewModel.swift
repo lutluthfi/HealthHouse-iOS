@@ -6,6 +6,7 @@
 //  Copyright (c) 2021 All rights reserved.
 
 import Foundation
+import RxSwift
 
 // MARK: LNWelcomeViewModelResult
 enum LNWelcomeViewModelResult {
@@ -47,21 +48,28 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
     let route: LNWelcomeViewModelRoute
 
     // MARK: UseCase Variable
-
-
+    let updateAppConfigFirstLaunchUseCase: UpdateAppConfigFirstLaunchUseCase
 
     // MARK: Common Variable
-
-    
+    let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
     
 
     // MARK: Init Function
     init(request: LNWelcomeViewModelRequest,
-         route: LNWelcomeViewModelRoute) {
+         route: LNWelcomeViewModelRoute,
+         updateAppConfigFirstLaunchUseCase: UpdateAppConfigFirstLaunchUseCase) {
         self.request = request
         self.route = route
+        self.updateAppConfigFirstLaunchUseCase = updateAppConfigFirstLaunchUseCase
+    }
+    
+    func doUpdateAppConfigFirstLaunchUseCase(firstLaunch: Bool) -> Observable<UpdateAppConfigFirstLaunchUseCaseResponse> {
+        let request = UpdateAppConfigFirstLaunchUseCaseRequest(firstLaunch: firstLaunch)
+        return self.updateAppConfigFirstLaunchUseCase
+            .execute(request)
+            .asObservable()
     }
     
 }
@@ -70,6 +78,9 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
 extension DefaultLNWelcomeViewModel {
     
     func viewDidLoad() {
+        self.doUpdateAppConfigFirstLaunchUseCase(firstLaunch: true)
+            .subscribe()
+            .disposed(by: self.disposeBag)
     }
     
     func doContinue() {

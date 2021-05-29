@@ -9,6 +9,6 @@ import Foundation
 
 public protocol ProfileUseCaseFactory {
     func makeCreateProfileUseCase() -> CreateProfileUseCase
-    func makeFetchProfileUseCase() -> FetchCurrentProfileUseCase
+    func makeFetchCurrentProfileUseCase() -> FetchCurrentProfileUseCase
     func makeSetCurrentProfileUseCase() -> SetCurrentProfileUseCase
 }

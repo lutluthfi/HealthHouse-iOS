@@ -23,6 +23,7 @@ protocol HDTimelineViewSubview {
     var calendarSeparatorView: UIView { get }
     var calendarCollectionView: UICollectionView { get }
     var dayHeaderStackView: UIStackView { get }
+    var emptyView: EmptyView { get }
     var timelineTableView: UITableView { get }
 }
 
@@ -78,11 +79,19 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
         }
         return stackView
     }()
+    lazy var emptyView: EmptyView = {
+        let view = EmptyView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.textLabel.text = "No Updates"
+        view.isHidden = true
+        return view
+    }()
     lazy var timelineTableView: UITableView = {
         let tableView = UITableView(frame: self.frame, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.allowsSelection = true
         tableView.allowsMultipleSelection = false
+        tableView.isHidden = true
         return tableView
     }()
 
@@ -142,6 +151,7 @@ extension DefaultHDTimelineView {
         self.addSubview(self.calendarCollectionView)
         self.addSubview(self.calendarSeparatorView)
         self.addSubview(self.timelineTableView)
+        self.addSubview(self.emptyView)
     }
     
     func subviewConstraintWillMake() {
@@ -156,6 +166,12 @@ extension DefaultHDTimelineView {
             make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
             make.top.equalTo(self.calendarCollectionView.snp.bottom)
             make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
+        }
+        self.emptyView.snp.makeConstraints { (make) in
+            make.leading.equalTo(self.safeAreaLayoutGuide.snp.leading)
+            make.top.equalTo(self.calendarSeparatorView.snp.bottom)
+            make.trailing.equalTo(self.safeAreaLayoutGuide.snp.trailing)
+            make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)
         }
     }
     

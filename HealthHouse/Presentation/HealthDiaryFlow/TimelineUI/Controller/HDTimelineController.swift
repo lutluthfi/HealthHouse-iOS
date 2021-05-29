@@ -44,6 +44,10 @@ public final class HDTimelineController: UIViewController {
                                                                       navigationItem: self.navigationItem)
         self.bindSelectedDateToNavigationItemTitle(selectedDate: self._selectedDate,
                                                    navigationItem: self.navigationItem)
+        self.bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: self.viewModel.showedActivities,
+                                                            emptyViewHidden: self._view.emptyView.rx.isHidden)
+        self.bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: self.viewModel.showedActivities,
+                                                                    tableViewHidden: self._view.timelineTableView.rx.isHidden)
         self._view.viewDidLoad(navigationController: self.navigationController,
                                tabBarController: self.tabBarController,
                                navigationItem: self.navigationItem)
@@ -182,6 +186,20 @@ extension HDTimelineController {
     
 }
 
+// MARK: BindShowedActivitiesViewModelToEmptyView
+extension HDTimelineController {
+    
+    func bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: Observable<[ActivityDomain]>,
+                                                        emptyViewHidden: Binder<Bool>) {
+        showedActivities
+            .asDriver(onErrorJustReturn: [])
+            .map({ !$0.isEmpty })
+            .drive(emptyViewHidden)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
 // MARK: BindShowedActivitiesViewModelToTimelineTableView
 extension HDTimelineController {
     
@@ -212,6 +230,20 @@ extension HDTimelineController {
             return cell
         }
         return dataSource
+    }
+    
+}
+
+// MARK: BindShowedActivitiesViewModelToTimelineTableViewHidden
+extension HDTimelineController {
+    
+    func bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: Observable<[ActivityDomain]>,
+                                                                tableViewHidden: Binder<Bool>) {
+        showedActivities
+            .asDriver(onErrorJustReturn: [])
+            .map({ $0.isEmpty })
+            .drive(tableViewHidden)
+            .disposed(by: self.disposeBag)
     }
     
 }

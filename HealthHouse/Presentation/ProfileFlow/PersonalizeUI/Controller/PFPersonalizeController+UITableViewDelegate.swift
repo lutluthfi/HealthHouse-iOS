@@ -27,9 +27,9 @@ extension PFPersonalizeController {
         let field = self._view.sections[section][row]
         switch field {
         case .photo:
-            return HHPhotoProfileTableCell.height
+            return PhotoProfileTableCell.height
         default:
-            return HHTextFieldTableCell.height
+            return TextFieldTableCell.height
         }
     }
     

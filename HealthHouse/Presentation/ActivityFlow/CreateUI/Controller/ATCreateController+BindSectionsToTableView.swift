@@ -55,7 +55,7 @@ extension ATCreateController {
                 self.bindDatePickerToDateOrTime(picker: cell.datePicker, dateOrTime: self._date)
                 return cell
             case .explanation:
-                let cell = HHTextViewTableCell()
+                let cell = TextViewTableCell()
                 cell.placeholderLabel.text = item.identify
                 self.bindTextViewDidChangeToPlaceholderLabelHidden(textView: cell.textView,
                                                                    label: cell.placeholderLabel)
@@ -103,14 +103,14 @@ extension ATCreateController {
     }
     
     private func makeHHTextFieldTableCell(with item: RowDomain,
-                                          style: HHTextFieldTableCellStyle) -> HHTextFieldTableCell {
-        let cell = HHTextFieldTableCell(reuseIdentifier: HHTextFieldTableCell.identifier, style: style)
+                                          style: HHTextFieldTableCellStyle) -> TextFieldTableCell {
+        let cell = TextFieldTableCell(reuseIdentifier: TextFieldTableCell.identifier, style: style)
         cell.textField.placeholder = item.identify
         return cell
     }
     
-    private func makeHHDatePickerTableCell() -> HHDatePickerTableCell {
-        let cell = HHDatePickerTableCell()
+    private func makeHHDatePickerTableCell() -> DatePickerTableCell {
+        let cell = DatePickerTableCell()
         return cell
     }
     

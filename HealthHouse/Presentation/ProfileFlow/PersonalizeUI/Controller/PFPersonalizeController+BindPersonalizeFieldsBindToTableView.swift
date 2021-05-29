@@ -56,7 +56,7 @@ extension PFPersonalizeController {
                                                                            mobileNumber: self._mobileNumbder)
                 return cell
             case .photo:
-                let cell = HHPhotoProfileTableCell()
+                let cell = PhotoProfileTableCell()
                 self.bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: self._firstOrLastNameOrPhoto,
                                                                          cell: cell)
                 self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, photo: self._photo)
@@ -74,31 +74,31 @@ extension PFPersonalizeController {
 extension PFPersonalizeController {
     
     func makeHHTextFieldTableCell(with item: RowDomain,
-                                  style: HHTextFieldTableCellStyle) -> HHTextFieldTableCell {
-        let cell = HHTextFieldTableCell(reuseIdentifier: HHTextFieldTableCell.identifier, style: style)
+                                  style: HHTextFieldTableCellStyle) -> TextFieldTableCell {
+        let cell = TextFieldTableCell(reuseIdentifier: TextFieldTableCell.identifier, style: style)
         cell.textField.placeholder = item.identify
         return cell
     }
     
-    func setupDateOfBirthHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+    func setupDateOfBirthHHTextFieldTableCell(_ cell: TextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
         cell.textField.inputView = self._view.dateOfBirthPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupFirstOrLastNameHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+    func setupFirstOrLastNameHHTextFieldTableCell(_ cell: TextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
         cell.textField.keyboardType = .alphabet
         cell.textField.autocapitalizationType = .words
     }
     
-    func setupGenderHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+    func setupGenderHHTextFieldTableCell(_ cell: TextFieldTableCell, item: RowDomain) {
         cell.promptTextField.text = item.identify
         cell.textField.inputView = self._view.genderPicker
         cell.textField.clearButtonMode = .never
     }
     
-    func setupMobileNumberHHTextFieldTableCell(_ cell: HHTextFieldTableCell, item: RowDomain) {
+    func setupMobileNumberHHTextFieldTableCell(_ cell: TextFieldTableCell, item: RowDomain) {
         cell.promptTextField.isEnabled = true
         cell.promptTextField.inputView = self._view.countryDialignCodePicker
         cell.textField.keyboardType = .numberPad

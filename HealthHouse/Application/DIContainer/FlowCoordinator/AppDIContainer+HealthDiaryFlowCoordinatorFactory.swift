@@ -21,7 +21,8 @@ extension AppDIContainer {
                                          route: HDTimelineViewModelRoute) -> HDTimelineViewModel {
         return DefaultHDTimelineViewModel(request: request,
                                           route: route,
-                                          fetchAllActivityByProfileUseCase: self.makeFetchAllActivityByProfileUseCase())
+                                          fetchAllActivityByProfileUseCase: self.makeFetchAllActivityByProfileUseCase(),
+                                          fetchCurrentProfileUseCase: self.makeFetchCurrentProfileUseCase())
     }
     
 }

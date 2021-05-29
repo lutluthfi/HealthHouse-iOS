@@ -1,5 +1,5 @@
 //
-//  HHTextFieldTableCell.swift
+//  TextFieldTableCell.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 01/04/21.
@@ -12,9 +12,9 @@ public enum HHTextFieldTableCellStyle {
     case prompt
 }
 
-public final class HHTextFieldTableCell: UITableViewCell {
+public final class TextFieldTableCell: UITableViewCell {
     
-    public static let identifier = String(describing: HHTextFieldTableCell.self)
+    public static let identifier = String(describing: TextFieldTableCell.self)
     public static let height = CGFloat(44)
 
     public lazy var promptTextField: UITextField = {
@@ -48,7 +48,7 @@ public final class HHTextFieldTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(reuseIdentifier: String? = HHTextFieldTableCell.identifier, style: HHTextFieldTableCellStyle) {
+    init(reuseIdentifier: String? = TextFieldTableCell.identifier, style: HHTextFieldTableCellStyle) {
         self._style = style
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         self.subviewWillAdd(style: style)

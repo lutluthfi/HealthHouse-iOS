@@ -1,5 +1,5 @@
 //
-//  HHDatePickerTableCell.swift
+//  DatePickerTableCell.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 29/04/21.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-public final class HHDatePickerTableCell: UITableViewCell {
+public final class DatePickerTableCell: UITableViewCell {
     
-    public static let identifier = String(describing: HHDatePickerTableCell.self)
+    public static let identifier = String(describing: DatePickerTableCell.self)
     
     public lazy var contentContainerView: UIView = {
        let view = UIView()
@@ -26,7 +26,7 @@ public final class HHDatePickerTableCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public init(reuseIdentifier: String? = HHDatePickerTableCell.identifier) {
+    public init(reuseIdentifier: String? = DatePickerTableCell.identifier) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.subviewWillAdd()
         self.subviewConstraintWillMake()

@@ -1,5 +1,5 @@
 //
-//  HDLoadingButton.swift
+//  LoadingButton.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 21/03/21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class HDLoadingButton: UIButton {
+public class LoadingButton: UIButton {
     
     public lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
@@ -54,7 +54,7 @@ public class HDLoadingButton: UIButton {
 }
 
 // MARK: - @objc Function
-extension HDLoadingButton {
+extension LoadingButton {
     
     @objc
     private func onTouchUpInside(_ sender: UIButton) {
@@ -64,7 +64,7 @@ extension HDLoadingButton {
 }
 
 // MARK: - Public Function
-extension HDLoadingButton {
+extension LoadingButton {
     
     func showLoading() {
         guaranteeMainThread {

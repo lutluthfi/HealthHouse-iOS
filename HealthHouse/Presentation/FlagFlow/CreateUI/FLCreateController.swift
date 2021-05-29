@@ -149,7 +149,7 @@ extension FLCreateController {
                 cell.imageView?.tintColor = color
                 return cell
             } else {
-                let cell = HHTextFieldTableCell(style: .plain)
+                let cell = TextFieldTableCell(style: .plain)
                 cell.textField.placeholder = item.identify
                 cell.textField.autocapitalizationType = .words
                 cell.textField.clearButtonMode = .whileEditing
