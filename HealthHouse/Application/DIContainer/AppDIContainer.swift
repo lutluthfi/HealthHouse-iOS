@@ -24,6 +24,7 @@ public final class AppDIContainer {
     
     lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage()
     lazy var localActivityFlagStorage: LocalActivityFlagStorage = DefaultLocalActivityFlagStorage()
+    lazy var localAppConfigStorage: LocalAppConfigStorage = DefaultLocalAppConfigStorage()
     lazy var localFlagStorage: LocalFlagStorage = DefaultLocalFlagStorage()
     lazy var localProfileStorage: LocalProfileStorage = DefaultLocalProfileStorage()
     lazy var remoteCountryDialingCodeStorage: RemoteCountryDialingCodeStorage = DefaultRemoteCountryDialingCodeStorage()

@@ -17,9 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }()
     lazy var appDIContainer = AppDIContainer(navigationController: self.navigationController)
     lazy var appFlowCoordinator: AppFlowCoordinator = {
+        let localAppConfigStorage = self.appDIContainer.localAppConfigStorage
         let fetchCurrentProfileUseCase = self.appDIContainer.makeFetchProfileUseCase()
         return DefaultAppFlowCoordinator(navigationController: self.navigationController,
                                          presentationFactory: self.appDIContainer,
+                                         localAppConfigStorage: localAppConfigStorage,
                                          fetchCurrentProfileUseCase: fetchCurrentProfileUseCase)
     }()
     var window: UIWindow?
