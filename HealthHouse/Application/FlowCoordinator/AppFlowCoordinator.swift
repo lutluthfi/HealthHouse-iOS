@@ -54,7 +54,7 @@ extension DefaultAppFlowCoordinator: AppFlowCoordinator {
             // The original flow of the app
             self.localAppConfigStorage
                 .fetchFirstLaunchFromUserDefaults()
-                .do(onSuccess: { (firstLaunch) in
+                .do(onSuccess: { [unowned self] (firstLaunch) in
                     if firstLaunch {
                         let request = LNWelcomeViewModelRequest()
                         let instructor = LaunchFlowCoordinatorInstructor.pushToWelcomeUI(request)
