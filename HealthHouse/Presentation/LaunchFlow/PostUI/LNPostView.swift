@@ -7,11 +7,6 @@
 
 import UIKit
 
-// MARK: LNPostViewDelegate
-protocol LNPostViewDelegate: AnyObject {
-    
-}
-
 // MARK: LNPostViewFunction
 protocol LNPostViewFunction {
     func viewWillAppear(navigationController: UINavigationController?, tabBarController: UITabBarController?)
@@ -24,7 +19,6 @@ protocol LNPostViewSubview {
 
 // MARK: LNPostViewVariable
 protocol LNPostViewVariable {
-    var delegate: LNPostViewDelegate? { get set }
 }
 
 // MARK: LNPostView

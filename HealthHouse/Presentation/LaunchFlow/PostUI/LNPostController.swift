@@ -69,8 +69,3 @@ final class LNPostController: UIViewController {
 extension LNPostController {
     
 }
-
-// MARK: LNPostViewDelegate
-extension LNPostController: LNPostViewDelegate {
-
-}
