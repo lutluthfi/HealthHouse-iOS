@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol FlowCoordinatorFactory {
+protocol FlowCoordinatorFactory {
     
     func makeActivityFlowCoordinator() -> ActivityFlowCoordinator
     

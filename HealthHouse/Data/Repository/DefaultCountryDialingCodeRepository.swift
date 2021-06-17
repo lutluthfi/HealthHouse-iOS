@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-public final class DefaultCountryDialingCodeRepository {
+final class DefaultCountryDialingCodeRepository {
     
     let remoteCountryDialingCodeStorage: RemoteCountryDialingCodeStorage
     
@@ -20,7 +20,7 @@ public final class DefaultCountryDialingCodeRepository {
 
 extension DefaultCountryDialingCodeRepository: CountryDialingCodeRepository {
     
-    public func fetchAllCountryDialingCode(in storagePoint: StoragePoint) -> Observable<[CountryDialingCodeDomain]> {
+    func fetchAllCountryDialingCode(in storagePoint: StoragePoint) -> Single<[CountryDialingCodeDomain]> {
         switch storagePoint {
         case .coreData:
             return StoragePoint.makeCoreDataStorageNotSupported(class: CountryDialingCodeRepository.self,

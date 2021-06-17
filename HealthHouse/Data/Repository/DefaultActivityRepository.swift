@@ -8,11 +8,11 @@
 import Foundation
 import RxSwift
 
-public class DefaultActivityRepository {
+class DefaultActivityRepository {
     
     let localActivityStorage: LocalActivityStorage
     
-    public init(localActivityStorage: LocalActivityStorage) {
+    init(localActivityStorage: LocalActivityStorage) {
         self.localActivityStorage = localActivityStorage
     }
     
@@ -20,67 +20,67 @@ public class DefaultActivityRepository {
 
 extension DefaultActivityRepository: ActivityRepository {
     
-    public func fetchAllActivity(in storagePoint: StoragePoint) -> Observable<[ActivityDomain]> {
+    func fetchAllActivity(in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .coreData:
             return self.localActivityStorage.fetchAllInCoreData()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity()",
-                                                              object: [ActivityDomain].self)
+                                                              object: [Activity].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity()",
-                                                                   object: [ActivityDomain].self)
+                                                                   object: [Activity].self)
         }
     }
     
-    public func fetchAllActivity(ownedBy profile: ProfileDomain,
-                                 in storagePoint: StoragePoint) -> Observable<[ActivityDomain]> {
+    func fetchAllActivity(ownedBy profile: Profile,
+                          in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .coreData:
             return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:)",
-                                                              object: [ActivityDomain].self)
+                                                              object: [Activity].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity(ownedBy:)",
-                                                                   object: [ActivityDomain].self)
+                                                                   object: [Activity].self)
         }
     }
     
-    public func fetchAllActivity(ownedBy profile: ProfileDomain,
-                                 onDoDate doDate: Int64,
-                                 in storagePoint: StoragePoint) -> Observable<[ActivityDomain]> {
+    func fetchAllActivity(ownedBy profile: Profile,
+                          onDoDate doDate: Int64,
+                          in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .coreData:
             return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile, onDoDate: doDate)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:, onDoDate:)",
-                                                              object: [ActivityDomain].self)
+                                                              object: [Activity].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "fetchAllActivity(ownedBy:, onDoDate:)",
-                                                                   object: [ActivityDomain].self)
+                                                                   object: [Activity].self)
         }
     }
     
-    public func insertUpdateActivity(_ activity: ActivityDomain,
-                               into storagePoint: StoragePoint) -> Observable<ActivityDomain> {
+    func insertUpdateActivity(_ activity: Activity,
+                              into storagePoint: StoragePoint) -> Single<Activity> {
         switch storagePoint {
         case .coreData:
             return self.localActivityStorage.insertIntoCoreData(activity)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "insertUpdateActivity()",
-                                                              object: ActivityDomain.self)
+                                                              object: Activity.self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ActivityRepository.self,
                                                                    function: "insertUpdateActivity()",
-                                                                   object: ActivityDomain.self)
+                                                                   object: Activity.self)
         }
     }
     

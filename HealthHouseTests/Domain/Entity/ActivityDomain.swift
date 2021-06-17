@@ -1,5 +1,5 @@
 //
-//  ActivityDomain.swift
+//  Activity.swift
 //  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 21/03/21.
@@ -12,7 +12,7 @@ import XCTest
 extension ActivityDomain {
     
     @discardableResult
-    static func stubCollectionCoreData(coreDataStorage: CoreDataStorageSharedMock) -> ([ActivityDomain], ProfileDomain) {
+    static func stubCollectionCoreData(coreDataStorage: CoreDataStorageSharedMock) -> ([ActivityDomain], Profile) {
         let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
         let activities = [ActivityDomain(coreID: nil,
@@ -79,7 +79,7 @@ extension ActivityDomain {
 extension ActivityDomain {
     
     @discardableResult
-    static func stubElement(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+    static func stubElement(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, Profile) {
         let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
         let activity = ActivityDomain(coreID: nil,
@@ -96,7 +96,7 @@ extension ActivityDomain {
     }
     
     @discardableResult
-    static func stubElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+    static func stubElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, Profile) {
         let context = coreDataStorage.context
         let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()
@@ -122,7 +122,7 @@ extension ActivityDomain {
 extension ActivityDomain {
     
     @discardableResult
-    static func stubRemoveElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, ProfileDomain) {
+    static func stubRemoveElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> (ActivityDomain, Profile) {
         let context = coreDataStorage.context
         let profile = ProfileDomain.stubElementCoreData(coreDataStorage: coreDataStorage)
         let now = Date()

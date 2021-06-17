@@ -8,12 +8,12 @@
 import Foundation
 import RxSwift
 
-public protocol FlagRepository {
+protocol FlagRepository {
     
-    func fetchAllFlag(in storagePoint: StoragePoint) -> Observable<[FlagDomain]>
+    func fetchAllFlag(in storagePoint: StoragePoint) -> Single<[Flag]>
     
-    func fetchAllFlag(ownedBy profile: ProfileDomain, in storagePoint: StoragePoint) -> Observable<[FlagDomain]>
+    func fetchAllFlag(ownedBy profile: Profile, in storagePoint: StoragePoint) -> Single<[Flag]>
     
-    func insertFlag(_ flag: FlagDomain, in storagePoint: StoragePoint) -> Observable<FlagDomain>
+    func insertFlag(_ flag: Flag, in storagePoint: StoragePoint) -> Single<Flag>
     
 }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 // MARK: FlagFlowCoordinatorFactory
-public protocol FlagFlowCoordinatorFactory  {
+protocol FlagFlowCoordinatorFactory  {
     func makeCreateController(request: FLCreateViewModelRequest,
                               response: FLCreateViewModelResponse,
                               route: FLCreateViewModelRoute) -> UIViewController
@@ -20,26 +20,26 @@ public protocol FlagFlowCoordinatorFactory  {
 }
 
 // MARK: FlagFlowCoordinator
-public protocol FlagFlowCoordinator {
+protocol FlagFlowCoordinator {
     func start(with instructor: FlagFlowCoordinatorInstructor)
 }
 
 // MARK: FlagFlowCoordinatorInstructor
-public enum FlagFlowCoordinatorInstructor {
+enum FlagFlowCoordinatorInstructor {
     case presentCreateUI(FLCreateViewModelRequest, FLCreateViewModelResponse, UIPresentProperties)
     case presentListUI(FLListViewModelRequest, FLListViewModelResponse, UIPresentProperties)
 }
 
 // MARK: DefaultFlagFlowCoordinator
-public final class DefaultFlagFlowCoordinator {
-
+final class DefaultFlagFlowCoordinator {
+    
     // MARK: DI Variable
     let navigationController: UINavigationController
     let controllerFactory: FlagFlowCoordinatorFactory
     let flowFactory: FlowCoordinatorFactory
-
+    
     // MARK: Init Funciton
-    public init(navigationController: UINavigationController, factory: PresentationFactory) {
+    init(navigationController: UINavigationController, factory: PresentationFactory) {
         self.navigationController = navigationController
         self.controllerFactory = factory
         self.flowFactory = factory
@@ -49,7 +49,7 @@ public final class DefaultFlagFlowCoordinator {
 
 extension DefaultFlagFlowCoordinator: FlagFlowCoordinator {
     
-    public func start(with instructor: FlagFlowCoordinatorInstructor) {
+    func start(with instructor: FlagFlowCoordinatorInstructor) {
         switch instructor {
         case .presentCreateUI(let request, let response, let presentProperties):
             self.presentCreateUI(request: request, response: response, presentProperties: presentProperties)

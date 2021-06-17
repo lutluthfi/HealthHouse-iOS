@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol CountryDialingCodeUseCaseFactory {
+protocol CountryDialingCodeUseCaseFactory {
     func makeFetchCountryDialingCodeUseCase() -> FetchCountryDialingCodeUseCase
 }

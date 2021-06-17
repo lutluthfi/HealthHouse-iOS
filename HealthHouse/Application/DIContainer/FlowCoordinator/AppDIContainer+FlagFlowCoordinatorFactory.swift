@@ -12,20 +12,20 @@ extension AppDIContainer: FlagFlowCoordinatorFactory { }
 // MARK: CreateUI
 extension AppDIContainer {
     
-    public func makeCreateController(request: FLCreateViewModelRequest,
-                                     response: FLCreateViewModelResponse,
-                                     route: FLCreateViewModelRoute) -> UIViewController {
+    func makeCreateController(request: FLCreateViewModelRequest,
+                              response: FLCreateViewModelResponse,
+                              route: FLCreateViewModelRoute) -> UIViewController {
         let viewModel = self.makeCreateViewModel(request: request, response: response, route: route)
         return FLCreateController.create(with: viewModel)
     }
     
     private func makeCreateViewModel(request: FLCreateViewModelRequest,
-                                      response: FLCreateViewModelResponse,
-                                      route: FLCreateViewModelRoute) -> FLCreateViewModel {
+                                     response: FLCreateViewModelResponse,
+                                     route: FLCreateViewModelRoute) -> FLCreateViewModel {
         return DefaultFLCreateViewModel(request: request,
                                         response: response,
                                         route: route,
-                                        createUpdateFlagUseCase: self.makeCreateUpdateFlagUseCase())
+                                        createFlagUseCase: self.makeCreateFlagUseCase())
     }
     
 }
@@ -33,9 +33,9 @@ extension AppDIContainer {
 // MARK: ListUI
 extension AppDIContainer {
     
-    public func makeListController(request: FLListViewModelRequest,
-                                   response: FLListViewModelResponse,
-                                   route: FLListViewModelRoute) -> UIViewController {
+    func makeListController(request: FLListViewModelRequest,
+                            response: FLListViewModelResponse,
+                            route: FLListViewModelRoute) -> UIViewController {
         let viewModel = self.makeListViewModel(request: request, response: response, route: route)
         return FLListController.create(with: viewModel)
     }

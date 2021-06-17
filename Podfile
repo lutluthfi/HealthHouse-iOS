@@ -3,7 +3,10 @@ platform :ios, '13.0'
 target 'HealthHouse' do
   use_frameworks!
 
-  pod 'RealmSwift'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/RemoteConfig'
+  
+  pod 'RxRealm'
 
   pod 'RxCocoa', '~> 6.0'
   pod 'RxCoreLocation', '~> 1.5.1'

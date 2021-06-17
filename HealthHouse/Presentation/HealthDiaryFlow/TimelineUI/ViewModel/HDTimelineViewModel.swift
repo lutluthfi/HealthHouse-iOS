@@ -32,7 +32,7 @@ protocol HDTimelineViewModelInput {
 
 // MARK: HDTimelineViewModelOutput
 protocol HDTimelineViewModelOutput {
-    var showedActivities: PublishSubject<[ActivityDomain]> { get }
+    var showedActivities: PublishSubject<[Activity]> { get }
 }
 
 // MARK: HDTimelineViewModel
@@ -53,7 +53,7 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
     let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
-    let showedActivities = PublishSubject<[ActivityDomain]>()
+    let showedActivities = PublishSubject<[Activity]>()
 
     // MARK: Init Function
     init(request: HDTimelineViewModelRequest,
@@ -66,14 +66,14 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
         self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
     }
     
-    func doFetchAllActivityByProfileUseCase(ownedBy profile: ProfileDomain) -> Observable<FetchAllActivityByProfileUseCaseResponse> {
+    func doFetchAllActivityByProfileUseCase(ownedBy profile: Profile) -> Observable<FetchAllActivityByProfileUseCaseResponse> {
         let request = FetchAllActivityByProfileUseCaseRequest(profile: profile)
-        return self.fetchAllActivityByProfileUseCase.execute(request)
+        return self.fetchAllActivityByProfileUseCase.execute(request).asObservable()
     }
     
     func doFetchCurrentProfileUseCase() -> Observable<FetchCurrentProfileUseCaseResponse> {
         let request = FetchCurrentProfileUseCaseRequest()
-        return self.fetchCurrentProfileUseCase.execute(request)
+        return self.fetchCurrentProfileUseCase.execute(request).asObservable()
     }
     
 }

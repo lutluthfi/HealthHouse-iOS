@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RepositoryFactory {
+protocol RepositoryFactory {
     func makeActivityRepository() -> ActivityRepository
     func makeAppConfigRepository() -> AppConfigRepository
     func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository

@@ -158,11 +158,11 @@ extension ATCreateController {
 // MARK: BindShowedSelectedLabelsToSections
 extension ATCreateController {
     
-    func bindShowedSelectedLabelsViewModelToSections(showedSelectedLabels: BehaviorRelay<[FlagDomain]>,
+    func bindShowedSelectedLabelsViewModelToSections(showedSelectedLabels: BehaviorRelay<[Flag]>,
                                                      sections: BehaviorRelay<[SectionDomain<RowDomain>]>) {
         showedSelectedLabels
             .asDriver()
-            .map({ $0.map({ RowDomain(identify: "\(FlagDomain.self)-\($0.identity)", value: $0) }) })
+            .map({ $0.map({ RowDomain(identify: "\(Flag.self)-\($0.identity)", value: $0) }) })
             .drive(onNext: { [unowned sections] (labelRows) in
                 var _sections = sections.value
                 var _labelSection = _sections[4]

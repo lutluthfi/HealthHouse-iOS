@@ -66,7 +66,7 @@ extension FetchAllActivityByProfileUseCaseTests {
                                 .activities
                                 .sorted(by: { $0.title < $1.title })) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData(ownedBy:) caused by profileCoreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInRealm(ownedBy:) caused by profileCoreID is not available")
         }
     }
     

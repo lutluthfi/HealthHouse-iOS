@@ -14,17 +14,17 @@ enum FLListViewModelResult {
 }
 
 // MARK: FLListViewModelResponse
-public struct FLListViewModelResponse {
-    public let selectedFlags = PublishRelay<[FlagDomain]>()
+struct FLListViewModelResponse {
+    let selectedFlags = PublishRelay<[Flag]>()
 }
 
 // MARK: FLListViewModelRequest
-public struct FLListViewModelRequest {
-    public let selectedFlags: [FlagDomain]
+struct FLListViewModelRequest {
+    let selectedFlags: [Flag]
 }
 
 // MARK: FLListViewModelRoute
-public struct FLListViewModelRoute {
+struct FLListViewModelRoute {
     var presentLBCreateUI: ((FLCreateViewModelRequest, FLCreateViewModelResponse) -> Void)?
 }
 
@@ -32,15 +32,15 @@ public struct FLListViewModelRoute {
 protocol FLListViewModelInput {
     func viewDidLoad()
     func viewWillAppear()
-    func doDone(selectedLabels: [FlagDomain])
-    func doRemove(label: FlagDomain)
-    func doSelect(label: FlagDomain)
+    func doDone(selectedLabels: [Flag])
+    func doRemove(label: Flag)
+    func doSelect(label: Flag)
     func presentLBCreateUI()
 }
 
 // MARK: FLListViewModelOutput
 protocol FLListViewModelOutput {
-    var showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]> { get }
+    var showedFlags: PublishRelay<[SelectableDomain<Flag>]> { get }
 }
 
 // MARK: FLListViewModel
@@ -60,10 +60,10 @@ final class DefaultFLListViewModel: FLListViewModel {
     
     // MARK: Common Variable
     lazy var disposeBag = DisposeBag()
-    var _currSelectedLabels: [FlagDomain] = []
+    var _currSelectedLabels: [Flag] = []
     
     // MARK: Output ViewModel
-    let showedFlags = PublishRelay<[SelectableDomain<FlagDomain>]>()
+    let showedFlags = PublishRelay<[SelectableDomain<Flag>]>()
     
     // MARK: Init Function
     init(request: FLListViewModelRequest,
@@ -80,12 +80,12 @@ final class DefaultFLListViewModel: FLListViewModel {
     
     func doFetchCurrentProfileUseCase() -> Observable<FetchCurrentProfileUseCaseResponse> {
         let request = FetchCurrentProfileUseCaseRequest()
-        return self.fetchProfileUseCase.execute(request)
+        return self.fetchProfileUseCase.execute(request).asObservable()
     }
     
-    func doFetchAllFlaguseCase(ownedBy profile: ProfileDomain) -> Observable<FetchAllFlagUseCaseResponse> {
+    func doFetchAllFlaguseCase(ownedBy profile: Profile) -> Observable<FetchAllFlagUseCaseResponse> {
         let request = FetchAllFlagUseCaseRequest(ownedBy: profile)
-        return self.fetchAllFlagUseCase.execute(request)
+        return self.fetchAllFlagUseCase.execute(request).asObservable()
     }
     
 }
@@ -108,14 +108,14 @@ extension DefaultFLListViewModel {
             .disposed(by: self.disposeBag)
     }
     
-    func doDone(selectedLabels: [FlagDomain]) {
+    func doDone(selectedLabels: [Flag]) {
         self.response.selectedFlags.accept(selectedLabels)
     }
     
-    func doRemove(label: FlagDomain) {
+    func doRemove(label: Flag) {
     }
     
-    func doSelect(label: FlagDomain) {
+    func doSelect(label: Flag) {
         guard !self._currSelectedLabels.contains(label) else { return }
         self._currSelectedLabels.append(label)
     }

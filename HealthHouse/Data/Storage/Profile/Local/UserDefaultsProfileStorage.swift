@@ -10,16 +10,16 @@ import Foundation
 import RxSwift
 
 // MARK: UserDefaultsProfileStorage
-public protocol UserDefaultsProfileStorage {
+protocol UserDefaultsProfileStorage {
     
-    func fetchInUserDefaults() -> Observable<URL?>
+    func fetchInUserDefaults() -> Single<String?>
     
-    func insertIntoUserDefaults(_ profile: ProfileDomain) -> Observable<ProfileDomain>
+    func insertIntoUserDefaults(_ profile: Profile) -> Single<Profile>
     
 }
 
 // MARK: DefaultUserDefaultsProfileStorage
-public final class DefaultUserDefaultsProfileStorage {
+final class DefaultUserDefaultsProfileStorage {
     
     let userDefaults: UserDefaults
     
@@ -31,37 +31,34 @@ public final class DefaultUserDefaultsProfileStorage {
 
 extension DefaultUserDefaultsProfileStorage: UserDefaultsProfileStorage {
     
-    var profileCoreID: URL? {
-        get { return self.userDefaults.url(forKey: self.profileCoreIDKey) }
-        set { self.userDefaults.set(newValue, forKey: self.profileCoreIDKey) }
+    var profileRealmID: String? {
+        get { return self.userDefaults.string(forKey: self.profileRealmIDKey) }
+        set { self.userDefaults.set(newValue, forKey: self.profileRealmIDKey) }
     }
     
-    var profileCoreIDKey: String {
-        return "ProfileCoreIDKey.UserDefaultsProfileStorage"
+    var profileRealmIDKey: String {
+        return "ProfileRealmIDKey.UserDefaultsProfileStorage"
     }
     
-    public func fetchInUserDefaults() -> Observable<URL?> {
+    func fetchInUserDefaults() -> Single<String?> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            observer.onNext(self.profileCoreID)
+            observer.onNext(self.profileRealmID)
             observer.onCompleted()
             return Disposables.create()
         }
         .subscribe(on: ConcurrentMainScheduler.instance)
+        .asSingle()
     }
     
-    public func insertIntoUserDefaults(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
+    func insertIntoUserDefaults(_ profile: Profile) -> Single<Profile> {
         return Observable.create { [unowned self] (observer) -> Disposable in
-            if let coreID = profile.coreID {
-                self.profileCoreID = coreID.uriRepresentation()
-                observer.onNext(profile)
-                observer.onCompleted()
-            } else {
-                let error = PlainError(description: "UserDefaultsProfileStorage -> Failed to insertIntoUserDefaults() caused by coreID is nil")
-                observer.onError(error)
-            }
+            self.profileRealmID = profile.realmID
+            observer.onNext(profile)
+            observer.onCompleted()
             return Disposables.create()
         }
         .subscribe(on: ConcurrentMainScheduler.instance)
+        .asSingle()
     }
     
 }

@@ -10,20 +10,20 @@ import RxSwift
 
 extension DefaultProfileRepository {
     
-    public func fetchProfile(in storagePoint: StoragePoint) -> Observable<ProfileDomain?> {
+    func fetchProfile(in storagePoint: StoragePoint) -> Single<Profile?> {
         switch storagePoint  {
         case .coreData:
             return StoragePoint.makeCoreDataStorageNotSupported(class: ProfileRepository.self,
                                                                 function: "fetchProfile()",
-                                                                object: Optional<ProfileDomain>.self)
+                                                                object: Optional<Profile>.self)
         case .remote:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "fetchProfile()",
-                                                                   object: Optional<ProfileDomain>.self)
+                                                                   object: Optional<Profile>.self)
         case .userDefaults:
             return self.localProfileStorage
                 .fetchInUserDefaults()
-                .flatMap(self.fetchFirstProfileBy(coreID:))
+                .flatMap(self.fetchFirstProfileBy(realmID:))
         }
     }
     
@@ -31,18 +31,18 @@ extension DefaultProfileRepository {
 
 private extension DefaultProfileRepository {
     
-    func fetchFirstProfileBy(coreID url: URL?) -> Observable<ProfileDomain?> {
+    func fetchFirstProfileBy(realmID profileID: ProfileID?) -> Single<Profile?> {
         self.localProfileStorage
-            .fetchAllInCoreData()
+            .fetchAllInRealm()
             .flatMap({ [unowned self] in
-                return self.findFirstProfile($0, coreID: url)
+                return self.findFirstProfile($0, realmID: profileID)
             })
     }
     
-    func findFirstProfile(_ profiles: [ProfileDomain], coreID url: URL?) -> Observable<ProfileDomain?> {
-        return Observable.create { (observer) -> Disposable in
-            let profile = profiles.first(where: { $0.coreID?.uriRepresentation() == url })
-            observer.onNext(profile)
+    func findFirstProfile(_ profiles: [Profile], realmID ID: ProfileID?) -> Single<Profile?> {
+        return .create { (observer) -> Disposable in
+            let profile = profiles.first(where: { $0.realmID == ID })
+            observer(.success(profile))
             return Disposables.create()
         }
     }

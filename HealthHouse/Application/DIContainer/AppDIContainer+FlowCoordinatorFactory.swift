@@ -9,27 +9,27 @@ import Foundation
 
 extension AppDIContainer: FlowCoordinatorFactory {
     
-    public func makeActivityFlowCoordinator() -> ActivityFlowCoordinator {
+    func makeActivityFlowCoordinator() -> ActivityFlowCoordinator {
         return DefaultActivityFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeLocationFlowCoordinator() -> LocationFlowCoordinator {
+    func makeLocationFlowCoordinator() -> LocationFlowCoordinator {
         return DefaultLocationFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator {
+    func makeHealthDiaryFlowCoordinator() -> HealthDiaryFlowCoordinator {
         return DefaultHealthDiaryFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeFlagFlowCoordinator() -> FlagFlowCoordinator {
+    func makeFlagFlowCoordinator() -> FlagFlowCoordinator {
         return DefaultFlagFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator {
+    func makeLaunchFlowCoordinator() -> LaunchFlowCoordinator {
         return DefaultLaunchFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     
-    public func makeProfileFlowCoordinator() -> ProfileFlowCoordinator {
+    func makeProfileFlowCoordinator() -> ProfileFlowCoordinator {
         return DefaultProfileFlowCoordinator(navigationController: self.navigationController, factory: self)
     }
     

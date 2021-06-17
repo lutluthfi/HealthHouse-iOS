@@ -11,7 +11,7 @@ import RxSwift
 // MARK: RemoteCountryDialingCodeStorage
 public protocol RemoteCountryDialingCodeStorage {
     
-    func fetchAllInRemote() -> Observable<[CountryDialingCodeDomain]>
+    func fetchAllInRemote() -> Single<[CountryDialingCodeDomain]>
     
 }
 
@@ -25,18 +25,16 @@ public class DefaultRemoteCountryDialingCodeStorage: RemoteCountryDialingCodeSto
 
 extension DefaultRemoteCountryDialingCodeStorage {
     
-    public func fetchAllInRemote() -> Observable<[CountryDialingCodeDomain]> {
-        return Observable.create { (observer) -> Disposable in
+    public func fetchAllInRemote() -> Single<[CountryDialingCodeDomain]> {
+        return Single.create { (observer) -> Disposable in
             let filePath = Bundle.main.path(forResource: "CountryDialingCode", ofType: "json")!
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: filePath), options: .mappedIfSafe)
                 let responses = try JSONDecoder().decode([RemoteCountryDialingCodeEntity.Response].self, from: data)
                 let domains = responses.map { $0.toDomain() }
-                observer.onNext(domains)
-                observer.onCompleted()
+                observer(.success(domains))
             } catch {
-                observer.onError(error)
-                observer.onCompleted()
+                observer(.failure(error))
             }
             return Disposables.create()
         }

@@ -8,18 +8,18 @@
 import Foundation
 import RxSwift
 
-public protocol ActivityRepository {
+protocol ActivityRepository {
     
-    func fetchAllActivity(in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
+    func fetchAllActivity(in storagePoint: StoragePoint) -> Single<[Activity]>
     
-    func fetchAllActivity(ownedBy profile: ProfileDomain,
-                          in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
+    func fetchAllActivity(ownedBy profile: Profile,
+                          in storagePoint: StoragePoint) -> Single<[Activity]>
     
-    func fetchAllActivity(ownedBy profile: ProfileDomain,
+    func fetchAllActivity(ownedBy profile: Profile,
                           onDoDate doDate: Int64,
-                          in storagePoint: StoragePoint) -> Observable<[ActivityDomain]>
+                          in storagePoint: StoragePoint) -> Single<[Activity]>
     
-    func insertUpdateActivity(_ activity: ActivityDomain,
-                              into storagePoint: StoragePoint) -> Observable<ActivityDomain>
+    func insertUpdateActivity(_ activity: Activity,
+                              into storagePoint: StoragePoint) -> Single<Activity>
     
 }

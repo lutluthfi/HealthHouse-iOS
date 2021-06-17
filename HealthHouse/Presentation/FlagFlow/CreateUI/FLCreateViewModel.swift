@@ -12,7 +12,7 @@ import RxSwift
 
 // MARK: FLCreateViewModelResult
 enum FLCreateViewModelResult {
-    case createUpdateFlagUseCase(AnyResult<FlagDomain, String>)
+    case createUpdateFlagUseCase(AnyResult<Flag, String>)
 }
 
 // MARK: FLCreateViewModelResponse
@@ -62,11 +62,11 @@ final class DefaultFLCreateViewModel: FLCreateViewModel {
     init(request: FLCreateViewModelRequest,
          response: FLCreateViewModelResponse,
          route: FLCreateViewModelRoute,
-         createUpdateFlagUseCase: CreateFlagUseCase) {
+         createFlagUseCase: CreateFlagUseCase) {
         self.request = request
         self.response = response
         self.route = route
-        self.createUpdateFlagUseCase = createUpdateFlagUseCase
+        self.createUpdateFlagUseCase = createFlagUseCase
     }
     
 }
@@ -78,17 +78,17 @@ extension DefaultFLCreateViewModel {
     }
     
     func doCreate(hexcolor: String, name: String) {
-        let request = CreateFlagUseCaseRequest(coreID: nil, hexcolor: hexcolor, name: name)
+        let request = CreateFlagUseCaseRequest(realmID: nil, hexcolor: hexcolor, name: name)
         self.createUpdateFlagUseCase
             .execute(request)
-            .subscribe(onNext: { (response) in
+            .subscribe(onSuccess: { [unowned self] (response) in
                 let flag = response.flag
-                let success = AnyResult<FlagDomain, String>.success(flag)
+                let success = AnyResult<Flag, String>.success(flag)
                 let result = FLCreateViewModelResult.createUpdateFlagUseCase(success)
                 self.result.accept(result)
-            }, onError: { [unowned self] (error) in
+            }, onFailure: { [unowned self] (error) in
                 let message = error.localizedDescription
-                let failure = AnyResult<FlagDomain, String>.failure(message)
+                let failure = AnyResult<Flag, String>.failure(message)
                 let result = FLCreateViewModelResult.createUpdateFlagUseCase(failure)
                 self.result.accept(result)
             })

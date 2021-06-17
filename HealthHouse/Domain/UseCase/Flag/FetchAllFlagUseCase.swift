@@ -9,40 +9,40 @@
 import Foundation
 import RxSwift
 
-public enum FetchAllFlagUseCaseError: LocalizedError {
+enum FetchAllFlagUseCaseError: LocalizedError {
     
 }
 
 extension FetchAllFlagUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct FetchAllFlagUseCaseResponse {
-    public let flags: [FlagDomain]
+struct FetchAllFlagUseCaseResponse {
+    let flags: [Flag]
 }
 
-public struct FetchAllFlagUseCaseRequest {
-    public let profile: ProfileDomain
+struct FetchAllFlagUseCaseRequest {
+    let profile: Profile
     
-    public init(ownedBy profile: ProfileDomain) {
+    init(ownedBy profile: Profile) {
         self.profile = profile
     }
 }
 
-public protocol FetchAllFlagUseCase {
-    func execute(_ request: FetchAllFlagUseCaseRequest) -> Observable<FetchAllFlagUseCaseResponse>
+protocol FetchAllFlagUseCase {
+    func execute(_ request: FetchAllFlagUseCaseRequest) -> Single<FetchAllFlagUseCaseResponse>
 }
 
-public final class DefaultFetchAllFlagUseCase {
+final class DefaultFetchAllFlagUseCase {
 
     let flagRepository: FlagRepository
     
-    public init(flagRepository: FlagRepository) {
+    init(flagRepository: FlagRepository) {
         self.flagRepository = flagRepository
     }
 
@@ -50,7 +50,7 @@ public final class DefaultFetchAllFlagUseCase {
 
 extension DefaultFetchAllFlagUseCase: FetchAllFlagUseCase {
 
-    public func execute(_ request: FetchAllFlagUseCaseRequest) -> Observable<FetchAllFlagUseCaseResponse> {
+    func execute(_ request: FetchAllFlagUseCaseRequest) -> Single<FetchAllFlagUseCaseResponse> {
         let profile = request.profile
         return self.flagRepository
             .fetchAllFlag(ownedBy: profile, in: .coreData)

@@ -9,38 +9,38 @@
 import Foundation
 import RxSwift
 
-public enum FetchAllActivityByProfileUseCaseError: LocalizedError {
+enum FetchAllActivityByProfileUseCaseError: LocalizedError {
     
 }
 
 extension FetchAllActivityByProfileUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct FetchAllActivityByProfileUseCaseResponse {
-    public let activities: [ActivityDomain]
+struct FetchAllActivityByProfileUseCaseResponse {
+    let activities: [Activity]
 }
 
-public struct FetchAllActivityByProfileUseCaseRequest {
-    public let profile: ProfileDomain
+struct FetchAllActivityByProfileUseCaseRequest {
+    let profile: Profile
 }
 
-public protocol FetchAllActivityByProfileUseCase {
+protocol FetchAllActivityByProfileUseCase {
     
-    func execute(_ request: FetchAllActivityByProfileUseCaseRequest) -> Observable<FetchAllActivityByProfileUseCaseResponse>
+    func execute(_ request: FetchAllActivityByProfileUseCaseRequest) -> Single<FetchAllActivityByProfileUseCaseResponse>
 
 }
 
-public final class DefaultFetchAllActivityByProfileUseCase {
+final class DefaultFetchAllActivityByProfileUseCase {
 
     let activityRepository: ActivityRepository
     
-    public init(activityRepository: ActivityRepository) {
+    init(activityRepository: ActivityRepository) {
         self.activityRepository = activityRepository
     }
 
@@ -48,7 +48,7 @@ public final class DefaultFetchAllActivityByProfileUseCase {
 
 extension DefaultFetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase {
 
-    public func execute(_ request: FetchAllActivityByProfileUseCaseRequest) -> Observable<FetchAllActivityByProfileUseCaseResponse> {
+    func execute(_ request: FetchAllActivityByProfileUseCaseRequest) -> Single<FetchAllActivityByProfileUseCaseResponse> {
         let profile = request.profile
         return self.activityRepository
             .fetchAllActivity(ownedBy: profile, in: .coreData)

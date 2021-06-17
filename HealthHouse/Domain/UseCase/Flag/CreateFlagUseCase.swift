@@ -9,47 +9,53 @@
 import Foundation
 import RxSwift
 
-public enum CreateFlagUseCaseError: LocalizedError {
+enum CreateFlagUseCaseError: LocalizedError {
     
 }
 
 extension CreateFlagUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct CreateFlagUseCaseResponse {
-    public let flag: FlagDomain
+struct CreateFlagUseCaseResponse {
+    
+    let flag: Flag
+    
 }
 
-public struct CreateFlagUseCaseRequest {
-    public let coreID: CoreID?
-    public let hexcolor: String
-    public let name: String
+struct CreateFlagUseCaseRequest {
+    
+    let realmID: FlagID?
+    let hexcolor: String
+    let name: String
+    
 }
 
-public protocol CreateFlagUseCase {
-    func execute(_ request: CreateFlagUseCaseRequest) -> Observable<CreateFlagUseCaseResponse>
+protocol CreateFlagUseCase {
+    
+    func execute(_ request: CreateFlagUseCaseRequest) -> Single<CreateFlagUseCaseResponse>
+    
 }
 
-public final class DefaultCreateFlagUseCase {
-
+final class DefaultCreateFlagUseCase {
+    
     let flagRepository: FlagRepository
     
-    public init(flagRepository: FlagRepository) {
+    init(flagRepository: FlagRepository) {
         self.flagRepository = flagRepository
     }
-
+    
 }
 
 extension DefaultCreateFlagUseCase: CreateFlagUseCase {
-
-    public func execute(_ request: CreateFlagUseCaseRequest) -> Observable<CreateFlagUseCaseResponse> {
-        let flag = FlagDomain.make(from: request)
+    
+    func execute(_ request: CreateFlagUseCaseRequest) -> Single<CreateFlagUseCaseResponse> {
+        let flag = Flag.make(from: request)
         return self.flagRepository
             .insertFlag(flag, in: .coreData)
             .map({ CreateFlagUseCaseResponse(flag: $0) })
@@ -58,15 +64,15 @@ extension DefaultCreateFlagUseCase: CreateFlagUseCase {
 }
 
 
-fileprivate extension FlagDomain {
+fileprivate extension Flag {
     
-    static func make(from request: CreateFlagUseCaseRequest) -> FlagDomain {
+    static func make(from request: CreateFlagUseCaseRequest) -> Flag {
         let now = Date().toInt64()
-        return FlagDomain(coreID: request.coreID,
-                          createdAt: now,
-                          updatedAt: now,
-                          hexcolor: request.hexcolor,
-                          name: request.name)
+        return Flag(realmID: request.realmID.orMakePrimaryKey,
+                    createdAt: now,
+                    updatedAt: now,
+                    hexcolor: request.hexcolor,
+                    name: request.name)
     }
     
 }

@@ -8,13 +8,13 @@
 import Foundation
 import RxSwift
 
-public class DefaultFlagRepository {
+class DefaultFlagRepository {
     
     let localActivityFlagStorage: LocalActivityFlagStorage
     let localFlagStorage: LocalFlagStorage
     
-    public init(localActivityFlagStorage: LocalActivityFlagStorage,
-                localFlagStorage: LocalFlagStorage) {
+    init(localActivityFlagStorage: LocalActivityFlagStorage,
+         localFlagStorage: LocalFlagStorage) {
         self.localActivityFlagStorage = localActivityFlagStorage
         self.localFlagStorage = localFlagStorage
     }
@@ -23,51 +23,50 @@ public class DefaultFlagRepository {
 
 extension DefaultFlagRepository: FlagRepository {
     
-    public func fetchAllFlag(in storagePoint: StoragePoint) -> Observable<[FlagDomain]> {
+    func fetchAllFlag(in storagePoint: StoragePoint) -> Single<[Flag]> {
         switch storagePoint {
         case .coreData:
             return self.localFlagStorage.fetchAllInCoreData()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,
                                                               function: "fetchAllFlag()",
-                                                              object: [FlagDomain].self)
+                                                              object: [Flag].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: FlagRepository.self,
                                                                    function: "fetchAllFlag()",
-                                                                   object: [FlagDomain].self)
+                                                                   object: [Flag].self)
         }
     }
     
-    public func fetchAllFlag(ownedBy profile: ProfileDomain,
-                             in storagePoint: StoragePoint) -> Observable<[FlagDomain]> {
+    func fetchAllFlag(ownedBy profile: Profile, in storagePoint: StoragePoint) -> Single<[Flag]> {
         switch storagePoint {
         case .coreData:
             return self.localActivityFlagStorage
-                .fetchAllInCoreData(ownedBy: profile)
+                .fetchAllInRealm(ownedBy: profile)
                 .map({ $0.flatMap({ $0.flags }) })
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,
                                                               function: "fetchAllFlag()",
-                                                              object: [FlagDomain].self)
+                                                              object: [Flag].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: FlagRepository.self,
                                                                    function: "fetchAllFlag()",
-                                                                   object: [FlagDomain].self)
+                                                                   object: [Flag].self)
         }
     }
     
-    public func insertFlag(_ flag: FlagDomain, in storagePoint: StoragePoint) -> Observable<FlagDomain> {
+    func insertFlag(_ flag: Flag, in storagePoint: StoragePoint) -> Single<Flag> {
         switch storagePoint {
         case .coreData:
             return self.localFlagStorage.insertIntoCoreData(flag)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,
                                                               function: "insertFlag()",
-                                                              object: FlagDomain.self)
+                                                              object: Flag.self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: FlagRepository.self,
                                                                    function: "insertFlag()",
-                                                                   object: FlagDomain.self)
+                                                                   object: Flag.self)
         }
     }
     

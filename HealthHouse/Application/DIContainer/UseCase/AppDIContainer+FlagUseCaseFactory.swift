@@ -9,11 +9,11 @@ import Foundation
 
 extension AppDIContainer: FlagUseCaseFactory {
     
-    public func makeCreateUpdateFlagUseCase() -> CreateFlagUseCase {
+    func makeCreateFlagUseCase() -> CreateFlagUseCase {
         return DefaultCreateFlagUseCase(flagRepository: self.makeFlagRepository())
     }
     
-    public func makeFetchAllFlagUseCase() -> FetchAllFlagUseCase {
+    func makeFetchAllFlagUseCase() -> FetchAllFlagUseCase {
         return DefaultFetchAllFlagUseCase(flagRepository: self.makeFlagRepository())
     }
     

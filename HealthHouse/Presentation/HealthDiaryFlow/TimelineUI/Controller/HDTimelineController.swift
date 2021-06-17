@@ -189,7 +189,7 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToEmptyView
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: Observable<[ActivityDomain]>,
+    func bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: Observable<[Activity]>,
                                                         emptyViewHidden: Binder<Bool>) {
         showedActivities
             .asDriver(onErrorJustReturn: [])
@@ -203,18 +203,18 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToTimelineTableView
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToTimelineTableView(showedActivities: Observable<[ActivityDomain]>,
+    func bindShowedActivitiesViewModelToTimelineTableView(showedActivities: Observable<[Activity]>,
                                                           tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         showedActivities
             .asDriver(onErrorJustReturn: [])
-            .map({ [SectionDomain<ActivityDomain>(header: "", items: $0)] })
+            .map({ [SectionDomain<Activity>(header: "", items: $0)] })
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
     }
     
-    private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<ActivityDomain>> {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<ActivityDomain>>
+    private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<Activity>> {
+        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<Activity>>
         { [unowned self] (_, _, _, item) -> UITableViewCell in
             let identifier = self._view.HDTLActivityTableCellIdentifier
             let cell = UITableViewCell(style: .subtitle, reuseIdentifier: identifier)
@@ -237,7 +237,7 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToTimelineTableViewHidden
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: Observable<[ActivityDomain]>,
+    func bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: Observable<[Activity]>,
                                                                 tableViewHidden: Binder<Bool>) {
         showedActivities
             .asDriver(onErrorJustReturn: [])

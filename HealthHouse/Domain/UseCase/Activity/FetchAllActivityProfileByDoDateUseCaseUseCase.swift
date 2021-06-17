@@ -9,39 +9,39 @@
 import Foundation
 import RxSwift
 
-public enum FetchAllActivityProfileByDoDateUseCaseError: LocalizedError {
+enum FetchAllActivityProfileByDoDateUseCaseError: LocalizedError {
     
 }
 
 extension FetchAllActivityProfileByDoDateUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct FetchAllActivityProfileByDoDateUseCaseResponse {
-    public let activities: [ActivityDomain]
+struct FetchAllActivityProfileByDoDateUseCaseResponse {
+    let activities: [Activity]
 }
 
-public struct FetchAllActivityProfileByDoDateUseCaseRequest {
-    public let doDate: Int64
-    public let profile: ProfileDomain
+struct FetchAllActivityProfileByDoDateUseCaseRequest {
+    let doDate: Int64
+    let profile: Profile
 }
 
-public protocol FetchAllActivityProfileByDoDateUseCase {
+protocol FetchAllActivityProfileByDoDateUseCase {
     
-    func execute(_ request: FetchAllActivityProfileByDoDateUseCaseRequest) -> Observable<FetchAllActivityProfileByDoDateUseCaseResponse>
+    func execute(_ request: FetchAllActivityProfileByDoDateUseCaseRequest) -> Single<FetchAllActivityProfileByDoDateUseCaseResponse>
 
 }
 
-public final class DefaultFetchAllActivityProfileByDoDateUseCase {
+final class DefaultFetchAllActivityProfileByDoDateUseCase {
 
     let activityRepository: ActivityRepository
     
-    public init(activityRepository: ActivityRepository) {
+    init(activityRepository: ActivityRepository) {
         self.activityRepository = activityRepository
     }
 
@@ -49,7 +49,7 @@ public final class DefaultFetchAllActivityProfileByDoDateUseCase {
 
 extension DefaultFetchAllActivityProfileByDoDateUseCase: FetchAllActivityProfileByDoDateUseCase {
 
-    public func execute(_ request: FetchAllActivityProfileByDoDateUseCaseRequest) -> Observable<FetchAllActivityProfileByDoDateUseCaseResponse> {
+    func execute(_ request: FetchAllActivityProfileByDoDateUseCaseRequest) -> Single<FetchAllActivityProfileByDoDateUseCaseResponse> {
         let profile = request.profile
         let doDate = request.doDate
         return self.activityRepository

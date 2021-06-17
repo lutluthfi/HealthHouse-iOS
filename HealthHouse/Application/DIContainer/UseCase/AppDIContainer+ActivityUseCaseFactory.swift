@@ -9,11 +9,11 @@ import Foundation
 
 extension AppDIContainer: ActivityUseCaseFactory {
     
-    public func makeCreateUpdateActivityUseCase() -> CreateUpdateActivityUseCase {
+    func makeCreateUpdateActivityUseCase() -> CreateUpdateActivityUseCase {
         return DefaultCreateUpdateActivityUseCase(activityRepository: self.makeActivityRepository())
     }
     
-    public func makeFetchAllActivityByProfileUseCase() -> FetchAllActivityByProfileUseCase {
+    func makeFetchAllActivityByProfileUseCase() -> FetchAllActivityByProfileUseCase {
         return DefaultFetchAllActivityByProfileUseCase(activityRepository: self.makeActivityRepository())
     }
     

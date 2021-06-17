@@ -20,7 +20,7 @@ final class FLListController: UITableViewController {
     
     // MARK: Common Variable
     let _isTableEditing = BehaviorRelay<Bool>(value: false)
-    let _selectedFlags = BehaviorRelay<[FlagDomain]>(value: [])
+    let _selectedFlags = BehaviorRelay<[Flag]>(value: [])
     
     // MARK: Create Function
     class func create(with viewModel: FLListViewModel) -> FLListController {
@@ -108,7 +108,7 @@ extension FLListController {
 // MARK: BindSelectedLabelsToSelectedCountBarButtonItem
 extension FLListController {
     
-    func bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: BehaviorRelay<[FlagDomain]>,
+    func bindSelectedLabelsToSelectedCountBarButtonItem(selectedLabels: BehaviorRelay<[Flag]>,
                                                         barButtonItem: UIBarButtonItem) {
         selectedLabels
             .asDriver()
@@ -128,8 +128,8 @@ extension FLListController {
 // MARK: BindShowedLabelsToSelectedLabels
 extension FLListController {
     
-    func bindShowedLabelsToSelectedLabels(showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]>,
-                                          selectedFlags: BehaviorRelay<[FlagDomain]>) {
+    func bindShowedLabelsToSelectedLabels(showedFlags: PublishRelay<[SelectableDomain<Flag>]>,
+                                          selectedFlags: BehaviorRelay<[Flag]>) {
         showedFlags
             .asDriver(onErrorJustReturn: [])
             .map({ $0.filter({ $0.selected }) })
@@ -179,10 +179,10 @@ extension FLListController {
     
     func bindTableViewModelDeselected(tableView: UITableView) {
         tableView.rx
-            .modelDeselected(SelectableDomain<FlagDomain>.self)
+            .modelDeselected(SelectableDomain<Flag>.self)
             .asDriver()
             .map({ $0.value })
-            .map({ [unowned self] (label) -> [FlagDomain] in
+            .map({ [unowned self] (label) -> [Flag] in
                 var value = self._selectedFlags.value
                 value.remove(firstIndexOf: label)
                 return value
@@ -198,10 +198,10 @@ extension FLListController {
     
     func bindTableViewModelSelected(tableView: UITableView) {
         tableView.rx
-            .modelSelected(SelectableDomain<FlagDomain>.self)
+            .modelSelected(SelectableDomain<Flag>.self)
             .asDriver()
             .map({ $0.value })
-            .map({ [unowned self] (label) -> [FlagDomain] in
+            .map({ [unowned self] (label) -> [Flag] in
                 var value = self._selectedFlags.value
                 value.append(label)
                 return value

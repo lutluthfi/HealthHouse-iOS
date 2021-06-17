@@ -9,7 +9,7 @@
 import Foundation
 import RxSwift
 
-public enum FetchCurrentProfileUseCaseError: LocalizedError {
+enum FetchCurrentProfileUseCaseError: LocalizedError {
     
 }
 
@@ -22,23 +22,23 @@ extension FetchCurrentProfileUseCaseError {
     
 }
 
-public struct FetchCurrentProfileUseCaseResponse {
-    public let profile: ProfileDomain?
+struct FetchCurrentProfileUseCaseResponse {
+    public let profile: Profile?
 }
 
-public struct FetchCurrentProfileUseCaseRequest {
+struct FetchCurrentProfileUseCaseRequest {
 
 }
 
-public protocol FetchCurrentProfileUseCase {
-    func execute(_ request: FetchCurrentProfileUseCaseRequest) -> Observable<FetchCurrentProfileUseCaseResponse>
+protocol FetchCurrentProfileUseCase {
+    func execute(_ request: FetchCurrentProfileUseCaseRequest) -> Single<FetchCurrentProfileUseCaseResponse>
 }
 
-public final class DefaultFetchCurrentProfileUseCase {
+final class DefaultFetchCurrentProfileUseCase {
 
     let profileRepository: ProfileRepository
     
-    public init(profileRepository: ProfileRepository) {
+    init(profileRepository: ProfileRepository) {
         self.profileRepository = profileRepository
     }
 
@@ -46,7 +46,7 @@ public final class DefaultFetchCurrentProfileUseCase {
 
 extension DefaultFetchCurrentProfileUseCase: FetchCurrentProfileUseCase {
 
-    public func execute(_ request: FetchCurrentProfileUseCaseRequest) -> Observable<FetchCurrentProfileUseCaseResponse> {
+    func execute(_ request: FetchCurrentProfileUseCaseRequest) -> Single<FetchCurrentProfileUseCaseResponse> {
         return self.profileRepository
             .fetchProfile(in: .userDefaults)
             .map({ FetchCurrentProfileUseCaseResponse(profile: $0) })

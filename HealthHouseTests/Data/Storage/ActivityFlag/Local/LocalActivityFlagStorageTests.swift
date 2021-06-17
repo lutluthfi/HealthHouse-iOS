@@ -83,7 +83,7 @@ extension LocalActivityFlagStorageTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(ownedBy:) caused by profileCoreID is not available")
+                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInRealm(ownedBy:) caused by profileCoreID is not available")
         }
     }
     
@@ -115,7 +115,7 @@ extension LocalActivityFlagStorageTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(activity:) caused by activityCoreID is not found")
+                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInRealm(activity:) caused by activityCoreID is not found")
         }
     }
     
@@ -130,7 +130,7 @@ extension LocalActivityFlagStorageTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(activity:) caused by activityCoreID is not available")
+                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute fetchAllInRealm(activity:) caused by activityCoreID is not available")
         }
     }
     

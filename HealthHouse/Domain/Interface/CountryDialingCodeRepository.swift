@@ -8,8 +8,8 @@
 import Foundation
 import RxSwift
 
-public protocol CountryDialingCodeRepository {
+protocol CountryDialingCodeRepository {
     
-    func fetchAllCountryDialingCode(in storagePoint: StoragePoint) -> Observable<[CountryDialingCodeDomain]>
+    func fetchAllCountryDialingCode(in storagePoint: StoragePoint) -> Single<[CountryDialingCodeDomain]>
     
 }

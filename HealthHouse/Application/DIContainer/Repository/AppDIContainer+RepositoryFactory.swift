@@ -9,24 +9,24 @@ import Foundation
 
 extension AppDIContainer: RepositoryFactory {
     
-    public func makeActivityRepository() -> ActivityRepository {
+    func makeActivityRepository() -> ActivityRepository {
         return DefaultActivityRepository(localActivityStorage: self.localActivityStorage)
     }
     
-    public func makeAppConfigRepository() -> AppConfigRepository {
+    func makeAppConfigRepository() -> AppConfigRepository {
         return DefaultAppCofigRepository(localAppConfigStorage: self.localAppConfigStorage)
     }
     
-    public func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository {
+    func makeCountryDialingCodeRepository() -> CountryDialingCodeRepository {
         return DefaultCountryDialingCodeRepository(remoteCountryDialingCodeStorage: self.remoteCountryDialingCodeStorage)
     }
     
-    public func makeFlagRepository() -> FlagRepository {
+    func makeFlagRepository() -> FlagRepository {
         return DefaultFlagRepository(localActivityFlagStorage: self.localActivityFlagStorage,
                                      localFlagStorage: self.localFlagStorage)
     }
     
-    public func makeProfileRepository() -> ProfileRepository {
+    func makeProfileRepository() -> ProfileRepository {
         return DefaultProfileRepository(localProfileStorage: self.localProfileStorage)
     }
     

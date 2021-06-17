@@ -39,7 +39,7 @@ protocol ATCreateViewModelInput {
 // MARK: ATCreateViewModelOutput
 protocol ATCreateViewModelOutput {
     var selectedLocation: PublishRelay<MKMapItem> { get }
-    var showedSelectedLabels: BehaviorRelay<[FlagDomain]> { get }
+    var showedSelectedLabels: BehaviorRelay<[Flag]> { get }
 }
 
 // MARK: ATCreateViewModel
@@ -57,11 +57,11 @@ final class DefaultATCreateViewModel: ATCreateViewModel {
     
 
     // MARK: Common Variable
-    var _selectedLabels: [FlagDomain] = []
+    var _selectedLabels: [Flag] = []
 
     // MARK: Output ViewModel
     let selectedLocation = PublishRelay<MKMapItem>()
-    let showedSelectedLabels = BehaviorRelay<[FlagDomain]>(value: [])
+    let showedSelectedLabels = BehaviorRelay<[Flag]>(value: [])
 
     // MARK: Init Function
     init(request: ATCreateViewModelRequest,

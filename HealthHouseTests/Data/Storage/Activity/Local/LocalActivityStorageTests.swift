@@ -87,7 +87,7 @@ extension LocalActivityStorageTests {
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData(ownedBy:) caused by profileCoreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInRealm(ownedBy:) caused by profileCoreID is not available")
         }
     }
     
@@ -134,7 +134,7 @@ extension LocalActivityStorageTests {
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInCoreData(ownedBy:, onDoDate:) caused by profileCoreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute fetchAllInRealm(ownedBy:, onDoDate:) caused by profileCoreID is not available")
         }
     }
     

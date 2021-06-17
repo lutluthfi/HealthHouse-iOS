@@ -24,7 +24,7 @@ extension ATCreateController {
     private func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>> {
         let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>>
         { [unowned self] (_, tableView, _, item) -> UITableViewCell in
-            if let label = item.value as? FlagDomain {
+            if let label = item.value as? Flag {
                 let cell = makeDefaultTableCell(with: item)
                 cell.selectionStyle = .none
                 cell.textLabel?.text = label.name

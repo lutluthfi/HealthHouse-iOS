@@ -7,22 +7,24 @@
 
 import Foundation
 
-public struct MedicationDomain: EntityDomain {
+typealias MedicationID = String
+
+struct MedicationDomain: EntityDomain {
     
-    public let coreID: CoreID?
-    public let createdAt: Int64
-    public let updatedAt: Int64
+    let realmID: MedicationID
+    let createdAt: Int64
+    let updatedAt: Int64
     
-    public let dose: String
-    public let endedAt: Int64
-    public let location: String
-    public let name: String
-    public let photoFileNames: [String]
-    public let startedAt: Int64
+    let dose: String
+    let endedAt: Int64
+    let location: String
+    let name: String
+    let photoFileNames: [String]
+    let startedAt: Int64
     
-    public let profile: ProfileDomain
+    let profile: Profile
     
-    public var photoFileUrls: [URL] {
+    var photoFileUrls: [URL] {
         let directoryURL = FileKit.local.localAttachmentsDirectoryURL
         let urls = self.photoFileNames.map { directoryURL.appendingPathComponent($0, isDirectory: false) }
         return urls
@@ -32,8 +34,8 @@ public struct MedicationDomain: EntityDomain {
 
 extension MedicationDomain: Equatable {
  
-    public static func == (lhs: MedicationDomain, rhs: MedicationDomain) -> Bool {
-        return lhs.coreID == rhs.coreID
+    static func == (lhs: MedicationDomain, rhs: MedicationDomain) -> Bool {
+        return lhs.realmID == rhs.realmID
     }
     
 }

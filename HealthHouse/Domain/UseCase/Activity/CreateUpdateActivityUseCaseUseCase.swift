@@ -9,52 +9,52 @@
 import Foundation
 import RxSwift
 
-public enum CreateUpdateActivityUseCaseError: LocalizedError {
+enum CreateUpdateActivityUseCaseError: LocalizedError {
     
 }
 
 extension CreateUpdateActivityUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct CreateUpdateActivityUseCaseResponse {
-    public let activity: ActivityDomain
+struct CreateUpdateActivityUseCaseResponse {
+    let activity: Activity
 }
 
-public struct CreateUpdateActivityUseCaseRequest {
-    public let coreID: CoreID?
-    public let doDate: Int64
-    public let explanation: String
-    public let photoFileURLs: [URL]
-    public let profile: ProfileDomain
-    public let title: String
+struct CreateUpdateActivityUseCaseRequest {
+    let activityID: ActivityID?
+    let doDate: Int64
+    let explanation: String
+    let photoFileURLs: [URL]
+    let profile: Profile
+    let title: String
 }
 
-public protocol CreateUpdateActivityUseCase {
+protocol CreateUpdateActivityUseCase {
     
-    func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Observable<CreateUpdateActivityUseCaseResponse>
-
+    func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Single<CreateUpdateActivityUseCaseResponse>
+    
 }
 
-public final class DefaultCreateUpdateActivityUseCase {
-
+final class DefaultCreateUpdateActivityUseCase {
+    
     let activityRepository: ActivityRepository
     
-    public init(activityRepository: ActivityRepository) {
+    init(activityRepository: ActivityRepository) {
         self.activityRepository = activityRepository
     }
-
+    
 }
 
 extension DefaultCreateUpdateActivityUseCase: CreateUpdateActivityUseCase {
-
-    public func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Observable<CreateUpdateActivityUseCaseResponse> {
-        let activity = ActivityDomain.make(from: request)
+    
+    func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Single<CreateUpdateActivityUseCaseResponse> {
+        let activity = Activity.make(from: request)
         return self.activityRepository
             .insertUpdateActivity(activity, into: .coreData)
             .map { CreateUpdateActivityUseCaseResponse(activity: $0) }
@@ -62,21 +62,21 @@ extension DefaultCreateUpdateActivityUseCase: CreateUpdateActivityUseCase {
     
 }
 
-private extension ActivityDomain {
+private extension Activity {
     
-    static func make(from request: CreateUpdateActivityUseCaseRequest) -> ActivityDomain {
+    static func make(from request: CreateUpdateActivityUseCaseRequest) -> Activity {
         let now = Date().toInt64()
         let photoFilesNames = request.photoFileURLs.map { $0.lastPathComponent }
-        return ActivityDomain(coreID: request.coreID,
-                              createdAt: now,
-                              updatedAt: now,
-                              doDate: request.doDate,
-                              explanation: request.explanation,
-                              isArchived: false,
-                              isPinned: false,
-                              photoFileNames: photoFilesNames,
-                              title: request.title,
-                              profile: request.profile)
+        return Activity(realmID: request.activityID.orMakePrimaryKey,
+                        createdAt: now,
+                        updatedAt: now,
+                        doDate: request.doDate,
+                        explanation: request.explanation,
+                        isArchived: false,
+                        isPinned: false,
+                        photoFileNames: photoFilesNames,
+                        title: request.title,
+                        profile: request.profile)
     }
     
 }

@@ -5,10 +5,11 @@
 //  Created by Arif Luthfiansyah on 17/03/21.
 //
 
+import RealmSwift
 import UIKit
 
-public typealias PresentationFactory = FlowCoordinatorFactory&ControllerFactory
-public typealias ControllerFactory =
+typealias PresentationFactory = FlowCoordinatorFactory&ControllerFactory
+typealias ControllerFactory =
     ActivityFlowCoordinatorFactory&
     LocationFlowCoordinatorFactory&
     HealthDiaryFlowCoordinatorFactory&
@@ -16,20 +17,25 @@ public typealias ControllerFactory =
     LaunchFlowCoordinatorFactory&
     ProfileFlowCoordinatorFactory
 
-public final class AppDIContainer {
+final class AppDIContainer {
  
     let navigationController: UINavigationController
     
-    lazy var coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared
+    var realmConfiguration: Realm.Configuration {
+        var configuration = Realm.Configuration.defaultConfiguration
+        configuration.schemaVersion = 1
+        return configuration
+    }
+    lazy var realmManager: RealmManagerShared = RealmManager.sharedInstance(config: self.realmConfiguration)
     
     lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage()
     lazy var localActivityFlagStorage: LocalActivityFlagStorage = DefaultLocalActivityFlagStorage()
     lazy var localAppConfigStorage: LocalAppConfigStorage = DefaultLocalAppConfigStorage()
     lazy var localFlagStorage: LocalFlagStorage = DefaultLocalFlagStorage()
-    lazy var localProfileStorage: LocalProfileStorage = DefaultLocalProfileStorage()
+    lazy var localProfileStorage: LocalProfileStorage = DefaultLocalProfileStorage(realmManager: self.realmManager)
     lazy var remoteCountryDialingCodeStorage: RemoteCountryDialingCodeStorage = DefaultRemoteCountryDialingCodeStorage()
     
-    public init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     

@@ -1,5 +1,5 @@
 //
-//  ActivityFlagDomain.swift
+//  ActivityFlag.swift
 //  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 16/05/21.
@@ -15,7 +15,7 @@ extension ActivityFlagDomain {
     static func stubCollection(coreDataStorage: CoreDataStorageSharedMock) -> [ActivityFlagDomain] {
         let now = Date()
         let activities = ActivityDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
-        let flags = FlagDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
+        let flags = Flag.stubCollectionCoreData(coreDataStorage: coreDataStorage)
         let activityFlags = activities.0.map({
             ActivityFlagDomain(coreID: nil,
                                createdAt: now.toInt64(),
@@ -31,7 +31,7 @@ extension ActivityFlagDomain {
                                                                                        ProfileDomain) {
         let now = Date()
         let activities = ActivityDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
-        let flags = FlagDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
+        let flags = Flag.stubCollectionCoreData(coreDataStorage: coreDataStorage)
         let activityFlags = activities.0.map({
             ActivityFlagDomain(coreID: nil,
                                createdAt: now.toInt64(),
@@ -56,7 +56,7 @@ extension ActivityFlagDomain {
     static func stubElementWhenActivityHasCoreID(coreDataStorage: CoreDataStorageSharedMock) -> ActivityFlagDomain {
         let now = Date()
         let activity = ActivityDomain.stubElementCoreData(coreDataStorage: coreDataStorage).0
-        let flags = FlagDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
+        let flags = Flag.stubCollectionCoreData(coreDataStorage: coreDataStorage)
         let activityFlag = ActivityFlagDomain(coreID: nil,
                                               createdAt: now.toInt64(),
                                               updatedAt: now.toInt64(),
@@ -69,7 +69,7 @@ extension ActivityFlagDomain {
     static func stubElementWhenActivityHasNotCoreID(coreDataStorage: CoreDataStorageSharedMock) -> ActivityFlagDomain {
         let now = Date()
         let activity = ActivityDomain.stubElement(coreDataStorage: coreDataStorage).0
-        let flags = FlagDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
+        let flags = Flag.stubCollectionCoreData(coreDataStorage: coreDataStorage)
         let activityFlag = ActivityFlagDomain(coreID: nil,
                                               createdAt: now.toInt64(),
                                               updatedAt: now.toInt64(),
@@ -82,7 +82,7 @@ extension ActivityFlagDomain {
     static func stubElementCoreData(coreDataStorage: CoreDataStorageSharedMock) -> ActivityFlagDomain {
         let now = Date()
         let activity = ActivityDomain.stubElementCoreData(coreDataStorage: coreDataStorage).0
-        let flags = FlagDomain.stubCollectionCoreData(coreDataStorage: coreDataStorage)
+        let flags = Flag.stubCollectionCoreData(coreDataStorage: coreDataStorage)
         let activityFlag = ActivityFlagDomain(coreID: nil,
                                               createdAt: now.toInt64(),
                                               updatedAt: now.toInt64(),

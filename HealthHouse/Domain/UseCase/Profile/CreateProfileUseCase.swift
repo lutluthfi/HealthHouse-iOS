@@ -8,54 +8,56 @@
 import RxSwift
 import UIKit
 
-public enum CreateProfileUseCaseError: LocalizedError {
+enum CreateProfileUseCaseError: LocalizedError {
     
 }
 
 extension CreateProfileUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct CreateProfileUseCaseResponse {
+struct CreateProfileUseCaseResponse {
     
-    public let profile: ProfileDomain
-    
-}
-
-public struct CreateProfileUseCaseRequest {
-
-    public let dateOfBirth: Date
-    public let firstName: String
-    public let gender: GenderDomain
-    public let lastName: String
-    public let mobileNumber: String
-    public let photo: UIImage?
+    let profile: Profile
     
 }
 
-public protocol CreateProfileUseCase {
-    func execute(_ request: CreateProfileUseCaseRequest) -> Observable<CreateProfileUseCaseResponse>
+struct CreateProfileUseCaseRequest {
+    
+    let dateOfBirth: Date
+    let firstName: String
+    let gender: GenderDomain
+    let lastName: String
+    let mobileNumber: String
+    let photo: UIImage?
+    
 }
 
-public final class DefaultCreateProfileUseCase {
+protocol CreateProfileUseCase {
+    
+    func execute(_ request: CreateProfileUseCaseRequest) -> Single<CreateProfileUseCaseResponse>
+    
+}
 
+final class DefaultCreateProfileUseCase {
+    
     let profileRepository: ProfileRepository
     
-    public init(profileRepository: ProfileRepository) {
+    init(profileRepository: ProfileRepository) {
         self.profileRepository = profileRepository
     }
-
+    
 }
 
 extension DefaultCreateProfileUseCase: CreateProfileUseCase {
-
-    public func execute(_ request: CreateProfileUseCaseRequest) -> Observable<CreateProfileUseCaseResponse> {
-        let profile = ProfileDomain.create(from: request)
+    
+    func execute(_ request: CreateProfileUseCaseRequest) -> Single<CreateProfileUseCaseResponse> {
+        let profile = Profile.create(from: request)
         return self.profileRepository
             .insertProfile(profile, into: .coreData)
             .map({ CreateProfileUseCaseResponse(profile: $0) })
@@ -63,19 +65,27 @@ extension DefaultCreateProfileUseCase: CreateProfileUseCase {
     
 }
 
-fileprivate extension ProfileDomain {
+fileprivate extension Profile {
     
-    static func create(from request: CreateProfileUseCaseRequest) -> ProfileDomain {
+    static func create(from request: CreateProfileUseCaseRequest) -> Profile {
         let now = Date().toInt64()
-        return ProfileDomain(coreID: nil,
-                             createdAt: now,
-                             updatedAt: now,
-                             dateOfBirth: request.dateOfBirth.toInt64(),
-                             firstName: request.firstName,
-                             gender: request.gender,
-                             lastName: request.lastName,
-                             mobileNumbder: request.mobileNumber,
-                             photoBase64String: request.photo?.pngData()?.base64EncodedString())
+        return Profile(realmID: String.nil.orMakePrimaryKey,
+                       createdAt: now,
+                       updatedAt: now,
+                       dateOfBirth: request.dateOfBirth.toInt64(),
+                       firstName: request.firstName,
+                       gender: request.gender,
+                       lastName: request.lastName,
+                       mobileNumbder: request.mobileNumber,
+                       photoBase64String: request.photo?.pngData()?.base64EncodedString())
+    }
+    
+}
+
+extension String {
+    
+    static var `nil`: String? {
+        return nil
     }
     
 }

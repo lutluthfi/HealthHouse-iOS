@@ -8,11 +8,11 @@
 import Foundation
 import RxSwift
 
-public class DefaultProfileRepository {
+class DefaultProfileRepository {
     
     let localProfileStorage: LocalProfileStorage
     
-    public init(localProfileStorage: LocalProfileStorage) {
+    init(localProfileStorage: LocalProfileStorage) {
         self.localProfileStorage = localProfileStorage
     }
     
@@ -20,46 +20,46 @@ public class DefaultProfileRepository {
 
 extension DefaultProfileRepository: ProfileRepository {
     
-    public func fetchAllProfile(in storagePoint: StoragePoint) -> Observable<[ProfileDomain]> {
+    func fetchAllProfile(in storagePoint: StoragePoint) -> Single<[Profile]> {
         switch storagePoint  {
         case .coreData:
-            return self.localProfileStorage.fetchAllInCoreData()
+            return self.localProfileStorage.fetchAllInRealm()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
                                                               function: "fetchAllProfile()",
-                                                              object: [ProfileDomain].self)
+                                                              object: [Profile].self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "fetchAllProfile()",
-                                                                   object: [ProfileDomain].self)
+                                                                   object: [Profile].self)
         }
     }
     
-    public func insertProfile(_ profile: ProfileDomain, into storagePoint: StoragePoint) -> Observable<ProfileDomain> {
+    func insertProfile(_ profile: Profile, into storagePoint: StoragePoint) -> Single<Profile> {
         switch storagePoint  {
         case .coreData:
-            return self.localProfileStorage.insertIntoCoreData(profile)
+            return self.localProfileStorage.insertIntoRealm(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
                                                               function: "insertProfile()",
-                                                              object: ProfileDomain.self)
+                                                              object: Profile.self)
         case .userDefaults:
             return self.localProfileStorage.insertIntoUserDefaults(profile)
         }
     }
     
-    public func removeProfile(_ profile: ProfileDomain, in storagePoint: StoragePoint) -> Observable<ProfileDomain> {
+    func removeProfile(_ profile: Profile, in storagePoint: StoragePoint) -> Single<Profile> {
         switch storagePoint  {
         case .coreData:
-            return self.localProfileStorage.removeInCoreData(profile)
+            return self.localProfileStorage.removeInRealm(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
                                                               function: "removeProfile()",
-                                                              object: ProfileDomain.self)
+                                                              object: Profile.self)
         case .userDefaults:
             return StoragePoint.makeUserDefaultStorageNotSupported(class: ProfileRepository.self,
                                                                    function: "removeProfile()",
-                                                                   object: ProfileDomain.self)
+                                                                   object: Profile.self)
         }
     }
     

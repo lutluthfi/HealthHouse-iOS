@@ -2,27 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSDownloadsFolderUsageDescription</key>
-	<string>$(PRODUCT_NAME) will helps you to manage your health attachment</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) will helps you to detail your activity by attaching a photo as an attachment</string>
-	<key>NSDocumentsFolderUsageDescription</key>
-	<string>$(PRODUCT_NAME) will helps you to manage your health attachment</string>
-	<key>UISupportsDocumentBrowser</key>
-	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>MKDirectionsRequest</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.apple.maps.directionsrequest</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -39,21 +20,16 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>MKDirectionsApplicationSupportedModes</key>
-	<array>
-		<string>MKDirectionsModeBus</string>
-		<string>MKDirectionsModeCar</string>
-		<string>MKDirectionsModeOther</string>
-		<string>MKDirectionsModePedestrian</string>
-		<string>MKDirectionsModeRideShare</string>
-		<string>MKDirectionsModeSubway</string>
-		<string>MKDirectionsModeTaxi</string>
-		<string>MKDirectionsModeTrain</string>
-	</array>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>$(PRODUCT_NAME) will helps you to manage your health attachment</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>$(PRODUCT_NAME) will helps you to manage your health attachment</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) will helps you to remember and find your hospital</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>$(PRODUCT_NAME) will helps you to remember and find your hospital</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) will helps you to detail your activity by attaching a photo as an attachment</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

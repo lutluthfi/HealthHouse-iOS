@@ -5,101 +5,49 @@
 //  Created by Arif Luthfiansyah on 03/04/21.
 //
 
-import CoreData
-import Foundation
+import RealmSwift
+import RxRealm
 import RxSwift
 
 // MARK: LocalProfileRepository
-public protocol LocalProfileStorage: CoreDataProfileStorage, UserDefaultsProfileStorage {
+protocol LocalProfileStorage: RealmProfileStorage, UserDefaultsProfileStorage {
 }
 
 // MARK: DefaultLocalProfileRepository
-public final class DefaultLocalProfileStorage: LocalProfileStorage {
+final class DefaultLocalProfileStorage: LocalProfileStorage {
     
-    let coreDataStorage: CoreDataStorageShared
+    let realmManager: RealmManagerShared
     let userDefaultsProfileStorage: UserDefaultsProfileStorage
     
-    public init(coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared,
-                userDefaultsProfileStorage: UserDefaultsProfileStorage = DefaultUserDefaultsProfileStorage()) {
-        self.coreDataStorage = coreDataStorage
+    init(realmManager: RealmManagerShared = RealmManager.sharedInstance(),
+         userDefaultsProfileStorage: UserDefaultsProfileStorage = DefaultUserDefaultsProfileStorage()) {
+        self.realmManager = realmManager
         self.userDefaultsProfileStorage = userDefaultsProfileStorage
     }
     
 }
 
-// MARK: CoreDataProfileStorage
+// MARK: RealmProfileStorage
 extension DefaultLocalProfileStorage {
     
-    public func fetchAllInCoreData() -> Observable<[ProfileDomain]> {
-        return Observable.create { [unowned self] (observer) -> Disposable in
-            self.coreDataStorage.performBackground { (context) in
-                do {
-                    let request: NSFetchRequest = ProfileEntity.fetchRequest()
-                    let entities = try context.fetch(request)
-                    let domains = entities.map { $0.toDomain() }
-                    observer.onNext(domains)
-                    observer.onCompleted()
-                } catch {
-                    let coreDataError = CoreDataStorageError.readError(error)
-                    observer.onError(coreDataError)
-                }
-            }
-            return Disposables.create()
-        }
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func fetchAllInRealm() -> Single<[Profile]> {
+        let objects = self.realmManager.realm.objects(ProfileRealm.self)
+        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
     }
     
-    public func insertIntoCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
-        return Observable.create { [unowned self] (observer) -> Disposable in
-            self.coreDataStorage.performBackground { (context) in
-                do {
-                    let inserted: ProfileEntity
-                    let request: NSFetchRequest = ProfileEntity.fetchRequest()
-                    let entities = try context.fetch(request)
-                    if let oldEntity = entities.first(where: { $0.objectID == profile.coreID }) {
-                        inserted = oldEntity.createUpdate(with: profile, context: context)
-                    } else {
-                        inserted = ProfileEntity(profile, insertInto: context)
-                    }
-                    try context.save()
-                    let insertedDomain = inserted.toDomain()
-                    observer.onNext(insertedDomain)
-                    observer.onCompleted()
-                } catch {
-                    let coreDataError = CoreDataStorageError.saveError(error)
-                    observer.onError(coreDataError)
-                }
-            }
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentMainScheduler.instance)
+    func insertIntoRealm(_ profile: Profile) -> Single<Profile> {
+        let object = profile.toRealm()
+        let configuration = self.realmManager.configuration
+        let observer = Realm.rx.add(configuration: configuration, update: .modified)
+        let disposable = Observable.from(object: object).subscribe(observer)
+        return .create { (_) in disposable }
     }
     
-    public func removeInCoreData(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
-        return Observable.create { [unowned self] (observer) -> Disposable in
-            guard let coreID = profile.coreID else {
-                let message = "LocalProfileStorage: Failed to execute removeInCoreData(_:) caused by coreID is not available"
-                let error = PlainError(description: message)
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
-                return Disposables.create()
-            }
-            
-            self.coreDataStorage.performBackground { (context) in
-                do {
-                    let removedObject = context.object(with: coreID)
-                    context.delete(removedObject)
-                    try context.save()
-                    observer.onNext(profile)
-                    observer.onCompleted()
-                } catch {
-                    let coreDataError = CoreDataStorageError.deleteError(error)
-                    observer.onError(coreDataError)
-                }
-            }
-            return Disposables.create()
-        }
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func removeInRealm(_ profile: Profile) -> Single<Profile> {
+        let object = profile.toRealm()
+        let observer = Realm.rx.delete()
+        let disposable = Observable.from(object: object).subscribe(observer)
+        return .create { (_) in disposable }
     }
     
 }
@@ -107,11 +55,11 @@ extension DefaultLocalProfileStorage {
 // MARK: UserDefaultsProfileStorage
 extension DefaultLocalProfileStorage {
     
-    public func fetchInUserDefaults() -> Observable<URL?> {
+    func fetchInUserDefaults() -> Single<String?> {
         return self.userDefaultsProfileStorage.fetchInUserDefaults()
     }
     
-    public func insertIntoUserDefaults(_ profile: ProfileDomain) -> Observable<ProfileDomain> {
+    func insertIntoUserDefaults(_ profile: Profile) -> Single<Profile> {
         return self.userDefaultsProfileStorage.insertIntoUserDefaults(profile)
     }
     

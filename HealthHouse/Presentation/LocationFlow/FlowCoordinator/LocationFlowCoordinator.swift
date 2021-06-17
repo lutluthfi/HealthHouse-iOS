@@ -9,34 +9,34 @@
 import Foundation
 import UIKit
 
-public typealias SearchResultController = UIViewController&UISearchControllerDelegate&UISearchBarDelegate
+typealias SearchResultController = UIViewController&UISearchControllerDelegate&UISearchBarDelegate
 
 // MARK: LocationFlowCoordinatorFactory
-public protocol LocationFlowCoordinatorFactory  {
+protocol LocationFlowCoordinatorFactory  {
     func makeLCSearchController(request: LCSearchViewModelRequest,
                                 response: LCSearchViewModelResponse,
                                 route: LCSearchViewModelRoute) -> UIViewController
 }
 
 // MARK: LocationFlowCoordinator
-public protocol LocationFlowCoordinator {
+protocol LocationFlowCoordinator {
     func start(with instructor: LocationFlowCoordinatorInstructor)
 }
 
 // MARK: LocationFlowCoordinatorInstructor
-public enum LocationFlowCoordinatorInstructor {
+enum LocationFlowCoordinatorInstructor {
     case presentSearchUI(LCSearchViewModelRequest, LCSearchViewModelResponse, UIPresentProperties)
 }
 
 // MARK: DefaultLocationFlowCoordinator
-public final class DefaultLocationFlowCoordinator {
+final class DefaultLocationFlowCoordinator {
     
     // MARK: DI Variable
     let navigationController: UINavigationController
     let controllerFactory: LocationFlowCoordinatorFactory
     
     // MARK: Init Funciton
-    public init(navigationController: UINavigationController, factory: PresentationFactory) {
+    init(navigationController: UINavigationController, factory: PresentationFactory) {
         self.navigationController = navigationController
         self.controllerFactory = factory
     }
@@ -52,7 +52,7 @@ public final class DefaultLocationFlowCoordinator {
 
 extension DefaultLocationFlowCoordinator: LocationFlowCoordinator {
     
-    public func start(with instructor: LocationFlowCoordinatorInstructor) {
+    func start(with instructor: LocationFlowCoordinatorInstructor) {
         switch instructor {
         case .presentSearchUI(let request, let response, let presentProperties):
             self.presentSearchUI(request: request, response: response, presentProperties: presentProperties)

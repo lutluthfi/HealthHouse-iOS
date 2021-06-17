@@ -9,15 +9,15 @@ import Foundation
 
 extension AppDIContainer: ProfileUseCaseFactory {
     
-    public func makeCreateProfileUseCase() -> CreateProfileUseCase {
+    func makeCreateProfileUseCase() -> CreateProfileUseCase {
         return DefaultCreateProfileUseCase(profileRepository: self.makeProfileRepository())
     }
     
-    public func makeFetchCurrentProfileUseCase() -> FetchCurrentProfileUseCase {
+    func makeFetchCurrentProfileUseCase() -> FetchCurrentProfileUseCase {
         return DefaultFetchCurrentProfileUseCase(profileRepository: self.makeProfileRepository())
     }
     
-    public func makeSetCurrentProfileUseCase() -> SetCurrentProfileUseCase {
+    func makeSetCurrentProfileUseCase() -> SetCurrentProfileUseCase {
         return DefaultSetCurrentProfileUseCase(profileRepository: self.makeProfileRepository())
     }
     

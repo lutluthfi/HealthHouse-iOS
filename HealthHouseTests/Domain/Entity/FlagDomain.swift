@@ -1,5 +1,5 @@
 //
-//  FlagDomain.swift
+//  Flag.swift
 //  HealthHouseTests
 //
 //  Created by Arif Luthfiansyah on 02/05/21.

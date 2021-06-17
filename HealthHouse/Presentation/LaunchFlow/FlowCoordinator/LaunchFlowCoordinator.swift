@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 // MARK: LaunchFlowCoordinatorFactory
-public protocol LaunchFlowCoordinatorFactory  {
+protocol LaunchFlowCoordinatorFactory  {
     func makeLNPadController(request: LNPadViewModelRequest,
                              route: LNPadViewModelRoute) -> UITabBarController
     func makeLNPostController(request: LNPostViewModelRequest,
@@ -20,19 +20,19 @@ public protocol LaunchFlowCoordinatorFactory  {
 }
 
 // MARK: LaunchFlowCoordinator
-public protocol LaunchFlowCoordinator {
+protocol LaunchFlowCoordinator {
     func start(with instructor: LaunchFlowCoordinatorInstructor)
 }
 
 // MARK: LaunchFlowCoordinatorInstructor
-public enum LaunchFlowCoordinatorInstructor {
+enum LaunchFlowCoordinatorInstructor {
     case presentWelcomeUI(LNWelcomeViewModelRequest, UIPresentProperties)
     case pushToWelcomeUI(LNWelcomeViewModelRequest)
     case pushToPadUI
 }
 
 // MARK: DefaultLaunchFlowCoordinator
-public final class DefaultLaunchFlowCoordinator {
+final class DefaultLaunchFlowCoordinator {
 
     // MARK: DI Variable
     let navigationController: UINavigationController
@@ -40,7 +40,7 @@ public final class DefaultLaunchFlowCoordinator {
     let flowFactory: FlowCoordinatorFactory
 
     // MARK: Init Function
-    public init(navigationController: UINavigationController, factory: PresentationFactory) {
+    init(navigationController: UINavigationController, factory: PresentationFactory) {
         self.navigationController = navigationController
         self.controllerFactory = factory
         self.flowFactory = factory
@@ -51,7 +51,7 @@ public final class DefaultLaunchFlowCoordinator {
 // MARK: Start Function
 extension DefaultLaunchFlowCoordinator: LaunchFlowCoordinator {
     
-    public func start(with instructor: LaunchFlowCoordinatorInstructor) {
+    func start(with instructor: LaunchFlowCoordinatorInstructor) {
         switch instructor {
         case .presentWelcomeUI(let request, let properties):
             self.presentWelcomeUI(request: request, properties: properties)

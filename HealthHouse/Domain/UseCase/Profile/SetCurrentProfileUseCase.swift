@@ -9,36 +9,36 @@
 import Foundation
 import RxSwift
 
-public enum SetCurrentProfileUseCaseError: LocalizedError {
+enum SetCurrentProfileUseCaseError: LocalizedError {
     
 }
 
 extension SetCurrentProfileUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct SetCurrentProfileUseCaseResponse {
-    public let profile: ProfileDomain
+struct SetCurrentProfileUseCaseResponse {
+    let profile: Profile
 }
 
-public struct SetCurrentProfileUseCaseRequest {
-    public let profile: ProfileDomain
+struct SetCurrentProfileUseCaseRequest {
+    let profile: Profile
 }
 
-public protocol SetCurrentProfileUseCase {
-    func execute(_ request: SetCurrentProfileUseCaseRequest) -> Observable<SetCurrentProfileUseCaseResponse>
+protocol SetCurrentProfileUseCase {
+    func execute(_ request: SetCurrentProfileUseCaseRequest) -> Single<SetCurrentProfileUseCaseResponse>
 }
 
-public final class DefaultSetCurrentProfileUseCase {
+final class DefaultSetCurrentProfileUseCase {
 
     let profileRepository: ProfileRepository
     
-    public init(profileRepository: ProfileRepository) {
+    init(profileRepository: ProfileRepository) {
         self.profileRepository = profileRepository
     }
 
@@ -46,7 +46,7 @@ public final class DefaultSetCurrentProfileUseCase {
 
 extension DefaultSetCurrentProfileUseCase: SetCurrentProfileUseCase {
 
-    public func execute(_ request: SetCurrentProfileUseCaseRequest) -> Observable<SetCurrentProfileUseCaseResponse> {
+    func execute(_ request: SetCurrentProfileUseCaseRequest) -> Single<SetCurrentProfileUseCaseResponse> {
         let profile = request.profile
         return self.profileRepository
             .insertProfile(profile, into: .userDefaults)

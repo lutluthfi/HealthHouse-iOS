@@ -12,7 +12,7 @@ import RxSwift
 // MARK: BindShowedLabelsToTableView
 extension FLListController {
     
-    func bindShowedFlagsToTableView(showedFlags: PublishRelay<[SelectableDomain<FlagDomain>]>,
+    func bindShowedFlagsToTableView(showedFlags: PublishRelay<[SelectableDomain<Flag>]>,
                                     tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         showedFlags
@@ -22,8 +22,8 @@ extension FLListController {
             .disposed(by: self.disposeBag)
     }
     
-    func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<FlagDomain>>> {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<FlagDomain>>>
+    func makeTableViewDataSource() -> RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<Flag>>> {
+        let dataSource = RxTableViewSectionedAnimatedDataSource<SectionDomain<SelectableDomain<Flag>>>
         { (_, tableView, index, item) -> UITableViewCell in
             let cell = UITableViewCell(style: .default, reuseIdentifier: "DefaultTableCell")
             cell.selectionStyle = .none

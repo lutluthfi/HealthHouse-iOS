@@ -5,201 +5,62 @@
 //  Created by Arif Luthfiansyah on 16/05/21.
 //
 
-import CoreData
-import Foundation
+import RealmSwift
+import RxRealm
 import RxSwift
 
 // MARK: LocalActivityFlagStorage
-public protocol LocalActivityFlagStorage: CoreDataActivityFlagStorage{
+protocol LocalActivityFlagStorage: RealmActivityFlagStorage {
     
 }
 
 // MARK: DefaultLocalActivityFlagStorage
-public class DefaultLocalActivityFlagStorage: LocalActivityFlagStorage {
+final class DefaultLocalActivityFlagStorage: LocalActivityFlagStorage {
     
-    let coreDataStorage: CoreDataStorageShared
+    let realmManager: RealmManagerShared
     
-    public init(coreDataStorage: CoreDataStorageShared = CoreDataStorage.shared) {
-        self.coreDataStorage = coreDataStorage
+    init(realmManager: RealmManagerShared = RealmManager.sharedInstance()) {
+        self.realmManager = realmManager
     }
     
 }
 
-// MARK: CoreDataActivityFlagStorage
+// MARK: RealmActivityFlagStorage
 extension DefaultLocalActivityFlagStorage {
     
-    public func fetchAllInCoreData() -> Observable<[ActivityFlagDomain]> {
-        return Observable.create { (observer) -> Disposable in
-            do {
-                let context = self.coreDataStorage.context
-                let request: NSFetchRequest = ActivityFlagEntity.fetchRequest()
-                let entities = try context.fetch(request)
-                let domains = entities
-                    .map({ $0.toDomain(context: context) })
-                    .sorted(by: { $0.activity.createdAt < $1.activity.createdAt })
-                observer.onNext(domains)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.readError(error)
-                observer.onError(coreDataError)
-            }
-            
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func fetchAllInRealm() -> Single<[ActivityFlag]> {
+        let objects = self.realmManager.realm.objects(ActivityFlagRealm.self)
+        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
     }
     
-    public func fetchAllInCoreData(ownedBy profile: ProfileDomain) -> Observable<[ActivityFlagDomain]> {
-        return Observable.create { (observer) -> Disposable in
-            guard let profileCoreID = profile.coreID else {
-                let message = "LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(ownedBy:) caused by profileCoreID is not available"
-                let error = PlainError(description: message)
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
-                return Disposables.create()
-            }
-            
-            do {
-                let context = self.coreDataStorage.context
-                let request: NSFetchRequest = ActivityEntity.fetchRequest()
-                request.predicate = NSPredicate(format: "profileID = %@", profileCoreID)
-                let activityEntities = try context.fetch(request)
-                let activityFlagEntities = activityEntities
-                    .compactMap({ (activityEntity) -> [ActivityFlagEntity]? in
-                        let request: NSFetchRequest = ActivityFlagEntity.fetchRequest()
-                        request.predicate = NSPredicate(format: "activityID = %@", activityEntity.objectID)
-                        return try? context.fetch(request)
-                    })
-                    .flatMap({ $0 })
-                let activityFlagDomains = activityFlagEntities
-                    .map({ $0.toDomain(context: context) })
-                    .sorted(by: { $0.activity.createdAt < $1.activity.createdAt })
-                observer.onNext(activityFlagDomains)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.readError(error)
-                observer.onError(coreDataError)
-            }
-            
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func fetchAllInRealm(ownedBy profile: Profile) -> Single<[ActivityFlag]> {
+        let objects = self.realmManager.realm.objects(ActivityFlagRealm.self)
+        var domains = objects.toArray().toDomain()
+        domains = domains.filter { $0.activity.profile == profile }
+        return Observable.just(domains).asSingle()
     }
     
-    public func fetchInCoreData(relatedTo activity: ActivityDomain) -> Observable<ActivityFlagDomain> {
-        return Observable.create { (observer) -> Disposable in
-            guard let activityCoreID = activity.coreID else {
-                let message = "LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(activity:) caused by activityCoreID is not available"
-                let error = PlainError(description: message)
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
-                return Disposables.create()
-            }
-            
-            do {
-                let context = self.coreDataStorage.context
-                let request: NSFetchRequest = ActivityFlagEntity.fetchRequest()
-                request.predicate = NSPredicate(format: "activityID = %@", activityCoreID)
-                let entities = try context.fetch(request)
-                
-                guard let entity = entities.first else {
-                    let message = "LocalActivityFlagStorage: Failed to execute fetchAllInCoreData(activity:) caused by activityCoreID is not found"
-                    let error = PlainError(description: message)
-                    let coreDataError = CoreDataStorageError.deleteError(error)
-                    observer.onError(coreDataError)
-                    return Disposables.create()
-                }
-                
-                let domain = entity.toDomain(context: context)
-                observer.onNext(domain)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.readError(error)
-                observer.onError(coreDataError)
-            }
-            
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func fetchInRealm(relatedTo activity: Activity) -> Single<ActivityFlag?> {
+        let predicate = NSPredicate(format: "activityID = %@", activity.realmID)
+        let object = self.realmManager.realm.objects(ActivityFlagRealm.self).filter(predicate).first
+        let domain = object?.toDomain()
+        return Observable.just(domain).asSingle()
     }
     
-    public func insertUpdateIntoCoreData(_ activityFlag: ActivityFlagDomain) -> Observable<ActivityFlagDomain> {
-        return Observable.create { (observer) -> Disposable in
-            guard activityFlag.activity.coreID != nil else {
-                let message = "LocalActivityFlagStorage: Failed to execute insertUpdateIntoCoreData(_:) caused by activityCoreID is not available"
-                let error = PlainError(description: message)
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
-                return Disposables.create()
-            }
-            
-            do {
-                let context = self.coreDataStorage.context
-                let inserted: ActivityFlagEntity
-                let request: NSFetchRequest = ActivityFlagEntity.fetchRequest()
-                let entities = try context.fetch(request)
-                if let oldEntity = entities.first(where: { $0.objectID == activityFlag.coreID }) {
-                    inserted = oldEntity.createUpdate(with: activityFlag, context: context)
-                } else {
-                    inserted = ActivityFlagEntity(activityFlag, insertInto: context)
-                }
-                try context.save()
-                let insertedDomain = inserted.toDomain(context: context)
-                observer.onNext(insertedDomain)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.saveError(error)
-                observer.onError(coreDataError)
-            }
-            
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func insertUpdateIntoRealm(_ activityFlag: ActivityFlag) -> Single<ActivityFlag> {
+        let object = activityFlag.toRealm()
+        let configuration = self.realmManager.configuration
+        let observer = Realm.rx.add(configuration: configuration, update: .modified)
+        let disposable = Observable.from(object: object).subscribe(observer)
+        return .create { (_) in disposable }
     }
     
-    public func removeInCoreData(relatedTo activity: ActivityDomain) -> Observable<ActivityFlagDomain> {
-        return Observable.create { (observer) -> Disposable in
-            guard let activityCoreID = activity.coreID else {
-                let message = "LocalActivityFlagStorage: Failed to execute removeInCoreData(activity:) caused by activityCoreID is not available"
-                let error = PlainError(description: message)
-                let coreDataError = CoreDataStorageError.deleteError(error)
-                observer.onError(coreDataError)
-                return Disposables.create()
-            }
-            
-            do {
-                let context = self.coreDataStorage.context
-                let request: NSFetchRequest = ActivityFlagEntity.fetchRequest()
-                request.predicate = NSPredicate(format: "activityID = %@", activityCoreID)
-                let entities = try context.fetch(request)
-                
-                guard let removedEntity = entities.first else {
-                    let message = "LocalActivityFlagStorage: Failed to execute removeInCoreData(activity:) caused by activityCoreID is not found"
-                    let error = PlainError(description: message)
-                    let coreDataError = CoreDataStorageError.deleteError(error)
-                    observer.onError(coreDataError)
-                    return Disposables.create()
-                }
-                
-                let removedDomain = removedEntity.toDomain(context: context)
-                context.delete(removedEntity)
-                try context.save()
-                
-                observer.onNext(removedDomain)
-                observer.onCompleted()
-            } catch {
-                let coreDataError = CoreDataStorageError.saveError(error)
-                observer.onError(coreDataError)
-            }
-            
-            return Disposables.create()
-        }
-        .observe(on: ConcurrentDispatchQueueScheduler(qos: .background))
-        .subscribe(on: ConcurrentMainScheduler.instance)
+    func removeInRealm(relatedTo activity: Activity) -> Single<[ActivityFlag]> {
+        let predicate = NSPredicate(format: "activityID = %@", activity.realmID)
+        let objects = self.realmManager.realm.objects(ActivityFlagRealm.self).filter(predicate)
+        let observer = Realm.rx.delete()
+        let disposable = Observable.from(Array(objects)).subscribe(observer)
+        return .create { (_) in disposable }
     }
     
 }

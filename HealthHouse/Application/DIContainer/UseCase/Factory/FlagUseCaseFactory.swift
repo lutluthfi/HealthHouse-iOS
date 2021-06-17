@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol FlagUseCaseFactory {
-    func makeCreateUpdateFlagUseCase() -> CreateFlagUseCase
+protocol FlagUseCaseFactory {
+    func makeCreateFlagUseCase() -> CreateFlagUseCase
     func makeFetchAllFlagUseCase() -> FetchAllFlagUseCase
 }

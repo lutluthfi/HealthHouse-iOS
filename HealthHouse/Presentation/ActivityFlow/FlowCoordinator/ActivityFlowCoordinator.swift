@@ -10,22 +10,22 @@ import Foundation
 import UIKit
 
 // MARK: ActivityFlowCoordinatorFactory
-public protocol ActivityFlowCoordinatorFactory  {
+protocol ActivityFlowCoordinatorFactory  {
     func makeCreateController(request: ATCreateViewModelRequest, route: ATCreateViewModelRoute) -> UIViewController
 }
 
 // MARK: ActivityFlowCoordinator
-public protocol ActivityFlowCoordinator {
+protocol ActivityFlowCoordinator {
     func start(with instructor: ActivityFlowCoordinatorInstructor)
 }
 
 // MARK: ActivityFlowCoordinatorInstructor
-public enum ActivityFlowCoordinatorInstructor {
+enum ActivityFlowCoordinatorInstructor {
     case pushToCreateUI(ATCreateViewModelRequest)
 }
 
 // MARK: DefaultActivityFlowCoordinator
-public final class DefaultActivityFlowCoordinator {
+final class DefaultActivityFlowCoordinator {
 
     // MARK: DI Variable
     let navigationController: UINavigationController
@@ -33,7 +33,7 @@ public final class DefaultActivityFlowCoordinator {
     let flowFactory: FlowCoordinatorFactory
 
     // MARK: Init Funciton
-    public init(navigationController: UINavigationController, factory: PresentationFactory) {
+    init(navigationController: UINavigationController, factory: PresentationFactory) {
         self.navigationController = navigationController
         self.controllerFactory = factory
         self.flowFactory = factory
@@ -43,7 +43,7 @@ public final class DefaultActivityFlowCoordinator {
 
 extension DefaultActivityFlowCoordinator: ActivityFlowCoordinator {
     
-    public func start(with instructor: ActivityFlowCoordinatorInstructor) {
+    func start(with instructor: ActivityFlowCoordinatorInstructor) {
         switch instructor {
         case .pushToCreateUI(let request):
             self.pushToCreateUI(request: request)

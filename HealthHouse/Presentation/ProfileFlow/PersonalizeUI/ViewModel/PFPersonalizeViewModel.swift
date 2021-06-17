@@ -119,16 +119,16 @@ extension DefaultPFPersonalizeViewModel {
         self.createProfileUseCase
             .execute(request)
             .map({ $0.profile })
-            .flatMap({ [unowned self] (profile) -> Observable<ProfileDomain> in
+            .flatMap({ [unowned self] (profile) -> Single<Profile> in
                 let request = SetCurrentProfileUseCaseRequest(profile: profile)
                 return self.setCurrentProfileUseCase.execute(request).map({ $0.profile })
             })
-            .subscribe(onNext: { (profile) in
+            .subscribe(onSuccess: { (profile) in
                 let successMessage = "\(profile.fullName) has been created.\nWe hope you are always healthy 🥳"
                 let success = AnyResult<String, String>.success(successMessage)
                 let result = PFPersonalizeViewModelResult.DoCreate(success)
                 self.result.accept(result)
-            }, onError: { [unowned self] (error) in
+            }, onFailure: { [unowned self] (error) in
                 let failure = AnyResult<String, String>.failure(error.localizedDescription)
                 let result = PFPersonalizeViewModelResult.DoCreate(failure)
                 self.result.accept(result)
@@ -148,7 +148,7 @@ extension DefaultPFPersonalizeViewModel {
                                                  subject: PublishSubject<[CountryDialingCodeDomain]>) {
         useCase
             .execute(FetchCountryDialingCodeUseCaseRequest())
-            .subscribe(onNext: { [unowned subject] (response) in
+            .subscribe(onSuccess: { [unowned subject] (response) in
                 let countryDialingCodes = response
                     .countryDialingCodes
                     .sorted(by: { $0.code < $1.code })

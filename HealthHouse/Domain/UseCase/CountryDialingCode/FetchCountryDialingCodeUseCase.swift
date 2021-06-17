@@ -7,40 +7,40 @@
 
 import RxSwift
 
-public enum FetchCountryDialingCodeUseCaseError: LocalizedError {
+enum FetchCountryDialingCodeUseCaseError: LocalizedError {
     
 }
 
 extension FetchCountryDialingCodeUseCaseError {
     
-    public var errorDescription: String? {
+    var errorDescription: String? {
         switch self {
         }
     }
     
 }
 
-public struct FetchCountryDialingCodeUseCaseResponse {
+struct FetchCountryDialingCodeUseCaseResponse {
     
-    public let countryDialingCodes: [CountryDialingCodeDomain]
+    let countryDialingCodes: [CountryDialingCodeDomain]
     
 }
 
-public struct FetchCountryDialingCodeUseCaseRequest {
+struct FetchCountryDialingCodeUseCaseRequest {
 
 }
 
-public protocol FetchCountryDialingCodeUseCase {
+protocol FetchCountryDialingCodeUseCase {
     
-    func execute(_ request: FetchCountryDialingCodeUseCaseRequest) -> Observable<FetchCountryDialingCodeUseCaseResponse>
+    func execute(_ request: FetchCountryDialingCodeUseCaseRequest) -> Single<FetchCountryDialingCodeUseCaseResponse>
 
 }
 
-public final class DefaultFetchCountryDialingCodeUseCase {
+final class DefaultFetchCountryDialingCodeUseCase {
 
     let countryDialingCodeRepository: CountryDialingCodeRepository
     
-    public init(countryDialingCodeRepository: CountryDialingCodeRepository) {
+    init(countryDialingCodeRepository: CountryDialingCodeRepository) {
         self.countryDialingCodeRepository = countryDialingCodeRepository
     }
 
@@ -48,7 +48,7 @@ public final class DefaultFetchCountryDialingCodeUseCase {
 
 extension DefaultFetchCountryDialingCodeUseCase: FetchCountryDialingCodeUseCase {
 
-    public func execute(_ request: FetchCountryDialingCodeUseCaseRequest) -> Observable<FetchCountryDialingCodeUseCaseResponse> {
+    func execute(_ request: FetchCountryDialingCodeUseCaseRequest) -> Single<FetchCountryDialingCodeUseCaseResponse> {
         self.countryDialingCodeRepository
             .fetchAllCountryDialingCode(in: .remote)
             .map { FetchCountryDialingCodeUseCaseResponse(countryDialingCodes: $0) }

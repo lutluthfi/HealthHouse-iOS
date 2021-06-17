@@ -11,7 +11,11 @@ public extension Date {
     
     func toInt64(inMillis: Bool = false) -> Int64 {
         let timeInterval = self.timeIntervalSince1970
-        return inMillis ? Int64(timeInterval) * 1000 : Int64(timeInterval)
+        if inMillis {
+            return Int64(timeInterval) * 1000
+        } else {
+            return Int64(timeInterval)
+        }
     }
     
 }

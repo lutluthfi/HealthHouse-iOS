@@ -8,11 +8,11 @@
 import Foundation
 import RxSwift
 
-public class DefaultAppCofigRepository {
+class DefaultAppCofigRepository {
     
     let localAppConfigStorage: LocalAppConfigStorage
     
-    public init(localAppConfigStorage: LocalAppConfigStorage) {
+    init(localAppConfigStorage: LocalAppConfigStorage) {
         self.localAppConfigStorage = localAppConfigStorage
     }
     
@@ -20,31 +20,31 @@ public class DefaultAppCofigRepository {
 
 extension DefaultAppCofigRepository: AppConfigRepository {
     
-    public func fetchFirstLaunch(in storagePoint: StoragePoint) -> Single<Bool> {
+    func fetchFirstLaunch(in storagePoint: StoragePoint) -> Single<Bool> {
         switch storagePoint {
         case .coreData:
             return StoragePoint.makeCoreDataStorageNotSupported(class: AppConfigRepository.self,
                                                                 function: "fetchFirstLaunch()",
-                                                                object: Bool.self).asSingle()
+                                                                object: Bool.self)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: AppConfigRepository.self,
                                                               function: "fetchFirstLaunch()",
-                                                              object: Bool.self).asSingle()
+                                                              object: Bool.self)
         case .userDefaults:
             return self.localAppConfigStorage.fetchFirstLaunchFromUserDefaults()
         }
     }
     
-    public func insertFirstLaunch(_ firstLaunch: Bool, in storagePoint: StoragePoint) -> Single<Bool> {
+    func insertFirstLaunch(_ firstLaunch: Bool, in storagePoint: StoragePoint) -> Single<Bool> {
         switch storagePoint {
         case .coreData:
             return StoragePoint.makeCoreDataStorageNotSupported(class: AppConfigRepository.self,
                                                                 function: "insertFirstLaunch(_:)",
-                                                                object: Bool.self).asSingle()
+                                                                object: Bool.self)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: AppConfigRepository.self,
                                                               function: "insertFirstLaunch(_:)",
-                                                              object: Bool.self).asSingle()
+                                                              object: Bool.self)
         case .userDefaults:
             return self.localAppConfigStorage.insertFirstLaunchIntoUserDefaults(firstLaunch)
         }
