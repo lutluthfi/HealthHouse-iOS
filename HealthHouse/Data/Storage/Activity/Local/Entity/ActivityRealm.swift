@@ -18,7 +18,7 @@ import RealmSwift
     @objc dynamic var explanation: String?
     @objc dynamic var isArchived: Bool = false
     @objc dynamic var isPinned: Bool = false
-    @objc dynamic var photoFileNames: [String] = []
+    var photoFileNames = List<String>()
     @objc dynamic var title: String = ""
     
     @objc dynamic var profileID: String = ""
@@ -46,7 +46,7 @@ import RealmSwift
         self.explanation = explanation
         self.isArchived = isArchived
         self.isPinned = isPinned
-        self.photoFileNames = photoFileNames
+        self.photoFileNames = photoFileNames.toRealm()
         self.title = title
         
         self.profileID = profileID
@@ -57,7 +57,8 @@ import RealmSwift
 extension ActivityRealm {
     
     func toDomain() -> Activity {
-        let profileRealm = self.realm?.object(ofType: ProfileRealm.self, forPrimaryKey: self.profileID)
+        let profileRealm = self.realm?.object(ofType: ProfileRealm.self,
+                                              forPrimaryKey: self.profileID)
         let profileDomain = profileRealm!.toDomain()
         return Activity(realmID: self.ID,
                         createdAt: self.createdAt,
@@ -66,7 +67,7 @@ extension ActivityRealm {
                         explanation: self.explanation,
                         isArchived: self.isArchived,
                         isPinned: self.isPinned,
-                        photoFileNames: self.photoFileNames,
+                        photoFileNames: self.photoFileNames.toArray(),
                         title: self.title,
                         profile: profileDomain)
     }
