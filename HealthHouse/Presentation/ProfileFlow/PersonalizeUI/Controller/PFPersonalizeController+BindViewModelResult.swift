@@ -12,7 +12,7 @@ import UIKit
 // MARK: BindViewModelResult
 extension PFPersonalizeController {
     
-    func bindViewModelResult(result: PublishRelay<PFPersonalizeViewModelResult>) {
+    func bind(viewModelResult result: PublishRelay<PFPersonalizeViewModelResult>) {
         result
             .subscribe(on: MainScheduler.instance)
             .bind(onNext: self.onNext(_:))

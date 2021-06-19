@@ -11,6 +11,7 @@ import UIKit
 // MARK: ProfileFlowCoordinatorFactory
 protocol ProfileFlowCoordinatorFactory  {
     func makePFPersonalizeController(request: PFPersonalizeViewModelRequest,
+                                     response: PFPersonalizeViewModelResponse,
                                      route: PFPersonalizeViewModelRoute) -> UIViewController
     func makePFPreviewController(request: PFPreviewViewModelRequest,
                                  route: PFPreviewViewModelRoute) -> UIViewController
@@ -24,8 +25,10 @@ protocol ProfileFlowCoordinator {
 
 // MARK: ProfileFlowCoordinatorInstructor
 enum ProfileFlowCoordinatorInstructor {
-    case presentPersonalizeUI(PFPersonalizeViewModelRequest, UIPresentProperties)
-    case pushToPersonalizeUI(PFPersonalizeViewModelRequest)
+    case presentPersonalizeUI(PFPersonalizeViewModelRequest,
+                              PFPersonalizeViewModelResponse,
+                              UIPresentProperties)
+    case pushToPersonalizeUI(PFPersonalizeViewModelRequest, PFPersonalizeViewModelResponse)
 }
 
 // MARK: DefaultProfileFlowCoordinator
@@ -49,10 +52,12 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
     
     func start(with instructor: ProfileFlowCoordinatorInstructor) {
         switch instructor {
-        case let .presentPersonalizeUI(request, presentProperties):
-            self.presentPersonalizeUI(request: request, presentProperties: presentProperties)
-        case let .pushToPersonalizeUI(request):
-            self.pushToPersonalizeUI(request: request)
+        case let .presentPersonalizeUI(request, response, presentProperties):
+            self.presentPersonalizeUI(request: request,
+                                      response: response,
+                                      presentProperties: presentProperties)
+        case let .pushToPersonalizeUI(request, response):
+            self.pushToPersonalizeUI(request: request, response: response)
         }
     }
     
@@ -67,20 +72,25 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
 // MARK: PFPersonalizeUI
 extension DefaultProfileFlowCoordinator {
     
-    private func makePFPersonalizeUI(request: PFPersonalizeViewModelRequest) -> UIViewController {
+    private func makePFPersonalizeUI(request: PFPersonalizeViewModelRequest,
+                                     response: PFPersonalizeViewModelResponse) -> UIViewController {
         let pushToLNPadUI: (() -> Void) = {
             let instructor = LaunchFlowCoordinatorInstructor.pushToPadUI
             let coordinator = self.flowFactory.makeLaunchFlowCoordinator()
             coordinator.start(with: instructor)
         }
         let route = PFPersonalizeViewModelRoute(pushToLNPadUI: pushToLNPadUI)
-        let controller = self.controllerFactory.makePFPersonalizeController(request: request, route: route)
+        let controller = self.controllerFactory.makePFPersonalizeController(request: request,
+                                                                            response: response,
+                                                                            route: route)
         return controller
     }
     
-    func presentPersonalizeUI(request: PFPersonalizeViewModelRequest, presentProperties: UIPresentProperties) {
+    func presentPersonalizeUI(request: PFPersonalizeViewModelRequest,
+                              response: PFPersonalizeViewModelResponse,
+                              presentProperties: UIPresentProperties) {
         guaranteeMainThread {
-            let controller = self.makePFPersonalizeUI(request: request)
+            let controller = self.makePFPersonalizeUI(request: request, response: response)
             controller.isModalInPresentation = presentProperties.isModalInPresentation
             controller.modalPresentationStyle = presentProperties.modalPresentationStyle
             controller.modalTransitionStyle = presentProperties.modalTransitionStyle
@@ -89,9 +99,9 @@ extension DefaultProfileFlowCoordinator {
         }
     }
     
-    func pushToPersonalizeUI(request: PFPersonalizeViewModelRequest) {
+    func pushToPersonalizeUI(request: PFPersonalizeViewModelRequest, response: PFPersonalizeViewModelResponse) {
         guaranteeMainThread {
-            let controller = self.makePFPersonalizeUI(request: request)
+            let controller = self.makePFPersonalizeUI(request: request, response: response)
             self.navigationController.pushWithSmart(to: controller)
         }
     }

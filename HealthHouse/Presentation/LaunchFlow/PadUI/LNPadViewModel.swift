@@ -31,11 +31,13 @@ public struct LNPadViewModelResponse {
 
 // MARK: LNPadViewModelRoute
 public struct LNPadViewModelRoute {
+    var presentPFPersonalizeUI: ((PFPersonalizeViewModelRequest, PFPersonalizeViewModelResponse) -> Void)?
 }
 
 // MARK: LNPadViewModelInput
 protocol LNPadViewModelInput {
     func viewDidAppear()
+    func profileTabBarDidSelect()
 }
 
 // MARK: LNPadViewModelOutput
@@ -79,6 +81,12 @@ extension DefaultLNPadViewModel {
     func viewDidAppear() {
         let controllers = self.request.controllers
         self.controllers.onNext(controllers)
+    }
+    
+    func profileTabBarDidSelect() {
+        let request = PFPersonalizeViewModelRequest()
+        let response = PFPersonalizeViewModelResponse()
+        self.route.presentPFPersonalizeUI?(request, response)
     }
     
 }

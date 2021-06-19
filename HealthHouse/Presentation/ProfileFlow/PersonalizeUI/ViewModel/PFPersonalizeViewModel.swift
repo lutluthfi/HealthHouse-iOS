@@ -44,29 +44,33 @@ public struct PFPersonalizeViewModelRoute {
 // MARK: PFPersonalizeViewModelInput
 protocol PFPersonalizeViewModelInput {
     func viewDidLoad()
-    func doCreate(dateOfBirth: Date,
-                  firstName: String,
-                  gender: Gender,
-                  lastName: String,
-                  mobileNumber: String,
-                  photo: UIImage?)
+    func controllerDidDismiss()
+    func createBarButtonDidTap(dateOfBirth: Date,
+                               firstName: String,
+                               gender: Gender,
+                               lastName: String,
+                               mobileNumber: String,
+                               photo: UIImage?)
     func pushToHDTimelineUI()
 }
 
 // MARK: PFPersonalizeViewModelOutput
 protocol PFPersonalizeViewModelOutput {
     var result: PublishRelay<PFPersonalizeViewModelResult> { get }
-    var showedCountryDialingCodes: PublishSubject<[CountryDialingCodeDomain]> { get }
+    var showedCountryDialingCodes: BehaviorRelay<[CountryDialingCodeDomain]> { get }
 }
 
 // MARK: PFPersonalizeViewModel
-protocol PFPersonalizeViewModel: PFPersonalizeViewModelInput, PFPersonalizeViewModelOutput, AnyObject { }
+protocol PFPersonalizeViewModel: PFPersonalizeViewModelInput,
+                                 PFPersonalizeViewModelOutput,
+                                 AnyObject { }
 
 // MARK: DefaultPFPersonalizeViewModel
 final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
 
     // MARK: DI Variable
     let request: PFPersonalizeViewModelRequest
+    let response: PFPersonalizeViewModelResponse
     let route: PFPersonalizeViewModelRoute
 
     // MARK: UseCase Variable
@@ -79,19 +83,25 @@ final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
 
     // MARK: Output ViewModel
     let result = PublishRelay<PFPersonalizeViewModelResult>()
-    let showedCountryDialingCodes = PublishSubject<[CountryDialingCodeDomain]>()
+    let showedCountryDialingCodes = BehaviorRelay<[CountryDialingCodeDomain]>(value: [])
 
     // MARK: Init Function
     init(request: PFPersonalizeViewModelRequest,
+         response: PFPersonalizeViewModelResponse,
          route: PFPersonalizeViewModelRoute,
          createProfileUseCase: CreateProfileUseCase,
          fetchCountryDialingCodeUseCase: FetchCountryDialingCodeUseCase,
          setCurrentProfileUseCase: SetCurrentProfileUseCase) {
         self.request = request
+        self.response = response
         self.route = route
         self.createProfileUseCase = createProfileUseCase
         self.fetchCountryDialingCodeUseCase = fetchCountryDialingCodeUseCase
         self.setCurrentProfileUseCase = setCurrentProfileUseCase
+    }
+    
+    func executeFetchCountryDialingCodeUseCase() -> Single<FetchCountryDialingCodeUseCaseResponse> {
+        self.fetchCountryDialingCodeUseCase.execute(FetchCountryDialingCodeUseCaseRequest())
     }
     
 }
@@ -100,16 +110,26 @@ final class DefaultPFPersonalizeViewModel: PFPersonalizeViewModel {
 extension DefaultPFPersonalizeViewModel {
     
     func viewDidLoad() {
-        self.subscribeFetchCountryDialingCodeUseCase(useCase: self.fetchCountryDialingCodeUseCase,
-                                                     subject: self.showedCountryDialingCodes)
+        self.executeFetchCountryDialingCodeUseCase()
+            .subscribe(onSuccess: { [unowned self] (response) in
+                let countryDialingCodes = response
+                    .countryDialingCodes
+                    .sorted(by: { $0.code < $1.code })
+                self.showedCountryDialingCodes.accept(countryDialingCodes)
+            })
+            .disposed(by: self.disposeBag)
     }
     
-    func doCreate(dateOfBirth: Date,
-                  firstName: String,
-                  gender: Gender,
-                  lastName: String,
-                  mobileNumber: String,
-                  photo: UIImage?) {
+    func controllerDidDismiss() {
+        
+    }
+    
+    func createBarButtonDidTap(dateOfBirth: Date,
+                               firstName: String,
+                               gender: Gender,
+                               lastName: String,
+                               mobileNumber: String,
+                               photo: UIImage?) {
         let request = CreateProfileUseCaseRequest(dateOfBirth: dateOfBirth,
                                                   firstName: firstName,
                                                   gender: gender,
@@ -138,23 +158,6 @@ extension DefaultPFPersonalizeViewModel {
     
     func pushToHDTimelineUI() {
         self.route.pushToLNPadUI?()
-    }
-    
-}
-
-extension DefaultPFPersonalizeViewModel {
-    
-    func subscribeFetchCountryDialingCodeUseCase(useCase: FetchCountryDialingCodeUseCase,
-                                                 subject: PublishSubject<[CountryDialingCodeDomain]>) {
-        useCase
-            .execute(FetchCountryDialingCodeUseCaseRequest())
-            .subscribe(onSuccess: { [unowned subject] (response) in
-                let countryDialingCodes = response
-                    .countryDialingCodes
-                    .sorted(by: { $0.code < $1.code })
-                subject.onNext(countryDialingCodes)
-            })
-            .disposed(by: self.disposeBag)
     }
     
 }

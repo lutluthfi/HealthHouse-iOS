@@ -24,7 +24,7 @@ public struct LNWelcomeViewModelResponse {
 // MARK: LNWelcomeViewModelRoute
 public struct LNWelcomeViewModelRoute {
     var showLNPadUI: (() -> Void)?
-    var showPFPersonalizeUI: ((PFPersonalizeViewModelRequest) -> Void)?
+    var showPFPersonalizeUI: ((PFPersonalizeViewModelRequest, PFPersonalizeViewModelResponse) -> Void)?
 }
 
 // MARK: LNWelcomeViewModelInput
@@ -97,7 +97,8 @@ extension DefaultLNWelcomeViewModel {
     
     func showPFPersonalizeUI() {
         let request = PFPersonalizeViewModelRequest()
-        self.route.showPFPersonalizeUI?(request)
+        let response = PFPersonalizeViewModelResponse()
+        self.route.showPFPersonalizeUI?(request, response)
     }
     
 }

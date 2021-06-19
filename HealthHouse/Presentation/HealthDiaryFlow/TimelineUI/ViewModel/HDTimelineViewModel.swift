@@ -23,7 +23,7 @@ public struct HDTimelineViewModelResponse {
 
 // MARK: HDTimelineViewModelRoute
 public struct HDTimelineViewModelRoute {
-    var presentPFPersonalizeUI: ((PFPersonalizeViewModelRequest) -> Void)?
+    var presentPFPersonalizeUI: ((PFPersonalizeViewModelRequest, PFPersonalizeViewModelResponse) -> Void)?
     var pushToATCreateUI: ((ATCreateViewModelRequest) -> Void)?
 }
 
@@ -81,7 +81,8 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
     
     func presentPFPersonalizeUI() {
         let request = PFPersonalizeViewModelRequest()
-        self.route.presentPFPersonalizeUI?(request)
+        let response = PFPersonalizeViewModelResponse()
+        self.route.presentPFPersonalizeUI?(request, response)
     }
     
     func pushToATCreateUI() {

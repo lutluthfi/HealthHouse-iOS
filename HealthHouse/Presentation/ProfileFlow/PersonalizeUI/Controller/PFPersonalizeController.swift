@@ -70,23 +70,23 @@ final class PFPersonalizeController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindCancelBarButtonItemTap(cancelBarButtonItem: self._view.cancelBarButtonItem)
-        self.bindViewModelResult(result: self.viewModel.result)
-        self.bindShowedCountryDialingCodesToCountryDialingCodes(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes)
-        self.bindShowedCountryDialingCodesToCountryDialingCodePicker(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes,
-                                                                     picker: self._view.countryDialignCodePicker)
-        self.bindFieldValuesToCreateBarButtonItemEnabled(fieldValues: self._fieldValues,
-                                                         barButtonItem: self._view.createBarButtonItem)
-        self.bindCreateBarButtonItemTapToFieldValues(barButtonItem: self._view.createBarButtonItem,
-                                                     observable: self._fieldValues)
-        self.bindDatePickerToDateOfBirth(datePicker: self._view.dateOfBirthPicker,
-                                         dateOfBirth: self._dateOfBirth)
-        self.bindGenderToPicker(picker: self._view.genderPicker)
-        self.bindGenderPickerToGender(picker: self._view.genderPicker, gender: self._gender)
-        self.bindCountryDialingCodePickerToCountryDialingCode(picker: self._view.countryDialignCodePicker,
-                                                              countryDialingCode: self._countryDialingCode)
-        self.bindSectionsToTableView(sections: Observable.just(self._view.sections),
-                                     tableView: self._view.tableView)
+        self.bind(cancelBarButtonItemTap: self._view.cancelBarButtonItem)
+        self.bind(viewModelResult: self.viewModel.result)
+        self.bind(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes)
+        self.bind(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes,
+                  toCountryDialingCodePicker: self._view.countryDialignCodePicker)
+        self.bind(fieldValues: self._fieldValues,
+                  toCreateBarButtonItemEnabled: self._view.createBarButtonItem)
+        self.bind(createBarButtonItemTap: self._view.createBarButtonItem,
+                  toFieldValues: self._fieldValues)
+        self.bind(datePicker: self._view.dateOfBirthPicker,
+                  toDateOfBirth: self._dateOfBirth)
+        self.bind(genders: .just(Gender.allCases), toGenderPicker: self._view.genderPicker)
+        self.bind(genderPicker: self._view.genderPicker, toGender: self._gender)
+        self.bind(countryDialingCodePicker: self._view.countryDialignCodePicker,
+                  toCountryDialingCode: self._countryDialingCode)
+        self.bind(sections: Observable.just(self._view.sections),
+                  toTableView: self._view.tableView)
         self.viewModel.viewDidLoad()
     }
     
@@ -107,7 +107,7 @@ final class PFPersonalizeController: UITableViewController {
 // MARK: BindAddPhotoButtonToPhoto
 extension PFPersonalizeController {
     
-    func bindAddPhotoButtonToPhoto(button: UIButton, photo: BehaviorRelay<UIImage?>) {
+    func bind(addPhotoButtonTapInCell button: UIButton, addPhotoButtonTap photo: BehaviorRelay<UIImage?>) {
         button.rx.tap
             .flatMap({ [unowned self] in
                 self.rxMediaPicker.selectImage(source: .photoLibrary, editable: true)
@@ -122,11 +122,12 @@ extension PFPersonalizeController {
 // MARK: BindCancelBarButtonItemTap
 extension PFPersonalizeController {
     
-    func bindCancelBarButtonItemTap(cancelBarButtonItem: UIBarButtonItem) {
-        cancelBarButtonItem.rx
+    func bind(cancelBarButtonItemTap barButtonItem: UIBarButtonItem) {
+        barButtonItem.rx
             .tap
             .asDriver()
             .drive(onNext: { [unowned self] in
+                self.viewModel.controllerDidDismiss()
                 self.dismiss(animated: true)
             })
             .disposed(by: self.disposeBag)
@@ -137,9 +138,9 @@ extension PFPersonalizeController {
 // MARK: BindCountryDialingCodePickerToSubject
 extension PFPersonalizeController {
     
-    func bindCountryDialingCodePickerToCountryDialingCode(picker: UIPickerView,
-                                                          countryDialingCode: BehaviorRelay<CountryDialingCodeDomain>) {
-        picker.rx
+    func bind(countryDialingCodePicker: UIPickerView,
+              toCountryDialingCode countryDialingCode: BehaviorRelay<CountryDialingCodeDomain>) {
+        countryDialingCodePicker.rx
             .itemSelected
             .asDriver()
             .drive(onNext: { [unowned self, unowned countryDialingCode] (row, component) in
@@ -154,9 +155,9 @@ extension PFPersonalizeController {
 // MARK: BindCountryDialingCodePickerToTextField
 extension PFPersonalizeController {
     
-    func bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(countryDialingCode: BehaviorRelay<CountryDialingCodeDomain>,
-                                                                      textField: UITextField,
-                                                                      picker: UIPickerView) {
+    func bind(countryDialingCode: BehaviorRelay<CountryDialingCodeDomain>,
+              toPromptTextFieldInCell textField: UITextField,
+              toCountryDialingCodePicker picker: UIPickerView) {
         countryDialingCode
             .asDriver(onErrorJustReturn: .indonesia)
             .drive(onNext: { [unowned self] (countryDialingCode) in
@@ -172,22 +173,22 @@ extension PFPersonalizeController {
 // MARK: BindCreateBarButtonItemTapToFieldValues
 extension PFPersonalizeController {
     
-    func bindCreateBarButtonItemTapToFieldValues(barButtonItem: UIBarButtonItem,
-                                                 observable: Observable<(Date,
-                                                                         String,
-                                                                         Gender,
-                                                                         String,
-                                                                         String,
-                                                                         UIImage?)>) {
+    func bind(createBarButtonItemTap barButtonItem: UIBarButtonItem,
+              toFieldValues fieldValues: Observable<(Date,
+                                                     String,
+                                                     Gender,
+                                                     String,
+                                                     String,
+                                                     UIImage?)>) {
         barButtonItem.rx.tap
-            .withLatestFrom(observable)
+            .withLatestFrom(fieldValues)
             .bind(onNext: { [unowned self] (observable) in
-                self.viewModel.doCreate(dateOfBirth: observable.0,
-                                        firstName: observable.1,
-                                        gender: observable.2,
-                                        lastName: observable.3,
-                                        mobileNumber: observable.4,
-                                        photo: observable.5)
+                self.viewModel.createBarButtonDidTap(dateOfBirth: observable.0,
+                                                     firstName: observable.1,
+                                                     gender: observable.2,
+                                                     lastName: observable.3,
+                                                     mobileNumber: observable.4,
+                                                     photo: observable.5)
             })
             .disposed(by: self.disposeBag)
     }
@@ -197,7 +198,7 @@ extension PFPersonalizeController {
 // MARK: BindDateOfBirthToTextField
 extension PFPersonalizeController {
     
-    func bindDateOfBirthToTextField(dateOfBirth: BehaviorRelay<Date>, textField: UITextField) {
+    func bind(dateOfBirth: BehaviorRelay<Date>, toTextFieldInCell textField: UITextField) {
         dateOfBirth
             .asDriver(onErrorJustReturn: Date())
             .map({ $0.formatted(components: [.dayOfWeekWideName,
@@ -218,7 +219,7 @@ extension PFPersonalizeController {
 // MARK: BindDatePickerToTextFieldAndSubject
 extension PFPersonalizeController {
     
-    func bindDatePickerToDateOfBirth(datePicker: UIDatePicker, dateOfBirth: BehaviorRelay<Date>) {
+    func bind(datePicker: UIDatePicker, toDateOfBirth dateOfBirth: BehaviorRelay<Date>) {
         datePicker.rx.date
             .asDriver()
             .drive(dateOfBirth)
@@ -230,13 +231,13 @@ extension PFPersonalizeController {
 // MARK: BindFieldValuesToBarButtonItemEnabled
 extension PFPersonalizeController {
     
-    func bindFieldValuesToCreateBarButtonItemEnabled(fieldValues: Observable<(Date,
-                                                                              String,
-                                                                              Gender,
-                                                                              String,
-                                                                              String,
-                                                                              UIImage?)>,
-                                                     barButtonItem: UIBarButtonItem) {
+    func bind(fieldValues: Observable<(Date,
+                                       String,
+                                       Gender,
+                                       String,
+                                       String,
+                                       UIImage?)>,
+              toCreateBarButtonItemEnabled barButtonItem: UIBarButtonItem) {
         fieldValues
             .observe(on: ConcurrentMainScheduler.instance)
             .map({ (_, firstName, _, _, mobileNumber, _) -> Bool in
@@ -254,8 +255,8 @@ extension PFPersonalizeController {
 // MARK: BindFirstNameToHDPhotoProfileTableCell
 extension PFPersonalizeController {
     
-    func bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: Observable<(String, String, UIImage?)>,
-                                                             cell: PhotoProfileTableCell) {
+    func bind(firstOrLastNameOrPhoto observable: Observable<(String, String, UIImage?)>,
+              toPhotoProfileTableCell cell: PhotoProfileTableCell) {
         observable
             .asDriver(onErrorJustReturn: ("", "", nil))
             .drive(onNext: { [unowned cell] (observable) in
@@ -276,9 +277,8 @@ extension PFPersonalizeController {
 // MARK: BindGenderToPicker
 extension PFPersonalizeController {
     
-    func bindGenderToPicker(picker: UIPickerView) {
-        Observable<[Gender]>
-            .just(Gender.allCases)
+    func bind(genders: Observable<[Gender]>, toGenderPicker picker: UIPickerView) {
+        genders
             .bind(to: picker.rx.itemTitles) { (_, item) -> String? in
                 return item.rawValue.capitalized
             }
@@ -290,8 +290,8 @@ extension PFPersonalizeController {
 // MARK: BindGenderPickerToGender
 extension PFPersonalizeController {
     
-    func bindGenderPickerToGender(picker: UIPickerView, gender: BehaviorRelay<Gender>) {
-        picker.rx
+    func bind(genderPicker: UIPickerView, toGender gender: BehaviorRelay<Gender>) {
+        genderPicker.rx
             .itemSelected
             .asDriver()
             .drive(onNext: { [unowned gender] (row, _) in
@@ -305,7 +305,7 @@ extension PFPersonalizeController {
 // MARK: BindGenderToTextField
 extension PFPersonalizeController {
     
-    func bindGenderToTextField(gender: BehaviorRelay<Gender>, textField: UITextField) {
+    func bind(gender: BehaviorRelay<Gender>, toTextFieldInCell textField: UITextField) {
         gender
             .asDriver(onErrorJustReturn: .male)
             .map({ $0.rawValue.capitalized })
@@ -318,8 +318,8 @@ extension PFPersonalizeController {
 // MARK: BindMobileNumberTextFieldEditingChanged
 extension PFPersonalizeController {
     
-    func bindMobileNumberTextFieldEditingChangedToMobileNumber(textField: UITextField,
-                                                               mobileNumber: BehaviorRelay<String>) {
+    func bind(mobileNumerTextFieldEditingChangedInCell textField: UITextField,
+              toMobileNumber mobileNumber: BehaviorRelay<String>) {
         textField.rx
             .controlEvent(.editingChanged)
             .asDriver()
@@ -339,7 +339,7 @@ extension PFPersonalizeController {
 // MARK: BindPhotoToPhotoImageView
 extension PFPersonalizeController {
     
-    func bindPhotoToPhotoImageView(photo: BehaviorRelay<UIImage?>, imageView: UIImageView) {
+    func bind(photo: BehaviorRelay<UIImage?>, toPhotoImageViewInCell imageView: UIImageView) {
         photo
             .asDriver(onErrorJustReturn: nil)
             .drive(imageView.rx.image)
@@ -351,7 +351,7 @@ extension PFPersonalizeController {
 // MARK: BindShowedCountryDialingCodeToCountryDialingCodes
 extension PFPersonalizeController {
     
-    func bindShowedCountryDialingCodesToCountryDialingCodes(showedCountryDialingCodes: Observable<[CountryDialingCodeDomain]>) {
+    func bind(showedCountryDialingCodes: BehaviorRelay<[CountryDialingCodeDomain]>) {
         showedCountryDialingCodes
             .asDriver(onErrorJustReturn: [])
             .drive(onNext: { [unowned self] in
@@ -365,8 +365,8 @@ extension PFPersonalizeController {
 // MARK: BindShowedCountryDialingCodeToCountryDialingCodePicker
 extension PFPersonalizeController {
     
-    func bindShowedCountryDialingCodesToCountryDialingCodePicker(showedCountryDialingCodes: Observable<[CountryDialingCodeDomain]>,
-                                                                 picker: UIPickerView) {
+    func bind(showedCountryDialingCodes: BehaviorRelay<[CountryDialingCodeDomain]>,
+              toCountryDialingCodePicker picker: UIPickerView) {
         showedCountryDialingCodes
             .asDriver(onErrorJustReturn: [])
             .drive(picker.rx.itemTitles) {
@@ -381,7 +381,7 @@ extension PFPersonalizeController {
 // MARK: BindTextFieldToString
 extension PFPersonalizeController {
     
-    func bindTextFieldToFirstOrLastName(textField: UITextField, firstOrLastName: BehaviorRelay<String>) {
+    func bind(textFieldInCell textField: UITextField, toFirstOrLastName firstOrLastName: BehaviorRelay<String>) {
         textField.rx
             .controlEvent(.editingChanged)
             .withLatestFrom(textField.rx.text.orEmpty)

@@ -101,7 +101,10 @@ extension DefaultLaunchFlowCoordinator {
         let controllers = LNPadViewModelRequest.Controllers(hdTimelineController: hdTimelineController,
                                                             pfPreviewController: pfPreviewController)
         let request = LNPadViewModelRequest(controllers: controllers)
-        let route = LNPadViewModelRoute()
+        let route = LNPadViewModelRoute(presentPFPersonalizeUI: { (request, response) in
+            let instructor = ProfileFlowCoordinatorInstructor.presentPersonalizeUI(request, response, .standard)
+            self.flowFactory.makeProfileFlowCoordinator().start(with: instructor)
+        })
         let controller = self.controllerFactory.makeLNPadController(request: request, route: route)
         return controller
     }
@@ -119,15 +122,13 @@ extension DefaultLaunchFlowCoordinator {
 extension DefaultLaunchFlowCoordinator {
     
     private func makeWelcomeUI(request: LNWelcomeViewModelRequest) -> UIViewController {
-        let showLNPadUI: () -> Void = {
+        let route = LNWelcomeViewModelRoute(showLNPadUI: {
             let instructor = LaunchFlowCoordinatorInstructor.pushToPadUI
             self.start(with: instructor)
-        }
-        let showPFPersonalizeUI: (PFPersonalizeViewModelRequest) -> Void = { (request) in
-            let instructor = ProfileFlowCoordinatorInstructor.pushToPersonalizeUI(request)
+        }, showPFPersonalizeUI: { (request, response) in
+            let instructor = ProfileFlowCoordinatorInstructor.pushToPersonalizeUI(request, response)
             self.flowFactory.makeProfileFlowCoordinator().start(with: instructor)
-        }
-        let route = LNWelcomeViewModelRoute(showLNPadUI: showLNPadUI, showPFPersonalizeUI: showPFPersonalizeUI)
+        })
         let controller = self.controllerFactory.makeLNWelcomeController(request: request, route: route)
         return controller
     }

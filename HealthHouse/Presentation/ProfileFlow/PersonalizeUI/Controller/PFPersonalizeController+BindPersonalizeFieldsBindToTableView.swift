@@ -13,7 +13,7 @@ import UIKit
 // MARK: BindPersonalizeFieldsBindToTableView
 extension PFPersonalizeController {
     
-    func bindSectionsToTableView(sections: Observable<[[RowDomain]]>, tableView: UITableView) {
+    func bind(sections: Observable<[[RowDomain]]>, toTableView tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         sections
             .observe(on: ConcurrentMainScheduler.instance)
@@ -29,38 +29,38 @@ extension PFPersonalizeController {
             case .dateOfBirth:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupDateOfBirthHHTextFieldTableCell(cell, item: item)
-                self.bindDateOfBirthToTextField(dateOfBirth: self._dateOfBirth, textField: cell.textField)
+                self.bind(dateOfBirth: self._dateOfBirth, toTextFieldInCell: cell.textField)
                 return cell
             case .firstName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupFirstOrLastNameHHTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._firstName)
+                self.bind(textFieldInCell: cell.textField, toFirstOrLastName: self._firstName)
                 return cell
             case .gender:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupGenderHHTextFieldTableCell(cell, item: item)
-                self.bindGenderToTextField(gender: self._gender, textField: cell.textField)
+                self.bind(gender: self._gender, toTextFieldInCell: cell.textField)
                 return cell
             case .lastName:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupFirstOrLastNameHHTextFieldTableCell(cell, item: item)
-                self.bindTextFieldToFirstOrLastName(textField: cell.textField, firstOrLastName: self._lastName)
+                self.bind(textFieldInCell: cell.textField, toFirstOrLastName: self._lastName)
                 return cell
             case .mobileNumber:
                 let cell = self.makeHHTextFieldTableCell(with: item, style: .prompt)
                 self.setupMobileNumberHHTextFieldTableCell(cell, item: item)
-                self.bindCountryDialingCodeToTextFieldAndCountryDialingCodePicker(countryDialingCode: self._countryDialingCode,
-                                                                                  textField: cell.promptTextField,
-                                                                                  picker: self._view.countryDialignCodePicker)
-                self.bindMobileNumberTextFieldEditingChangedToMobileNumber(textField: cell.textField,
-                                                                           mobileNumber: self._mobileNumbder)
+                self.bind(countryDialingCode: self._countryDialingCode,
+                          toPromptTextFieldInCell: cell.promptTextField,
+                          toCountryDialingCodePicker: self._view.countryDialignCodePicker)
+                self.bind(mobileNumerTextFieldEditingChangedInCell: cell.textField,
+                          toMobileNumber: self._mobileNumbder)
                 return cell
             case .photo:
                 let cell = PhotoProfileTableCell()
-                self.bindFirstOrLastNameOrPhotoToHDPhotoProfileTableCell(observable: self._firstOrLastNameOrPhoto,
-                                                                         cell: cell)
-                self.bindAddPhotoButtonToPhoto(button: cell.addPhotoButton, photo: self._photo)
-                self.bindPhotoToPhotoImageView(photo: self._photo, imageView: cell.photoImageView)
+                self.bind(firstOrLastNameOrPhoto: self._firstOrLastNameOrPhoto,
+                          toPhotoProfileTableCell: cell)
+                self.bind(addPhotoButtonTapInCell: cell.addPhotoButton, addPhotoButtonTap: self._photo)
+                self.bind(photo: self._photo, toPhotoImageViewInCell: cell.photoImageView)
                 return cell
             default:
                 fatalError("PFPersonalizeController -> FieldDomain (\(item)) is not available")

@@ -16,7 +16,6 @@ final class LNPadController: UITabBarController {
     let disposeBag = DisposeBag()
     lazy var padView: LNPadView = DefaultLNPadView()
     var viewModel: LNPadViewModel!
-    lazy var _view: UIView = (self.padView as! UIView)
 
     // MARK: Common Variable
 
@@ -85,6 +84,16 @@ extension LNPadController {
                 }
             })
             .disposed(by: self.disposeBag)
+    }
+    
+}
+
+extension LNPadController {
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        if item.title == "Profile" {
+            self.viewModel.profileTabBarDidSelect()
+        }
     }
     
 }
