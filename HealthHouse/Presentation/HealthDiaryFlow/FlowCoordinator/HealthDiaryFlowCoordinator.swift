@@ -48,7 +48,13 @@ extension DefaultHealthDiaryFlowCoordinator: HealthDiaryFlowCoordinator {
     }
     
     func makeTimelineUI(request: HDTimelineViewModelRequest) -> UIViewController {
-        let route = HDTimelineViewModelRoute()
+        let route = HDTimelineViewModelRoute(presentPFPersonalizeUI: { (request) in
+            let instructor = ProfileFlowCoordinatorInstructor.presentPersonalizeUI(request, .standard)
+            self.flowFactory.makeProfileFlowCoordinator().start(with: instructor)
+        }, pushToATCreateUI: { (request) in
+            let instructor = ActivityFlowCoordinatorInstructor.pushToCreateUI(request)
+            self.flowFactory.makeActivityFlowCoordinator().start(with: instructor)
+        })
         let controller = self.controllerFactory.makeHDTimelineController(request: request, route: route)
         return controller
     }

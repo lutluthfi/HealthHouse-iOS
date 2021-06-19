@@ -31,7 +31,7 @@ struct CreateProfileUseCaseRequest {
     
     let dateOfBirth: Date
     let firstName: String
-    let gender: GenderDomain
+    let gender: Gender
     let lastName: String
     let mobileNumber: String
     let photo: UIImage?

@@ -30,7 +30,6 @@ final class DefaultLNPostView: UIView, LNPostView {
     // MARK: Subview Variable
 
     // MARK: DI Variable
-    weak var delegate: LNPostViewDelegate?
     
     // MARK: Init Function
     required init?(coder: NSCoder) {

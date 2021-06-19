@@ -17,7 +17,7 @@ struct Profile: EntityDomain {
     
     let dateOfBirth: Int64
     let firstName: String
-    let gender: GenderDomain
+    let gender: Gender
     let lastName: String?
     let mobileNumbder: String
     let photoBase64String: String?

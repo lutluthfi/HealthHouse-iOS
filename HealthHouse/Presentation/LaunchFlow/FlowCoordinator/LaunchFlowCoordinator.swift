@@ -11,6 +11,8 @@ import UIKit
 
 // MARK: LaunchFlowCoordinatorFactory
 protocol LaunchFlowCoordinatorFactory  {
+    func makeLNOnBoardingController(request: LNOnBoardingViewModelRequest,
+                                    route: LNOnBoardingViewModelRoute) -> UIViewController
     func makeLNPadController(request: LNPadViewModelRequest,
                              route: LNPadViewModelRoute) -> UITabBarController
     func makeLNPostController(request: LNPostViewModelRequest,
@@ -28,6 +30,7 @@ protocol LaunchFlowCoordinator {
 enum LaunchFlowCoordinatorInstructor {
     case presentWelcomeUI(LNWelcomeViewModelRequest, UIPresentProperties)
     case pushToWelcomeUI(LNWelcomeViewModelRequest)
+    case pushToOnBoardingUI
     case pushToPadUI
 }
 
@@ -53,12 +56,33 @@ extension DefaultLaunchFlowCoordinator: LaunchFlowCoordinator {
     
     func start(with instructor: LaunchFlowCoordinatorInstructor) {
         switch instructor {
-        case .presentWelcomeUI(let request, let properties):
+        case let .presentWelcomeUI(request, properties):
             self.presentWelcomeUI(request: request, properties: properties)
-        case .pushToWelcomeUI(let request):
+        case let .pushToWelcomeUI(request):
             self.pushToWelcomeUI(request: request)
+        case .pushToOnBoardingUI:
+            self.pushToOnBoardingUI()
         case .pushToPadUI:
             self.pushToPadUI()
+        }
+    }
+    
+}
+
+// MARK: OnBoarding UI
+extension DefaultLaunchFlowCoordinator {
+    
+    private func makeOnBoardingUI() -> UIViewController {
+        let request = LNOnBoardingViewModelRequest()
+        let route = LNOnBoardingViewModelRoute()
+        let controller = self.controllerFactory.makeLNOnBoardingController(request: request, route: route)
+        return controller
+    }
+    
+    func pushToOnBoardingUI() {
+        guaranteeMainThread {
+            let controller = self.makeOnBoardingUI()
+            self.navigationController.pushWithSmart(to: controller)
         }
     }
     
@@ -121,7 +145,7 @@ extension DefaultLaunchFlowCoordinator {
     func pushToWelcomeUI(request: LNWelcomeViewModelRequest) {
         guaranteeMainThread {
             let controller = self.makeWelcomeUI(request: request)
-            self.navigationController.pushViewController(controller, animated: true)
+            self.navigationController.pushWithSmart(to: controller)
         }
     }
     

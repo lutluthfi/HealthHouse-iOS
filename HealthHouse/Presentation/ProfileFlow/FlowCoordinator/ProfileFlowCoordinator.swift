@@ -24,6 +24,7 @@ protocol ProfileFlowCoordinator {
 
 // MARK: ProfileFlowCoordinatorInstructor
 enum ProfileFlowCoordinatorInstructor {
+    case presentPersonalizeUI(PFPersonalizeViewModelRequest, UIPresentProperties)
     case pushToPersonalizeUI(PFPersonalizeViewModelRequest)
 }
 
@@ -48,7 +49,9 @@ extension DefaultProfileFlowCoordinator: ProfileFlowCoordinator {
     
     func start(with instructor: ProfileFlowCoordinatorInstructor) {
         switch instructor {
-        case .pushToPersonalizeUI(let request):
+        case let .presentPersonalizeUI(request, presentProperties):
+            self.presentPersonalizeUI(request: request, presentProperties: presentProperties)
+        case let .pushToPersonalizeUI(request):
             self.pushToPersonalizeUI(request: request)
         }
     }
@@ -75,10 +78,21 @@ extension DefaultProfileFlowCoordinator {
         return controller
     }
     
+    func presentPersonalizeUI(request: PFPersonalizeViewModelRequest, presentProperties: UIPresentProperties) {
+        guaranteeMainThread {
+            let controller = self.makePFPersonalizeUI(request: request)
+            controller.isModalInPresentation = presentProperties.isModalInPresentation
+            controller.modalPresentationStyle = presentProperties.modalPresentationStyle
+            controller.modalTransitionStyle = presentProperties.modalTransitionStyle
+            let navigationController = UINavigationController(rootViewController: controller)
+            self.navigationController.presentWithSmart(controller: navigationController)
+        }
+    }
+    
     func pushToPersonalizeUI(request: PFPersonalizeViewModelRequest) {
         guaranteeMainThread {
             let controller = self.makePFPersonalizeUI(request: request)
-            self.navigationController.pushViewController(controller, animated: true)
+            self.navigationController.pushWithSmart(to: controller)
         }
     }
     

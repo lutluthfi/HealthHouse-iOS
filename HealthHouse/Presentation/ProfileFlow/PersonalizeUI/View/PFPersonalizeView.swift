@@ -20,6 +20,7 @@ protocol PFPersonalizeViewFunction {
 
 // MARK: PFPersonalizeViewSubview
 protocol PFPersonalizeViewSubview {
+    var cancelBarButtonItem: UIBarButtonItem { get }
     var countryDialignCodePicker: UIPickerView { get }
     var createBarButtonItem: UIBarButtonItem { get }
     var dateOfBirthPicker: UIDatePicker { get }
@@ -40,6 +41,7 @@ protocol PFPersonalizeView: PFPersonalizeViewFunction, PFPersonalizeViewSubview,
 final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
     
     // MARK: PFPersonalizeViewSubview
+    lazy var cancelBarButtonItem: UIBarButtonItem = .cancel
     lazy var countryDialignCodePicker = UIPickerView()
     lazy var createBarButtonItem = UIBarButtonItem(title: "Create", style: .done, target: self, action: nil)
     lazy var dateOfBirthPicker: UIDatePicker = {
@@ -63,6 +65,7 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
     
     // MARK: PFPersonalizeViewVariable
     lazy var asView: UIView = (self as UIView)
+    let isPresented: Bool
     let sections: [[RowDomain]] = [[.photo],
                                    [.firstName, .lastName],
                                    [.dateOfBirth],
@@ -74,7 +77,8 @@ final class DefaultPFPersonalizeView: UIView, PFPersonalizeView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init() {
+    init(isPresented: Bool) {
+        self.isPresented = isPresented
         super.init(frame: UIScreen.main.fixedCoordinateSpace.bounds)
         self.subviewWillAdd()
         self.subviewConstraintWillMake()
@@ -118,6 +122,9 @@ extension DefaultPFPersonalizeView {
         guaranteeMainThread {
             navigationController?.setNavigationBarHidden(false, animated: false)
             navigationItem.hidesBackButton = true
+            if self.isPresented {
+                navigationItem.leftBarButtonItems = [self.cancelBarButtonItem]
+            }
             navigationItem.rightBarButtonItems = [self.createBarButtonItem]
         }
     }

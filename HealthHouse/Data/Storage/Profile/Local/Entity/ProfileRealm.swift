@@ -65,7 +65,7 @@ extension ProfileRealm {
                              updatedAt: self.updatedAt,
                              dateOfBirth: self.dateOfBirth,
                              firstName: self.firstName,
-                             gender: GenderDomain(rawValue: self.gender),
+                             gender: Gender(rawValue: self.gender),
                              lastName: self.lastName,
                              mobileNumbder: self.mobileNumber,
                              photoBase64String: self.photoBase64String)

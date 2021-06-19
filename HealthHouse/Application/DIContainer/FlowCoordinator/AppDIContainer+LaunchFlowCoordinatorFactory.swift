@@ -11,7 +11,22 @@ extension AppDIContainer: LaunchFlowCoordinatorFactory { }
 
 extension AppDIContainer {
     
-    public func makeLNPadController(request: LNPadViewModelRequest,
+    func makeLNOnBoardingController(request: LNOnBoardingViewModelRequest,
+                                    route: LNOnBoardingViewModelRoute) -> UIViewController {
+        let viewModel = self.makeLNOnBoardingViewModel(request: request, route: route)
+        return LNOnBoardingController.create(with: viewModel)
+    }
+    
+    func makeLNOnBoardingViewModel(request: LNOnBoardingViewModelRequest,
+                                   route: LNOnBoardingViewModelRoute) -> LNOnBoardingViewModel {
+        return DefaultLNOnBoardingViewModel(request: request, route: route)
+    }
+    
+}
+
+extension AppDIContainer {
+    
+    func makeLNPadController(request: LNPadViewModelRequest,
                                     route: LNPadViewModelRoute) -> UITabBarController {
         let viewModel = self.makeLNPadViewModel(request: request, route: route)
         return LNPadController.create(with: viewModel)
@@ -26,7 +41,7 @@ extension AppDIContainer {
 
 extension AppDIContainer {
     
-    public func makeLNPostController(request: LNPostViewModelRequest,
+    func makeLNPostController(request: LNPostViewModelRequest,
                                      route: LNPostViewModelRoute) -> UIViewController {
         let viewModel = self.makeLNPostViewModel(request: request, route: route)
         return LNPostController.create(with: viewModel)
@@ -41,7 +56,7 @@ extension AppDIContainer {
 
 extension AppDIContainer {
     
-    public func makeLNWelcomeController(request: LNWelcomeViewModelRequest,
+    func makeLNWelcomeController(request: LNWelcomeViewModelRequest,
                                         route: LNWelcomeViewModelRoute) -> UIViewController {
         let viewModel = self.makeLNWelcomeViewModel(request: request, route: route)
         return LNWelcomeController.create(with: viewModel)

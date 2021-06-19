@@ -32,7 +32,8 @@ extension DefaultLocalProfileStorage {
     
     func fetchAllInRealm() -> Single<[Profile]> {
         let objects = self.realmManager.realm.objects(ProfileRealm.self)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let _objects = objects.toArray().toDomain()
+        return .just(_objects)
     }
     
     func insertIntoRealm(_ profile: Profile) -> Single<Profile> {

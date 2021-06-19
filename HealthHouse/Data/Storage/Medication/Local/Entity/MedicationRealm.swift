@@ -55,10 +55,10 @@ class MedicationRealm: Object {
 
 extension MedicationRealm {
     
-    func toDomain() -> MedicationDomain {
+    func toDomain() -> Medication {
         let profileRealm = self.realm?.object(ofType: ProfileRealm.self, forPrimaryKey: self.profileID)
         let profileDomain = profileRealm!.toDomain()
-        return MedicationDomain(realmID: self.ID,
+        return Medication(realmID: self.ID,
                                 createdAt: self.createdAt,
                                 updatedAt: self.updatedAt,
                                 dose: self.dose,
@@ -72,7 +72,7 @@ extension MedicationRealm {
     
 }
 
-extension MedicationDomain {
+extension Medication {
     
     func toRealm() -> MedicationRealm {
         return MedicationRealm(ID: self.realmID,

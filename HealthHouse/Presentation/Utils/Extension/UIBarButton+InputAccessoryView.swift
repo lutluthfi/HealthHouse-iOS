@@ -13,6 +13,10 @@ public extension UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .add, target: self, action: nil)
     }
     
+    static var cancel: UIBarButtonItem {
+        return UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: nil)
+    }
+    
     static var edit: UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
     }

@@ -23,11 +23,14 @@ public struct HDTimelineViewModelResponse {
 
 // MARK: HDTimelineViewModelRoute
 public struct HDTimelineViewModelRoute {
+    var presentPFPersonalizeUI: ((PFPersonalizeViewModelRequest) -> Void)?
+    var pushToATCreateUI: ((ATCreateViewModelRequest) -> Void)?
 }
 
 // MARK: HDTimelineViewModelInput
 protocol HDTimelineViewModelInput {
     func viewDidLoad()
+    func addBarButtonDidTap()
 }
 
 // MARK: HDTimelineViewModelOutput
@@ -76,6 +79,16 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
         return self.fetchCurrentProfileUseCase.execute(request).asObservable()
     }
     
+    func presentPFPersonalizeUI() {
+        let request = PFPersonalizeViewModelRequest()
+        self.route.presentPFPersonalizeUI?(request)
+    }
+    
+    func pushToATCreateUI() {
+        let request = ATCreateViewModelRequest()
+        self.route.pushToATCreateUI?(request)
+    }
+    
 }
 
 // MARK: Input ViewModel
@@ -87,6 +100,19 @@ extension DefaultHDTimelineViewModel {
             .flatMap(self.doFetchAllActivityByProfileUseCase(ownedBy:))
             .map({ $0.activities })
             .subscribe(self.showedActivities)
+            .disposed(by: self.disposeBag)
+    }
+    
+    func addBarButtonDidTap() {
+        self.doFetchCurrentProfileUseCase()
+            .map { $0.profile }
+            .subscribe(onNext: { [unowned self] (profile) in
+                if profile != nil {
+                    self.pushToATCreateUI()
+                } else {
+                    self.presentPFPersonalizeUI()
+                }
+            })
             .disposed(by: self.disposeBag)
     }
     

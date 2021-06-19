@@ -46,7 +46,7 @@ protocol PFPersonalizeViewModelInput {
     func viewDidLoad()
     func doCreate(dateOfBirth: Date,
                   firstName: String,
-                  gender: GenderDomain,
+                  gender: Gender,
                   lastName: String,
                   mobileNumber: String,
                   photo: UIImage?)
@@ -106,7 +106,7 @@ extension DefaultPFPersonalizeViewModel {
     
     func doCreate(dateOfBirth: Date,
                   firstName: String,
-                  gender: GenderDomain,
+                  gender: Gender,
                   lastName: String,
                   mobileNumber: String,
                   photo: UIImage?) {

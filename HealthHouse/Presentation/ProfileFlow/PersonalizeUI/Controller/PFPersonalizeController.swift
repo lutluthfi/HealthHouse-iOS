@@ -32,7 +32,10 @@ final class PFPersonalizeController: UITableViewController {
     // MARK: DI Variable
     lazy var disposeBag = DisposeBag()
     lazy var rxMediaPicker = RxMediaPicker(delegate: self)
-    lazy var _view: PFPersonalizeView = DefaultPFPersonalizeView()
+    lazy var _view: PFPersonalizeView = {
+        let isPresented = self.presentingViewController != nil
+        return DefaultPFPersonalizeView(isPresented: isPresented)
+    }()
     var viewModel: PFPersonalizeViewModel!
     
     // MARK: Common Variable
@@ -40,7 +43,7 @@ final class PFPersonalizeController: UITableViewController {
     lazy var _countryDialingCode = BehaviorRelay<CountryDialingCodeDomain>(value: .indonesia)
     lazy var _dateOfBirth = BehaviorRelay<Date>(value: Date())
     lazy var _firstName = BehaviorRelay<String>(value: "")
-    lazy var _gender = BehaviorRelay<GenderDomain>(value: .male)
+    lazy var _gender = BehaviorRelay<Gender>(value: .male)
     lazy var _lastName = BehaviorRelay<String>(value: "")
     lazy var _mobileNumbder = BehaviorRelay<String>(value: "")
     lazy var _photo = BehaviorRelay<UIImage?>(value: nil)
@@ -67,6 +70,7 @@ final class PFPersonalizeController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.bindCancelBarButtonItemTap(cancelBarButtonItem: self._view.cancelBarButtonItem)
         self.bindViewModelResult(result: self.viewModel.result)
         self.bindShowedCountryDialingCodesToCountryDialingCodes(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes)
         self.bindShowedCountryDialingCodesToCountryDialingCodePicker(showedCountryDialingCodes: self.viewModel.showedCountryDialingCodes,
@@ -89,8 +93,8 @@ final class PFPersonalizeController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self._view.viewWillAppear(navigationController: self.navigationController,
-                                            navigationItem: self.navigationItem,
-                                            tabBarController: self.tabBarController)
+                                  navigationItem: self.navigationItem,
+                                  tabBarController: self.tabBarController)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -105,9 +109,26 @@ extension PFPersonalizeController {
     
     func bindAddPhotoButtonToPhoto(button: UIButton, photo: BehaviorRelay<UIImage?>) {
         button.rx.tap
-            .flatMap({ [unowned self] in self.rxMediaPicker.selectImage(source: .photoLibrary, editable: true) })
+            .flatMap({ [unowned self] in
+                self.rxMediaPicker.selectImage(source: .photoLibrary, editable: true)
+            })
             .map({ $0.0 })
             .bind(to: photo)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindCancelBarButtonItemTap
+extension PFPersonalizeController {
+    
+    func bindCancelBarButtonItemTap(cancelBarButtonItem: UIBarButtonItem) {
+        cancelBarButtonItem.rx
+            .tap
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+                self.dismiss(animated: true)
+            })
             .disposed(by: self.disposeBag)
     }
     
@@ -154,7 +175,7 @@ extension PFPersonalizeController {
     func bindCreateBarButtonItemTapToFieldValues(barButtonItem: UIBarButtonItem,
                                                  observable: Observable<(Date,
                                                                          String,
-                                                                         GenderDomain,
+                                                                         Gender,
                                                                          String,
                                                                          String,
                                                                          UIImage?)>) {
@@ -211,7 +232,7 @@ extension PFPersonalizeController {
     
     func bindFieldValuesToCreateBarButtonItemEnabled(fieldValues: Observable<(Date,
                                                                               String,
-                                                                              GenderDomain,
+                                                                              Gender,
                                                                               String,
                                                                               String,
                                                                               UIImage?)>,
@@ -256,8 +277,8 @@ extension PFPersonalizeController {
 extension PFPersonalizeController {
     
     func bindGenderToPicker(picker: UIPickerView) {
-        Observable<[GenderDomain]>
-            .just(GenderDomain.allCases)
+        Observable<[Gender]>
+            .just(Gender.allCases)
             .bind(to: picker.rx.itemTitles) { (_, item) -> String? in
                 return item.rawValue.capitalized
             }
@@ -269,12 +290,12 @@ extension PFPersonalizeController {
 // MARK: BindGenderPickerToGender
 extension PFPersonalizeController {
     
-    func bindGenderPickerToGender(picker: UIPickerView, gender: BehaviorRelay<GenderDomain>) {
+    func bindGenderPickerToGender(picker: UIPickerView, gender: BehaviorRelay<Gender>) {
         picker.rx
             .itemSelected
             .asDriver()
             .drive(onNext: { [unowned gender] (row, _) in
-                gender.accept(GenderDomain.allCases[row])
+                gender.accept(Gender.allCases[row])
             })
             .disposed(by: self.disposeBag)
     }
@@ -284,7 +305,7 @@ extension PFPersonalizeController {
 // MARK: BindGenderToTextField
 extension PFPersonalizeController {
     
-    func bindGenderToTextField(gender: BehaviorRelay<GenderDomain>, textField: UITextField) {
+    func bindGenderToTextField(gender: BehaviorRelay<Gender>, textField: UITextField) {
         gender
             .asDriver(onErrorJustReturn: .male)
             .map({ $0.rawValue.capitalized })
@@ -368,38 +389,6 @@ extension PFPersonalizeController {
             .asDriver(onErrorJustReturn: "")
             .drive(firstOrLastName)
             .disposed(by: self.disposeBag)
-    }
-    
-}
-
-// MARK: BindViewModelResult
-extension PFPersonalizeController {
-    
-    func bindViewModelResult(result: PublishRelay<PFPersonalizeViewModelResult>) {
-        result
-            .subscribe(on: MainScheduler.instance)
-            .bind(onNext: self.onNext(_:))
-            .disposed(by: self.disposeBag)
-    }
-    
-    private func onNext(_ result: PFPersonalizeViewModelResult) {
-        switch result {
-        case .DoCreate(let result):
-            self.onNextDoCreate(result)
-        }
-    }
-    
-    private func onNextDoCreate(_ result: AnyResult<String, String>) {
-        switch result {
-        case .success(let message):
-            let continueAction = UIAlertAction(title: "Continue", style: .default) { [unowned self] (action) in
-                self.viewModel.pushToHDTimelineUI()
-            }
-            self.showAlert(title: "Congratulations 🎉", message: message, actions: [continueAction])
-        case .failure(let message):
-            let dismissAction = UIAlertAction(title: "Dismiss", style: .default, handler: nil)
-            self.showAlert(title: "Failure 😕", message: message, actions: [dismissAction])
-        }
     }
     
 }

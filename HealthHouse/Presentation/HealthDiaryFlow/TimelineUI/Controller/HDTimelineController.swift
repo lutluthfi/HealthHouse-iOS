@@ -39,6 +39,7 @@ public final class HDTimelineController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.bindAddBarButtonItemTap(addBarButton: self._view.addBarButtonItem)
         self.bindCalendarItems(calendarItems: self._view.calendarItems)
         self.bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: self._view.calendarCollectionView,
                                                                       navigationItem: self.navigationItem)
@@ -96,6 +97,21 @@ private extension HDTimelineController {
         guard let _todayIndex = todayIndex else { return }
         let selectedIndex = IndexPath(row: _todayIndex, section: 0)
         collectionView.selectItem(at: selectedIndex, animated: true, scrollPosition: .centeredHorizontally)
+    }
+    
+}
+
+// MARK: BindAddBarButtonItemTap
+extension HDTimelineController {
+    
+    func bindAddBarButtonItemTap(addBarButton: UIBarButtonItem) {
+        addBarButton.rx
+            .tap
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+                self.viewModel.addBarButtonDidTap()
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

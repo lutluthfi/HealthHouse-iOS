@@ -1,5 +1,5 @@
 //
-//  GenderDomain.swift
+//  Gender.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum GenderDomain: String, CaseIterable {
+public enum Gender: String, CaseIterable {
     case male = "male"
     case female = "female"
     

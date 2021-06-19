@@ -1,5 +1,5 @@
 //
-//  MedicationDomain.swift
+//  Medication.swift
 //  HealthHouse
 //
 //  Created by Arif Luthfiansyah on 31/03/21.
@@ -9,7 +9,7 @@ import Foundation
 
 typealias MedicationID = String
 
-struct MedicationDomain: EntityDomain {
+struct Medication: EntityDomain {
     
     let realmID: MedicationID
     let createdAt: Int64
@@ -32,9 +32,9 @@ struct MedicationDomain: EntityDomain {
     
 }
 
-extension MedicationDomain: Equatable {
+extension Medication: Equatable {
  
-    static func == (lhs: MedicationDomain, rhs: MedicationDomain) -> Bool {
+    static func == (lhs: Medication, rhs: Medication) -> Bool {
         return lhs.realmID == rhs.realmID
     }
     
