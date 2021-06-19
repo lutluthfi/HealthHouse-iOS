@@ -127,8 +127,9 @@ extension PFPersonalizeController {
             .tap
             .asDriver()
             .drive(onNext: { [unowned self] in
-                self.viewModel.controllerDidDismiss()
-                self.dismiss(animated: true)
+                self.dismiss(animated: true) { [weak self] in
+                    self?.viewModel.controllerDidDismiss()
+                }
             })
             .disposed(by: self.disposeBag)
     }

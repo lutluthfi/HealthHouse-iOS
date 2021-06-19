@@ -43,6 +43,7 @@ protocol LNPadViewModelInput {
 // MARK: LNPadViewModelOutput
 protocol LNPadViewModelOutput {
     var controllers: PublishSubject<LNPadViewModelRequest.Controllers> { get }
+    var pfPersonalizeUIDidDismiss: PublishSubject<Void> { get }
 }
 
 // MARK: LNPadViewModel
@@ -60,11 +61,11 @@ final class DefaultLNPadViewModel: LNPadViewModel {
 
 
     // MARK: Common Variable
-
-    
+    let disposeBag = DisposeBag()
 
     // MARK: Output ViewModel
     let controllers = PublishSubject<LNPadViewModelRequest.Controllers>()
+    let pfPersonalizeUIDidDismiss = PublishSubject<Void>()
 
     // MARK: Init Function
     init(request: LNPadViewModelRequest,
@@ -86,6 +87,10 @@ extension DefaultLNPadViewModel {
     func profileTabBarDidSelect() {
         let request = PFPersonalizeViewModelRequest()
         let response = PFPersonalizeViewModelResponse()
+        response
+            .controllerDidDismiss
+            .bind(to: self.pfPersonalizeUIDidDismiss)
+            .disposed(by: self.disposeBag)
         self.route.presentPFPersonalizeUI?(request, response)
     }
     

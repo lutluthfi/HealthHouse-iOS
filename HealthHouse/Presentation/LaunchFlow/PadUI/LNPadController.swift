@@ -39,7 +39,13 @@ final class LNPadController: UITabBarController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.bindControllersViewModelToViewControllers(controllers: self.viewModel.controllers)
+        self.bind(viewModelControllers: self.viewModel.controllers)
+        self.viewModel
+            .pfPersonalizeUIDidDismiss
+            .bind(onNext: { [unowned self] in
+                self.selectedIndex = 0
+            })
+            .disposed(by: self.disposeBag)
         self.padView.viewWillAppear(view: self.view,
                                     navigationController: self.navigationController,
                                     navigationItem: self.navigationItem,
@@ -62,7 +68,7 @@ final class LNPadController: UITabBarController {
 // MARK: BindControllersViewModelToViewControllers
 extension LNPadController {
     
-    func bindControllersViewModelToViewControllers(controllers: Observable<LNPadViewModelRequest.Controllers>) {
+    func bind(viewModelControllers controllers: Observable<LNPadViewModelRequest.Controllers>) {
         controllers
             .subscribe(on: ConcurrentMainScheduler.instance)
             .subscribe(onNext: { [unowned self] (controllers) in

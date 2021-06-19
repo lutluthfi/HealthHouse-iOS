@@ -33,7 +33,7 @@ public struct PFPersonalizeViewModelRequest {
 
 // MARK: PFPersonalizeViewModelResponse
 public struct PFPersonalizeViewModelResponse {
-    
+    let controllerDidDismiss = PublishSubject<Void>()
 }
 
 // MARK: PFPersonalizeViewModelRoute
@@ -121,7 +121,7 @@ extension DefaultPFPersonalizeViewModel {
     }
     
     func controllerDidDismiss() {
-        
+        self.response.controllerDidDismiss.onNext(void)
     }
     
     func createBarButtonDidTap(dateOfBirth: Date,
