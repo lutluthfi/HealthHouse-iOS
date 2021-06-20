@@ -57,8 +57,7 @@ final class DefaultLNPadViewModel: LNPadViewModel {
     let route: LNPadViewModelRoute
 
     // MARK: UseCase Variable
-
-
+    let fetchCurrentProfileUseCase: FetchCurrentProfileUseCase
 
     // MARK: Common Variable
     let disposeBag = DisposeBag()
@@ -69,22 +68,18 @@ final class DefaultLNPadViewModel: LNPadViewModel {
 
     // MARK: Init Function
     init(request: LNPadViewModelRequest,
-         route: LNPadViewModelRoute) {
+         route: LNPadViewModelRoute,
+         fetchCurrentProfileUseCase: FetchCurrentProfileUseCase) {
         self.request = request
         self.route = route
+        self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
     }
     
-}
-
-// MARK: Input ViewModel
-extension DefaultLNPadViewModel {
-    
-    func viewDidAppear() {
-        let controllers = self.request.controllers
-        self.controllers.onNext(controllers)
+    func executeFetchCurrentProfileUseCase() -> Single<FetchCurrentProfileUseCaseResponse> {
+        self.fetchCurrentProfileUseCase.execute(FetchCurrentProfileUseCaseRequest())
     }
     
-    func profileTabBarDidSelect() {
+    func presentPFPersonalizeUI() {
         let request = PFPersonalizeViewModelRequest()
         let response = PFPersonalizeViewModelResponse()
         response
@@ -92,6 +87,30 @@ extension DefaultLNPadViewModel {
             .bind(to: self.pfPersonalizeUIDidDismiss)
             .disposed(by: self.disposeBag)
         self.route.presentPFPersonalizeUI?(request, response)
+    }
+    
+}
+
+// MARK: Input ViewModel
+extension DefaultLNPadViewModel {
+    
+    func viewDidLoad() {
+            
+    }
+    
+    func viewDidAppear() {
+        let controllers = self.request.controllers
+        self.controllers.onNext(controllers)
+    }
+    
+    func profileTabBarDidSelect() {
+        self.executeFetchCurrentProfileUseCase()
+            .map { $0.profile }
+            .filter { $0 == nil }
+            .subscribe(onSuccess: { [unowned self] (_) in
+                self.presentPFPersonalizeUI()
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

@@ -41,7 +41,10 @@ extension DefaultLocalProfileStorage {
         let configuration = self.realmManager.configuration
         let observer = Realm.rx.add(configuration: configuration, update: .modified)
         let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { (observer) in
+            observer(.success(profile))
+            return disposable
+        }
     }
     
     func removeInRealm(_ profile: Profile) -> Single<Profile> {

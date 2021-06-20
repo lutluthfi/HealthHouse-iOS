@@ -59,7 +59,7 @@ extension DefaultCreateProfileUseCase: CreateProfileUseCase {
     func execute(_ request: CreateProfileUseCaseRequest) -> Single<CreateProfileUseCaseResponse> {
         let profile = Profile.create(from: request)
         return self.profileRepository
-            .insertProfile(profile, into: .coreData)
+            .insertProfile(profile, into: .realm)
             .map({ CreateProfileUseCaseResponse(profile: $0) })
     }
     

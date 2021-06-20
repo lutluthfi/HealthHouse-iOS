@@ -16,7 +16,7 @@ class CountryDialingCodeRepositoryTests: XCTestCase {
     private lazy var sut = self.makeCountryDialingCodeRepositorySUT()
     
     func test_fetchAllCountryDialingCode_whenStoragePointCoreData_thenThrowsPlainError() throws {
-        let storagePoint = StoragePoint.coreData
+        let storagePoint = StoragePoint.realm
         
         XCTAssertThrowsError(try self.sut.countryDialingCodeRepository
                                 .fetchAllCountryDialingCode(in: storagePoint)

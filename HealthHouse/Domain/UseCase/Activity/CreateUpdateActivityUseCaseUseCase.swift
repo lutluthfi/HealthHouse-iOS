@@ -56,7 +56,7 @@ extension DefaultCreateUpdateActivityUseCase: CreateUpdateActivityUseCase {
     func execute(_ request: CreateUpdateActivityUseCaseRequest) -> Single<CreateUpdateActivityUseCaseResponse> {
         let activity = Activity.make(from: request)
         return self.activityRepository
-            .insertUpdateActivity(activity, into: .coreData)
+            .insertUpdateActivity(activity, into: .realm)
             .map { CreateUpdateActivityUseCaseResponse(activity: $0) }
     }
     

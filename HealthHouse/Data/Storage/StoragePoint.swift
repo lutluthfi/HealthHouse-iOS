@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 public enum StoragePoint {
-    case coreData
+    case realm
     case remote
     case userDefaults
 }
@@ -18,7 +18,7 @@ public extension StoragePoint {
     
     static func makeCoreDataStorageNotSupported<C, T>(`class`: C.Type, function: String, object type: T.Type) -> Single<T> {
         return Single<T>.create { (observer) -> Disposable in
-            let error = PlainError(description: "\(String(describing: `class`)) -> \(function) is not available for CoreData")
+            let error = PlainError(description: "\(String(describing: `class`)) -> \(function) is not available for Realm")
             observer(.failure(error))
             return Disposables.create()
         }.observe(on: CurrentThreadScheduler.instance)

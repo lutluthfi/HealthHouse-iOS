@@ -10,11 +10,11 @@ import RxSwift
 
 // MARK: PFPersonalizeViewModelResult
 enum PFPersonalizeViewModelResult: Equatable {
-    case DoCreate(AnyResult<String, String>)
+    case profileDidCreate(AnyResult<String, String>)
     
     static func == (lhs: PFPersonalizeViewModelResult, rhs: PFPersonalizeViewModelResult) -> Bool {
         switch (lhs, rhs) {
-        case (.DoCreate(let lhsRes), .DoCreate(let rhsRes)):
+        case (.profileDidCreate(let lhsRes), .profileDidCreate(let rhsRes)):
             switch (lhsRes, rhsRes) {
             case (.success(let lhsValue), .success(let rhsValue)):
                 return lhsValue == rhsValue
@@ -146,11 +146,11 @@ extension DefaultPFPersonalizeViewModel {
             .subscribe(onSuccess: { (profile) in
                 let successMessage = "\(profile.fullName) has been created.\nWe hope you are always healthy 🥳"
                 let success = AnyResult<String, String>.success(successMessage)
-                let result = PFPersonalizeViewModelResult.DoCreate(success)
+                let result = PFPersonalizeViewModelResult.profileDidCreate(success)
                 self.result.accept(result)
             }, onFailure: { [unowned self] (error) in
                 let failure = AnyResult<String, String>.failure(error.localizedDescription)
-                let result = PFPersonalizeViewModelResult.DoCreate(failure)
+                let result = PFPersonalizeViewModelResult.profileDidCreate(failure)
                 self.result.accept(result)
             })
             .disposed(by: self.disposeBag)

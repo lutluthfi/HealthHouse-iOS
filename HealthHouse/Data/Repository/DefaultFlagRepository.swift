@@ -25,7 +25,7 @@ extension DefaultFlagRepository: FlagRepository {
     
     func fetchAllFlag(in storagePoint: StoragePoint) -> Single<[Flag]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localFlagStorage.fetchAllInCoreData()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,
@@ -40,7 +40,7 @@ extension DefaultFlagRepository: FlagRepository {
     
     func fetchAllFlag(ownedBy profile: Profile, in storagePoint: StoragePoint) -> Single<[Flag]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localActivityFlagStorage
                 .fetchAllInRealm(ownedBy: profile)
                 .map({ $0.flatMap({ $0.flags }) })
@@ -57,7 +57,7 @@ extension DefaultFlagRepository: FlagRepository {
     
     func insertFlag(_ flag: Flag, in storagePoint: StoragePoint) -> Single<Flag> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localFlagStorage.insertIntoCoreData(flag)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: FlagRepository.self,

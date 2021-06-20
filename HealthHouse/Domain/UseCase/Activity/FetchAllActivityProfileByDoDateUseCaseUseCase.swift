@@ -53,7 +53,7 @@ extension DefaultFetchAllActivityProfileByDoDateUseCase: FetchAllActivityProfile
         let profile = request.profile
         let doDate = request.doDate
         return self.activityRepository
-            .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .coreData)
+            .fetchAllActivity(ownedBy: profile, onDoDate: doDate, in: .realm)
             .map { FetchAllActivityProfileByDoDateUseCaseResponse(activities: $0) }
     }
     

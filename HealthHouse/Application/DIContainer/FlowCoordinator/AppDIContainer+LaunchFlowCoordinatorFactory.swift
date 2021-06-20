@@ -34,7 +34,9 @@ extension AppDIContainer {
     
     private func makeLNPadViewModel(request: LNPadViewModelRequest,
                                     route: LNPadViewModelRoute) -> LNPadViewModel {
-        return DefaultLNPadViewModel(request: request, route: route)
+        return DefaultLNPadViewModel(request: request,
+                                     route: route,
+                                     fetchCurrentProfileUseCase: self.makeFetchCurrentProfileUseCase())
     }
     
 }

@@ -21,16 +21,18 @@ extension PFPersonalizeController {
     
     private func onNext(_ result: PFPersonalizeViewModelResult) {
         switch result {
-        case .DoCreate(let result):
-            self.onNextDoCreate(result)
+        case .profileDidCreate(let result):
+            self.onNextProfileDidCreate(result)
         }
     }
     
-    private func onNextDoCreate(_ result: AnyResult<String, String>) {
+    private func onNextProfileDidCreate(_ result: AnyResult<String, String>) {
         switch result {
         case .success(let message):
             let continueAction = UIAlertAction(title: "Continue", style: .default) { [unowned self] (action) in
-                self.viewModel.pushToHDTimelineUI()
+                if self.isPresented {
+                    self.dismiss(animated: true)
+                }
             }
             self.showAlert(title: "Congratulations 🎉", message: message, actions: [continueAction])
         case .failure(let message):

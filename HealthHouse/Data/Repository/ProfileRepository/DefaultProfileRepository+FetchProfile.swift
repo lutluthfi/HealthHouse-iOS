@@ -12,7 +12,7 @@ extension DefaultProfileRepository {
     
     func fetchProfile(in storagePoint: StoragePoint) -> Single<Profile?> {
         switch storagePoint  {
-        case .coreData:
+        case .realm:
             return StoragePoint.makeCoreDataStorageNotSupported(class: ProfileRepository.self,
                                                                 function: "fetchProfile()",
                                                                 object: Optional<Profile>.self)

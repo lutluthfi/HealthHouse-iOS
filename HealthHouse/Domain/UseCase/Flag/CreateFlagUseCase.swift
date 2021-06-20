@@ -57,7 +57,7 @@ extension DefaultCreateFlagUseCase: CreateFlagUseCase {
     func execute(_ request: CreateFlagUseCaseRequest) -> Single<CreateFlagUseCaseResponse> {
         let flag = Flag.make(from: request)
         return self.flagRepository
-            .insertFlag(flag, in: .coreData)
+            .insertFlag(flag, in: .realm)
             .map({ CreateFlagUseCaseResponse(flag: $0) })
     }
     

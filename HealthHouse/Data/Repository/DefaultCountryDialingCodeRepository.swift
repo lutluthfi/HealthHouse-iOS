@@ -22,7 +22,7 @@ extension DefaultCountryDialingCodeRepository: CountryDialingCodeRepository {
     
     func fetchAllCountryDialingCode(in storagePoint: StoragePoint) -> Single<[CountryDialingCodeDomain]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return StoragePoint.makeCoreDataStorageNotSupported(class: CountryDialingCodeRepository.self,
                                                                 function: "fetchAllCountryDialingCode()",
                                                                 object: [CountryDialingCodeDomain].self)

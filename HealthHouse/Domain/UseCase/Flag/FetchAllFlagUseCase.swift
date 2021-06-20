@@ -53,7 +53,7 @@ extension DefaultFetchAllFlagUseCase: FetchAllFlagUseCase {
     func execute(_ request: FetchAllFlagUseCaseRequest) -> Single<FetchAllFlagUseCaseResponse> {
         let profile = request.profile
         return self.flagRepository
-            .fetchAllFlag(ownedBy: profile, in: .coreData)
+            .fetchAllFlag(ownedBy: profile, in: .realm)
             .map({ FetchAllFlagUseCaseResponse(flags: $0) })
     }
     

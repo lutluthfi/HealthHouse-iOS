@@ -22,7 +22,7 @@ extension DefaultActivityRepository: ActivityRepository {
     
     func fetchAllActivity(in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localActivityStorage.fetchAllInCoreData()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
@@ -38,7 +38,7 @@ extension DefaultActivityRepository: ActivityRepository {
     func fetchAllActivity(ownedBy profile: Profile,
                           in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
@@ -55,7 +55,7 @@ extension DefaultActivityRepository: ActivityRepository {
                           onDoDate doDate: Int64,
                           in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile, onDoDate: doDate)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
@@ -71,7 +71,7 @@ extension DefaultActivityRepository: ActivityRepository {
     func insertUpdateActivity(_ activity: Activity,
                               into storagePoint: StoragePoint) -> Single<Activity> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return self.localActivityStorage.insertIntoCoreData(activity)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,

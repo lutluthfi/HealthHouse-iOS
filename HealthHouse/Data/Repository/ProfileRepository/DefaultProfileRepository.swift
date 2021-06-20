@@ -22,7 +22,7 @@ extension DefaultProfileRepository: ProfileRepository {
     
     func fetchAllProfile(in storagePoint: StoragePoint) -> Single<[Profile]> {
         switch storagePoint  {
-        case .coreData:
+        case .realm:
             return self.localProfileStorage.fetchAllInRealm()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
@@ -37,7 +37,7 @@ extension DefaultProfileRepository: ProfileRepository {
     
     func insertProfile(_ profile: Profile, into storagePoint: StoragePoint) -> Single<Profile> {
         switch storagePoint  {
-        case .coreData:
+        case .realm:
             return self.localProfileStorage.insertIntoRealm(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,
@@ -50,7 +50,7 @@ extension DefaultProfileRepository: ProfileRepository {
     
     func removeProfile(_ profile: Profile, in storagePoint: StoragePoint) -> Single<Profile> {
         switch storagePoint  {
-        case .coreData:
+        case .realm:
             return self.localProfileStorage.removeInRealm(profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ProfileRepository.self,

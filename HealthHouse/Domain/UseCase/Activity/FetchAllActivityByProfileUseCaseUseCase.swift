@@ -51,7 +51,7 @@ extension DefaultFetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseC
     func execute(_ request: FetchAllActivityByProfileUseCaseRequest) -> Single<FetchAllActivityByProfileUseCaseResponse> {
         let profile = request.profile
         return self.activityRepository
-            .fetchAllActivity(ownedBy: profile, in: .coreData)
+            .fetchAllActivity(ownedBy: profile, in: .realm)
             .map { FetchAllActivityByProfileUseCaseResponse(activities: $0) }
     }
     

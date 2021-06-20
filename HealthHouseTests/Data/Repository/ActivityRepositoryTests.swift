@@ -206,7 +206,7 @@ extension ActivityRepositoryTests {
         let timeout = self.sut.coreDataStorage.insertElementTimeout
         
         let object = ActivityDomain.stubElement(coreDataStorage: self.sut.coreDataStorage).0
-        let storagePoint = StoragePoint.coreData
+        let storagePoint = StoragePoint.realm
         
         let result = try self.sut.activityRepository
             .insertUpdateActivity(object, into: storagePoint)

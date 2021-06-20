@@ -22,7 +22,7 @@ extension DefaultAppCofigRepository: AppConfigRepository {
     
     func fetchFirstLaunch(in storagePoint: StoragePoint) -> Single<Bool> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return StoragePoint.makeCoreDataStorageNotSupported(class: AppConfigRepository.self,
                                                                 function: "fetchFirstLaunch()",
                                                                 object: Bool.self)
@@ -37,7 +37,7 @@ extension DefaultAppCofigRepository: AppConfigRepository {
     
     func insertFirstLaunch(_ firstLaunch: Bool, in storagePoint: StoragePoint) -> Single<Bool> {
         switch storagePoint {
-        case .coreData:
+        case .realm:
             return StoragePoint.makeCoreDataStorageNotSupported(class: AppConfigRepository.self,
                                                                 function: "insertFirstLaunch(_:)",
                                                                 object: Bool.self)
