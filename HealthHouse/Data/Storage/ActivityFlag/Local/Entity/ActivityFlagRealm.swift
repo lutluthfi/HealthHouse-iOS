@@ -32,7 +32,7 @@ import RealmSwift
         self.updatedAt = updatedAt
         
         self.activityID = activityID
-        self.flagsIDs = flagsIDs.toRealm()
+        self.flagsIDs = flagsIDs.asRealmList
     }
     
 }

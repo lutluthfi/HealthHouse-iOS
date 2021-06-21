@@ -7,7 +7,6 @@
 
 import Foundation
 import RealmSwift
-import RxRealm
 
 protocol RealmManagerShared {
     var configuration: Realm.Configuration { get }

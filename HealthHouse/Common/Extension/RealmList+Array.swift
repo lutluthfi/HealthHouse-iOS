@@ -10,7 +10,7 @@ import RealmSwift
 
 extension Array where Element: Object {
     
-    func toRealm() -> List<Element> {
+    var asRealmList: List<Element> {
         let list = List<Element>()
         self.forEach { list.append($0) }
         return list
@@ -20,7 +20,7 @@ extension Array where Element: Object {
 
 extension Array where Element: RealmCollectionValue {
     
-    func toRealm() -> List<Element> {
+    var asRealmList: List<Element> {
         let list = List<Element>()
         self.forEach { list.append($0) }
         return list

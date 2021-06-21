@@ -6,7 +6,6 @@
 //
 
 import RealmSwift
-import RxRealm
 import RxSwift
 
 // MARK: LocalActivityStorage
@@ -29,35 +28,53 @@ extension DefaultLocalActivityStorage {
     
     func fetchAllInCoreData() -> Single<[Activity]> {
         let objects = self.realmManager.realm.objects(ActivityRealm.self)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func fetchAllInCoreData(ownedBy profile: Profile) -> Single<[Activity]> {
         let predicate = NSPredicate(format: "profileID = %@", profile.realmID)
         let objects = self.realmManager.realm.objects(ActivityRealm.self).filter(predicate)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func fetchAllInCoreData(ownedBy profile: Profile,
                             onDoDate doDate: Int64) -> Single<[Activity]> {
         let predicate = NSPredicate(format: "profileID = %@ AND doDate = %@", profile.realmID, doDate)
         let objects = self.realmManager.realm.objects(ActivityRealm.self).filter(predicate)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func insertIntoCoreData(_ activity: Activity) -> Single<Activity> {
         let object = activity.toRealm()
-        let configuration = self.realmManager.configuration
-        let observer = Realm.rx.add(configuration: configuration, update: .modified)
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.add(object, update: .error)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(activity))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
     func removeInCoreData(_ activity: Activity) -> Single<Activity> {
         let object = activity.toRealm()
-        let observer = Realm.rx.delete()
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.delete(object)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(activity))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
 }

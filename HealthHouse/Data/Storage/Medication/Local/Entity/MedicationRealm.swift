@@ -42,7 +42,7 @@ class MedicationRealm: Object {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         
-        self.photoFileNames = photoFileNames.toRealm()
+        self.photoFileNames = photoFileNames.asRealmList
         self.dose = dose
         self.endedAt = endedAt
         self.location = location
@@ -56,7 +56,8 @@ class MedicationRealm: Object {
 extension MedicationRealm {
     
     func toDomain() -> Medication {
-        let profileRealm = self.realm?.object(ofType: ProfileRealm.self, forPrimaryKey: self.profileID)
+        let profileRealm = self.realm?.object(ofType: ProfileRealm.self,
+                                              forPrimaryKey: self.profileID)
         let profileDomain = profileRealm!.toDomain()
         return Medication(realmID: self.ID,
                                 createdAt: self.createdAt,
@@ -65,7 +66,7 @@ extension MedicationRealm {
                                 endedAt: self.endedAt,
                                 location: self.location,
                                 name: self.name,
-                                photoFileNames: self.photoFileNames.toArray(),
+                                photoFileNames: self.photoFileNames.asArray,
                                 startedAt: self.startedAt,
                                 profile: profileDomain)
     }

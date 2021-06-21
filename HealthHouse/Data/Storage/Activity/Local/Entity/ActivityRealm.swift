@@ -46,7 +46,7 @@ import RealmSwift
         self.explanation = explanation
         self.isArchived = isArchived
         self.isPinned = isPinned
-        self.photoFileNames = photoFileNames.toRealm()
+        self.photoFileNames = photoFileNames.asRealmList
         self.title = title
         
         self.profileID = profileID
@@ -67,7 +67,7 @@ extension ActivityRealm {
                         explanation: self.explanation,
                         isArchived: self.isArchived,
                         isPinned: self.isPinned,
-                        photoFileNames: self.photoFileNames.toArray(),
+                        photoFileNames: self.photoFileNames.asArray,
                         title: self.title,
                         profile: profileDomain)
     }

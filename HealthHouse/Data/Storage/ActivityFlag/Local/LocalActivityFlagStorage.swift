@@ -6,7 +6,6 @@
 //
 
 import RealmSwift
-import RxRealm
 import RxSwift
 
 // MARK: LocalActivityFlagStorage
@@ -30,14 +29,15 @@ extension DefaultLocalActivityFlagStorage {
     
     func fetchAllInRealm() -> Single<[ActivityFlag]> {
         let objects = self.realmManager.realm.objects(ActivityFlagRealm.self)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func fetchAllInRealm(ownedBy profile: Profile) -> Single<[ActivityFlag]> {
         let objects = self.realmManager.realm.objects(ActivityFlagRealm.self)
-        var domains = objects.toArray().toDomain()
+        var domains = Array(objects).toDomain()
         domains = domains.filter { $0.activity.profile == profile }
-        return Observable.just(domains).asSingle()
+        return .just(domains)
     }
     
     func fetchInRealm(relatedTo activity: Activity) -> Single<ActivityFlag?> {
@@ -49,18 +49,34 @@ extension DefaultLocalActivityFlagStorage {
     
     func insertUpdateIntoRealm(_ activityFlag: ActivityFlag) -> Single<ActivityFlag> {
         let object = activityFlag.toRealm()
-        let configuration = self.realmManager.configuration
-        let observer = Realm.rx.add(configuration: configuration, update: .modified)
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.add(object, update: .error)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(activityFlag))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
     func removeInRealm(relatedTo activity: Activity) -> Single<[ActivityFlag]> {
         let predicate = NSPredicate(format: "activityID = %@", activity.realmID)
         let objects = self.realmManager.realm.objects(ActivityFlagRealm.self).filter(predicate)
-        let observer = Realm.rx.delete()
-        let disposable = Observable.from(Array(objects)).subscribe(observer)
-        return .create { (_) in disposable }
+        let domains = Array(objects).toDomain()
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.delete(objects)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(domains))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
 }

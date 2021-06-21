@@ -6,7 +6,6 @@
 //
 
 import RealmSwift
-import RxRealm
 import RxSwift
 
 // MARK: LocalFlagStorage
@@ -29,22 +28,38 @@ extension DefaultLocalFlagStorage {
     
     func fetchAllInCoreData() -> Single<[Flag]> {
         let objects = self.realmManager.realm.objects(FlagRealm.self)
-        return Observable.array(from: objects).map({ $0.toDomain() }).asSingle()
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func insertIntoCoreData(_ flag: Flag) -> Single<Flag> {
         let object = flag.toRealm()
-        let configuration = self.realmManager.configuration
-        let observer = Realm.rx.add(configuration: configuration, update: .modified)
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.add(object, update: .error)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(flag))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
     func removeInCoreData(_ flag: Flag) -> Single<Flag> {
         let object = flag.toRealm()
-        let observer = Realm.rx.delete()
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.delete(object)
+                try self.realmManager.realm.commitWrite()
+                observer(.success(flag))
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
 }

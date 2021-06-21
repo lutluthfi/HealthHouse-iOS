@@ -6,7 +6,6 @@
 //
 
 import RealmSwift
-import RxRealm
 import RxSwift
 
 // MARK: LocalProfileRepository
@@ -32,8 +31,8 @@ extension DefaultLocalProfileStorage {
     
     func fetchAllInRealm() -> Single<[Profile]> {
         let objects = self.realmManager.realm.objects(ProfileRealm.self)
-        let _objects = objects.toArray().toDomain()
-        return .just(_objects)
+        let domains = Array(objects).toDomain()
+        return .just(domains)
     }
     
     func insertIntoRealm(_ profile: Profile) -> Single<Profile> {
@@ -43,6 +42,7 @@ extension DefaultLocalProfileStorage {
                 self.realmManager.realm.beginWrite()
                 self.realmManager.realm.add(object, update: .error)
                 try self.realmManager.realm.commitWrite()
+                observer(.success(profile))
             } catch {
                 observer(.failure(error))
             }
@@ -57,6 +57,7 @@ extension DefaultLocalProfileStorage {
                 self.realmManager.realm.beginWrite()
                 self.realmManager.realm.delete(object)
                 try self.realmManager.realm.commitWrite()
+                observer(.success(profile))
             } catch {
                 observer(.failure(error))
             }
