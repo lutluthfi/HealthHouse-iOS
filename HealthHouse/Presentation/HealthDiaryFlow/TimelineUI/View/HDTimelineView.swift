@@ -25,6 +25,7 @@ protocol HDTimelineViewSubview {
     var dayHeaderStackView: UIStackView { get }
     var emptyView: EmptyView { get }
     var timelineTableView: UITableView { get }
+    var todayBarButtonItem: UIBarButtonItem { get }
 }
 
 // MARK: HDTimelineViewVariable
@@ -94,6 +95,7 @@ final class DefaultHDTimelineView: UIView, HDTimelineView {
         tableView.isHidden = true
         return tableView
     }()
+    lazy var todayBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: nil)
 
     // MARK: HDTimelineViewVariable
     lazy var asView: UIView = (self as UIView)
@@ -188,6 +190,7 @@ extension DefaultHDTimelineView {
                      tabBarController: UITabBarController?,
                      navigationItem: UINavigationItem) {
         guard let _navigationController = navigationController else { return }
+        navigationItem.leftBarButtonItems = [self.todayBarButtonItem]
         navigationItem.rightBarButtonItems = [self.addBarButtonItem]
         _navigationController.setNavigationBarHidden(false, animated: false)
         _navigationController.navigationBar.shadowImage = UIImage()

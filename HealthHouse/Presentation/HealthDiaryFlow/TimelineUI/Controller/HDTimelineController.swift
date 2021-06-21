@@ -39,6 +39,8 @@ public final class HDTimelineController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.bind(todayBarButtonItemTap: self._view.todayBarButtonItem,
+                  toCollectionView: self._view.calendarCollectionView)
         self.bindAddBarButtonItemTap(addBarButton: self._view.addBarButtonItem)
         self.bindCalendarItems(calendarItems: self._view.calendarItems)
         self.bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: self._view.calendarCollectionView,
@@ -259,6 +261,23 @@ extension HDTimelineController {
             .asDriver(onErrorJustReturn: [])
             .map({ $0.isEmpty })
             .drive(tableViewHidden)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindTodayBarButtonItemTapToCollectionView
+extension HDTimelineController {
+    
+    func bind(todayBarButtonItemTap barButtonItem: UIBarButtonItem,
+              toCollectionView collectionView: UICollectionView) {
+        barButtonItem.rx
+            .tap
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+                self.calendarCollectionViewDidInitialSelectItem(collectionView: collectionView,
+                                                                calendarItems: self.calendarItems)
+            })
             .disposed(by: self.disposeBag)
     }
     
