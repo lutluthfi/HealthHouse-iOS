@@ -15,3 +15,11 @@ protocol EntityDomain {
     var updatedAt: Int64 { get }
     
 }
+
+extension String {
+    
+    static var uuid: String {
+        return UUID().uuidString
+    }
+    
+}

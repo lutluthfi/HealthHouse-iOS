@@ -38,20 +38,30 @@ extension DefaultLocalProfileStorage {
     
     func insertIntoRealm(_ profile: Profile) -> Single<Profile> {
         let object = profile.toRealm()
-        let configuration = self.realmManager.configuration
-        let observer = Realm.rx.add(configuration: configuration, update: .modified)
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (observer) in
-            observer(.success(profile))
-            return disposable
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.add(object, update: .error)
+                try self.realmManager.realm.commitWrite()
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
         }
     }
     
     func removeInRealm(_ profile: Profile) -> Single<Profile> {
         let object = profile.toRealm()
-        let observer = Realm.rx.delete()
-        let disposable = Observable.from(object: object).subscribe(observer)
-        return .create { (_) in disposable }
+        return .create { [unowned self] (observer) in
+            do {
+                self.realmManager.realm.beginWrite()
+                self.realmManager.realm.delete(object)
+                try self.realmManager.realm.commitWrite()
+            } catch {
+                observer(.failure(error))
+            }
+            return Disposables.create()
+        }
     }
     
 }

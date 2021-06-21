@@ -6,6 +6,7 @@
 //
 
 import RealmSwift
+import RxSwift
 import UIKit
 
 typealias PresentationFactory = FlowCoordinatorFactory&ControllerFactory
@@ -37,6 +38,27 @@ final class AppDIContainer {
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
+        
+        #if DEV && DEBUG
+        let request = CreateProfileUseCaseRequest(dateOfBirth: Int64(867430800).toDate(),
+                                                  firstName: "Health",
+                                                  gender: .male,
+                                                  lastName: "House",
+                                                  mobileNumber: "+6285216863058",
+                                                  photo: nil)
+        self.makeCreateProfileUseCase()
+            .execute(request)
+            .map { $0.profile }
+            .flatMap(self.executeSetCurrentProfileUseCase(profile:))
+            .subscribe()
+            .dispose()
+        #endif
+    }
+    
+    func executeSetCurrentProfileUseCase(profile: Profile) -> Single<Profile> {
+        self.makeSetCurrentProfileUseCase()
+            .execute(SetCurrentProfileUseCaseRequest(profile: profile))
+            .map { $0.profile }
     }
     
 }
