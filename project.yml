@@ -41,7 +41,7 @@ targets:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.dev
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.dev
                     PRODUCT_NAME: Health House
-                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEV
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEV DEBUG"
                 DEV-Release:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.dev
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.dev
@@ -51,7 +51,7 @@ targets:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.sta
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.sta
                     PRODUCT_NAME: Health House
-                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: STA
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "STA DEBUG"
                 STA-Release:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.sta
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse.sta
@@ -61,7 +61,7 @@ targets:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.pro
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse
                     PRODUCT_NAME: Health House
-                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: PRO
+                    SWIFT_ACTIVE_COMPILATION_CONDITIONS: "PRO DEBUG"
                 PRO-Release:
                     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon.pro
                     PRODUCT_BUNDLE_IDENTIFIER: com.arlt.healthhouse
