@@ -41,16 +41,16 @@ public final class HDTimelineController: UIViewController {
         super.viewDidLoad()
         self.bind(todayBarButtonItemTap: self._view.todayBarButtonItem,
                   toCollectionView: self._view.calendarCollectionView)
-        self.bindAddBarButtonItemTap(addBarButton: self._view.addBarButtonItem)
-        self.bindCalendarItems(calendarItems: self._view.calendarItems)
-        self.bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: self._view.calendarCollectionView,
-                                                                      navigationItem: self.navigationItem)
-        self.bindSelectedDateToNavigationItemTitle(selectedDate: self._selectedDate,
-                                                   navigationItem: self.navigationItem)
-        self.bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: self.viewModel.showedActivities,
-                                                            emptyViewHidden: self._view.emptyView.rx.isHidden)
-        self.bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: self.viewModel.showedActivities,
-                                                                    tableViewHidden: self._view.timelineTableView.rx.isHidden)
+        self.bind(addBarButtonTap: self._view.addBarButtonItem)
+        self.bind(calendarItems: self._view.calendarItems)
+        self.bind(calendarCollectionView: self._view.calendarCollectionView,
+                  toNavigationItemTitle: self.navigationItem)
+        self.bind(selectedDate: self._selectedDate,
+                  toNavigationItemTitle: self.navigationItem)
+        self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
+                  toEmptyViewHidden: self._view.emptyView.rx.isHidden)
+        self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
+                  toTableViewHidden: self._view.timelineTableView.rx.isHidden)
         self._view.viewDidLoad(navigationController: self.navigationController,
                                tabBarController: self.tabBarController,
                                navigationItem: self.navigationItem)
@@ -65,12 +65,12 @@ public final class HDTimelineController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.bindCalendarItemsToCalendarCollectionView(calendarItems: self._view.calendarItems,
-                                                       collectionView: self._view.calendarCollectionView)
-        self.bindShowedActivitiesViewModelToTimelineTableView(showedActivities: self.viewModel.showedActivities,
-                                                              tableView: self._view.timelineTableView)
-        self.calendarCollectionViewDidInitialSelectItem(collectionView: self._view.calendarCollectionView,
-                                                        calendarItems: self.calendarItems)
+        self.bind(calendarItems: self._view.calendarItems,
+                  toCollectionView: self._view.calendarCollectionView)
+        self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
+                  toTimelineTableView: self._view.timelineTableView)
+        self.calendarCollectionView(self._view.calendarCollectionView,
+                                    didSelectTodayOfCalendarItems: self.calendarItems)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -83,8 +83,8 @@ public final class HDTimelineController: UIViewController {
 // MARK: Private Function
 private extension HDTimelineController {
     
-    func calendarCollectionViewDidInitialSelectItem(collectionView: UICollectionView,
-                                                    calendarItems: [HDTLCalendarItemModel]) {
+    func calendarCollectionView(_ collectionView: UICollectionView,
+                                didSelectTodayOfCalendarItems calendarItems: [HDTLCalendarItemModel]) {
         let now = Date()
         let nowFormatted = now.formatted(components: [.dayOfWeekWideName,
                                                       .comma,
@@ -106,7 +106,7 @@ private extension HDTimelineController {
 // MARK: BindAddBarButtonItemTap
 extension HDTimelineController {
     
-    func bindAddBarButtonItemTap(addBarButton: UIBarButtonItem) {
+    func bind(addBarButtonTap addBarButton: UIBarButtonItem) {
         addBarButton.rx
             .tap
             .asDriver()
@@ -121,7 +121,7 @@ extension HDTimelineController {
 // MARK: BindCalendarItems
 extension HDTimelineController {
     
-    func bindCalendarItems(calendarItems: Observable<[HDTLCalendarItemModel]>) {
+    func bind(calendarItems: Observable<[HDTLCalendarItemModel]>) {
         calendarItems
             .asDriver(onErrorJustReturn: [])
             .drive(onNext: { [unowned self] (calendarItems) in
@@ -135,8 +135,8 @@ extension HDTimelineController {
 // MARK: BindCalendarItemsToCalendarCollectionView
 extension HDTimelineController {
     
-    func bindCalendarItemsToCalendarCollectionView(calendarItems: Observable<[HDTLCalendarItemModel]>,
-                                                   collectionView: UICollectionView) {
+    func bind(calendarItems: Observable<[HDTLCalendarItemModel]>,
+              toCollectionView collectionView: UICollectionView) {
         let dataSource = self.makeCollectionViewDataSource()
         calendarItems
             .asDriver(onErrorJustReturn: [])
@@ -168,9 +168,9 @@ extension HDTimelineController {
 // MARK: BindCalendarCollectionModelSelectedToNavigationItemTitle
 extension HDTimelineController {
     
-    func bindCalendarCollectionModelSelectedToNavigationItemTitle(collectionView: UICollectionView,
-                                                                  navigationItem: UINavigationItem) {
-        collectionView.rx
+    func bind(calendarCollectionView: UICollectionView,
+              toNavigationItemTitle navigationItem: UINavigationItem) {
+        calendarCollectionView.rx
             .modelSelected(HDTLCalendarItemModel.self)
             .asDriver()
             .filter({ $0.date.timeIntervalSince1970 != -1 })
@@ -184,7 +184,8 @@ extension HDTimelineController {
 // MARK: BindSelectedDateToDateDetailLabel
 extension HDTimelineController {
     
-    func bindSelectedDateToNavigationItemTitle(selectedDate: Observable<Date>, navigationItem: UINavigationItem) {
+    func bind(selectedDate: Observable<Date>,
+              toNavigationItemTitle navigationItem: UINavigationItem) {
         selectedDate
             .asDriver(onErrorJustReturn: Date())
             .map({
@@ -207,12 +208,12 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToEmptyView
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToEmptyViewHidden(showedActivities: Observable<[Activity]>,
-                                                        emptyViewHidden: Binder<Bool>) {
+    func bind(showedActivitiesViewModel showedActivities: Observable<[Activity]>,
+              toEmptyViewHidden viewHidden: Binder<Bool>) {
         showedActivities
             .asDriver(onErrorJustReturn: [])
             .map({ !$0.isEmpty })
-            .drive(emptyViewHidden)
+            .drive(viewHidden)
             .disposed(by: self.disposeBag)
     }
     
@@ -221,8 +222,8 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToTimelineTableView
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToTimelineTableView(showedActivities: Observable<[Activity]>,
-                                                          tableView: UITableView) {
+    func bind(showedActivitiesViewModel showedActivities: Observable<[Activity]>,
+              toTimelineTableView tableView: UITableView) {
         let dataSource = self.makeTableViewDataSource()
         showedActivities
             .asDriver(onErrorJustReturn: [])
@@ -255,12 +256,12 @@ extension HDTimelineController {
 // MARK: BindShowedActivitiesViewModelToTimelineTableViewHidden
 extension HDTimelineController {
     
-    func bindShowedActivitiesViewModelToTimelineTableViewHidden(showedActivities: Observable<[Activity]>,
-                                                                tableViewHidden: Binder<Bool>) {
+    func bind(showedActivitiesViewModel showedActivities: Observable<[Activity]>,
+              toTableViewHidden viewHidden: Binder<Bool>) {
         showedActivities
             .asDriver(onErrorJustReturn: [])
             .map({ $0.isEmpty })
-            .drive(tableViewHidden)
+            .drive(viewHidden)
             .disposed(by: self.disposeBag)
     }
     
@@ -275,8 +276,8 @@ extension HDTimelineController {
             .tap
             .asDriver()
             .drive(onNext: { [unowned self] in
-                self.calendarCollectionViewDidInitialSelectItem(collectionView: collectionView,
-                                                                calendarItems: self.calendarItems)
+                self.calendarCollectionView(collectionView,
+                                            didSelectTodayOfCalendarItems: self.calendarItems)
             })
             .disposed(by: self.disposeBag)
     }
