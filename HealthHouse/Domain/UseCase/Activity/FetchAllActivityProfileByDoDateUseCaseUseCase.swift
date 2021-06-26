@@ -27,7 +27,7 @@ struct FetchAllActivityProfileByDoDateUseCaseResponse {
 }
 
 struct FetchAllActivityProfileByDoDateUseCaseRequest {
-    let doDate: Int64
+    let doDate: Date
     let profile: Profile
 }
 

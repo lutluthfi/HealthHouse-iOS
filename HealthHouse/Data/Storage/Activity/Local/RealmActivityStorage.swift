@@ -14,7 +14,7 @@ protocol RealmActivityStorage {
     
     func fetchAllInCoreData(ownedBy profile: Profile) -> Single<[Activity]>
     
-    func fetchAllInCoreData(ownedBy profile: Profile, onDoDate doDate: Int64) -> Single<[Activity]>
+    func fetchAllInCoreData(ownedBy profile: Profile, onDoDate doDate: Date) -> Single<[Activity]>
     
     func insertIntoCoreData(_ activity: Activity) -> Single<Activity>
     

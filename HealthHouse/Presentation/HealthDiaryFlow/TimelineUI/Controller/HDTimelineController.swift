@@ -43,14 +43,19 @@ public final class HDTimelineController: UIViewController {
                   toCollectionView: self._view.calendarCollectionView)
         self.bind(addBarButtonTap: self._view.addBarButtonItem)
         self.bind(calendarItems: self._view.calendarItems)
-        self.bind(calendarCollectionView: self._view.calendarCollectionView,
+        self.bind(calendarCollectionViewModelSelected: self._view.calendarCollectionView,
                   toNavigationItemTitle: self.navigationItem)
+        self.bind(calendarCollectionViewModelSelected: self._view.calendarCollectionView)
         self.bind(selectedDate: self._selectedDate,
                   toNavigationItemTitle: self.navigationItem)
         self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
                   toEmptyViewHidden: self._view.emptyView.rx.isHidden)
         self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
                   toTableViewHidden: self._view.timelineTableView.rx.isHidden)
+        self.bind(calendarItems: self._view.calendarItems,
+                  toCollectionView: self._view.calendarCollectionView)
+        self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
+                  toTimelineTableView: self._view.timelineTableView)
         self._view.viewDidLoad(navigationController: self.navigationController,
                                tabBarController: self.tabBarController,
                                navigationItem: self.navigationItem)
@@ -65,10 +70,6 @@ public final class HDTimelineController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        self.bind(calendarItems: self._view.calendarItems,
-                  toCollectionView: self._view.calendarCollectionView)
-        self.bind(showedActivitiesViewModel: self.viewModel.showedActivities,
-                  toTimelineTableView: self._view.timelineTableView)
         self.calendarCollectionView(self._view.calendarCollectionView,
                                     didSelectTodayOfCalendarItems: self.calendarItems)
     }
@@ -168,14 +169,30 @@ extension HDTimelineController {
 // MARK: BindCalendarCollectionModelSelectedToNavigationItemTitle
 extension HDTimelineController {
     
-    func bind(calendarCollectionView: UICollectionView,
+    func bind(calendarCollectionViewModelSelected collectionView: UICollectionView,
               toNavigationItemTitle navigationItem: UINavigationItem) {
-        calendarCollectionView.rx
+        collectionView.rx
             .modelSelected(HDTLCalendarItemModel.self)
             .asDriver()
             .filter({ $0.date.timeIntervalSince1970 != -1 })
             .map({ $0.dateFormatted })
             .drive(navigationItem.rx.title)
+            .disposed(by: self.disposeBag)
+    }
+    
+}
+
+// MARK: BindCalendarCollectionViewModelSelectedToViewModel
+extension HDTimelineController {
+    
+    func bind(calendarCollectionViewModelSelected collectionView: UICollectionView) {
+        collectionView.rx
+            .modelSelected(HDTLCalendarItemModel.self)
+            .asDriver()
+            .filter({ $0.date.timeIntervalSince1970 != -1 })
+            .drive(onNext: { [unowned self] in
+                self.viewModel.willLoadActivities(byDate: $0.date)
+            })
             .disposed(by: self.disposeBag)
     }
     
@@ -227,7 +244,9 @@ extension HDTimelineController {
         let dataSource = self.makeTableViewDataSource()
         showedActivities
             .asDriver(onErrorJustReturn: [])
-            .map({ [SectionDomain<Activity>(header: "", items: $0)] })
+            .map({
+                [SectionDomain<Activity>(header: "", items: $0)]
+            })
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
     }

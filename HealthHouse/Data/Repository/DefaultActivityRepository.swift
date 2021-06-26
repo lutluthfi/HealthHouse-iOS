@@ -52,7 +52,7 @@ extension DefaultActivityRepository: ActivityRepository {
     }
     
     func fetchAllActivity(ownedBy profile: Profile,
-                          onDoDate doDate: Int64,
+                          onDoDate doDate: Date,
                           in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .realm:

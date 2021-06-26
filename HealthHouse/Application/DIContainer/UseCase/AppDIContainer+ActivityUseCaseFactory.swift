@@ -17,4 +17,8 @@ extension AppDIContainer: ActivityUseCaseFactory {
         return DefaultFetchAllActivityByProfileUseCase(activityRepository: self.makeActivityRepository())
     }
     
+    func makeFetchAllActivityProfileByDoDateUseCase() -> FetchAllActivityProfileByDoDateUseCase {
+        return DefaultFetchAllActivityProfileByDoDateUseCase(activityRepository: self.makeActivityRepository())
+    }
+    
 }

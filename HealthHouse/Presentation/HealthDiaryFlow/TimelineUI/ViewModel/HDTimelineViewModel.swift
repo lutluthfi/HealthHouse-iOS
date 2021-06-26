@@ -31,6 +31,7 @@ public struct HDTimelineViewModelRoute {
 protocol HDTimelineViewModelInput {
     func viewDidLoad()
     func addBarButtonDidTap()
+    func willLoadActivities(byDate date: Date)
 }
 
 // MARK: HDTimelineViewModelOutput
@@ -50,10 +51,12 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
 
     // MARK: UseCase Variable
     let fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase
+    let fetchAllActivityProfileByDoDateUseCase: FetchAllActivityProfileByDoDateUseCase
     let fetchCurrentProfileUseCase: FetchCurrentProfileUseCase
 
     // MARK: Common Variable
     let disposeBag = DisposeBag()
+    var activities: [Activity] = []
 
     // MARK: Output ViewModel
     let showedActivities = PublishSubject<[Activity]>()
@@ -62,16 +65,24 @@ final class DefaultHDTimelineViewModel: HDTimelineViewModel {
     init(request: HDTimelineViewModelRequest,
          route: HDTimelineViewModelRoute,
          fetchAllActivityByProfileUseCase: FetchAllActivityByProfileUseCase,
+         fetchAllActivityProfileByDoDateUseCase: FetchAllActivityProfileByDoDateUseCase,
          fetchCurrentProfileUseCase: FetchCurrentProfileUseCase) {
         self.request = request
         self.route = route
         self.fetchAllActivityByProfileUseCase = fetchAllActivityByProfileUseCase
+        self.fetchAllActivityProfileByDoDateUseCase = fetchAllActivityProfileByDoDateUseCase
         self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
     }
     
     func doFetchAllActivityByProfileUseCase(ownedBy profile: Profile) -> Observable<FetchAllActivityByProfileUseCaseResponse> {
         let request = FetchAllActivityByProfileUseCaseRequest(profile: profile)
         return self.fetchAllActivityByProfileUseCase.execute(request).asObservable()
+    }
+    
+    func doFetchAllActivityProfileByDoDateUseCase(ownedBy profile: Profile,
+                                                  onDoDate date: Date) -> Observable<FetchAllActivityProfileByDoDateUseCaseResponse> {
+        let request = FetchAllActivityProfileByDoDateUseCaseRequest(doDate: date, profile: profile)
+        return self.fetchAllActivityProfileByDoDateUseCase.execute(request).asObservable()
     }
     
     func doFetchCurrentProfileUseCase() -> Observable<FetchCurrentProfileUseCaseResponse> {
@@ -100,8 +111,11 @@ extension DefaultHDTimelineViewModel {
             .compactMap({ $0.profile })
             .flatMap(self.doFetchAllActivityByProfileUseCase(ownedBy:))
             .map({ $0.activities })
-            .subscribe(self.showedActivities)
+            .subscribe(onNext: { [unowned self] in
+                self.activities = $0
+            })
             .disposed(by: self.disposeBag)
+        self.willLoadActivities(byDate: Date())
     }
     
     func addBarButtonDidTap() {
@@ -113,6 +127,19 @@ extension DefaultHDTimelineViewModel {
                 } else {
                     self.presentPFPersonalizeUI()
                 }
+            })
+            .disposed(by: self.disposeBag)
+    }
+    
+    func willLoadActivities(byDate date: Date) {
+        self.doFetchCurrentProfileUseCase()
+            .compactMap({ $0.profile })
+            .flatMap { [unowned self] (profile) in
+                self.doFetchAllActivityProfileByDoDateUseCase(ownedBy: profile, onDoDate: date)
+            }
+            .map({ $0.activities })
+            .subscribe(onNext: { [unowned self] in
+                self.showedActivities.onNext($0)
             })
             .disposed(by: self.disposeBag)
     }

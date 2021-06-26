@@ -16,7 +16,7 @@ protocol ActivityRepository {
                           in storagePoint: StoragePoint) -> Single<[Activity]>
     
     func fetchAllActivity(ownedBy profile: Profile,
-                          onDoDate doDate: Int64,
+                          onDoDate doDate: Date,
                           in storagePoint: StoragePoint) -> Single<[Activity]>
     
     func insertUpdateActivity(_ activity: Activity,
