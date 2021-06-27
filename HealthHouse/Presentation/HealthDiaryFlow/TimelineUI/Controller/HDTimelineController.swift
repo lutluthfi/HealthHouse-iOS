@@ -39,6 +39,14 @@ public final class HDTimelineController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        UIApplication.rx
+            .significantTimeChange
+            .asDriver()
+            .drive(onNext: { [unowned self] in
+                self.calendarCollectionView(self._view.calendarCollectionView,
+                                            didSelectTodayOfCalendarItems: self.calendarItems)
+            })
+            .disposed(by: self.disposeBag)
         self.bind(todayBarButtonItemTap: self._view.todayBarButtonItem,
                   toCollectionView: self._view.calendarCollectionView)
         self.bind(addBarButtonTap: self._view.addBarButtonItem)
