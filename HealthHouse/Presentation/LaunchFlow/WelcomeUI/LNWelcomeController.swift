@@ -65,7 +65,7 @@ extension LNWelcomeController {
         button.rx
             .tap
             .bind(onNext: { [unowned self] in
-                self.viewModel.doContinue()
+                self.viewModel.willShowLNPadUI()
             })
             .disposed(by: self.disposeBag)
     }

@@ -6,6 +6,8 @@
 //  Copyright (c) 2021 All rights reserved.
 
 import Foundation
+import RxRelay
+import RxSwift
 
 // MARK: PFPreviewViewModelResult
 enum PFPreviewViewModelResult {
@@ -27,11 +29,13 @@ public struct PFPreviewViewModelRoute {
 // MARK: PFPreviewViewModelInput
 protocol PFPreviewViewModelInput {
     func viewDidLoad()
+    func viewDidAppear()
 }
 
 // MARK: PFPreviewViewModelOutput
 protocol PFPreviewViewModelOutput {
-
+    var loadingState: PublishRelay<LoadingState> { get }
+    var showedProfile: PublishRelay<Profile?> { get }
 }
 
 // MARK: PFPreviewViewModel
@@ -45,21 +49,23 @@ final class DefaultPFPreviewViewModel: PFPreviewViewModel {
     let route: PFPreviewViewModelRoute
 
     // MARK: UseCase Variable
-
-
+    let fetchCurrentProfileUseCase: FetchCurrentProfileUseCase
 
     // MARK: Common Variable
-
+    let diposeBag = DisposeBag()
     
 
     // MARK: Output ViewModel
-    
+    let loadingState = PublishRelay<LoadingState>()
+    let showedProfile = PublishRelay<Profile?>()
 
     // MARK: Init Function
     init(request: PFPreviewViewModelRequest,
-         route: PFPreviewViewModelRoute) {
+         route: PFPreviewViewModelRoute,
+         fetchCurrentProfileUseCase: FetchCurrentProfileUseCase) {
         self.request = request
         self.route = route
+        self.fetchCurrentProfileUseCase = fetchCurrentProfileUseCase
     }
     
 }
@@ -68,6 +74,19 @@ final class DefaultPFPreviewViewModel: PFPreviewViewModel {
 extension DefaultPFPreviewViewModel {
     
     func viewDidLoad() {
+    }
+    
+    func viewDidAppear() {
+        self.loadingState.accept(.willShow)
+        self.fetchCurrentProfileUseCase
+            .execute(FetchCurrentProfileUseCaseRequest())
+            .filter({ $0.profile != nil })
+            .compactMap({ $0.profile })
+            .subscribe(onSuccess: { [weak self] (profile) in
+                self?.loadingState.accept(.willHide)
+                self?.showedProfile.accept(profile)
+            })
+            .disposed(by: self.diposeBag)
     }
     
 }

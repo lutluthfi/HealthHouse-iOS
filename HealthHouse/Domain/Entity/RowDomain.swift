@@ -49,6 +49,9 @@ public struct RowDomain {
     public static var photo: RowDomain {
         return RowDomain(identify: "Photo", value: "Photo")
     }
+    public static var photoWithName: RowDomain {
+        RowDomain(identify: "Photo With Name", value: "Photo With Name")
+    }
     public static var practitioner: RowDomain {
         return RowDomain(identify: "Practitioner", value: "Practitioner")
     }

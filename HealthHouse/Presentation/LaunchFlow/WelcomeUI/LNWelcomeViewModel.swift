@@ -30,7 +30,7 @@ public struct LNWelcomeViewModelRoute {
 // MARK: LNWelcomeViewModelInput
 protocol LNWelcomeViewModelInput {
     func viewDidLoad()
-    func doContinue()
+    func willShowLNPadUI()
 }
 
 // MARK: LNWelcomeViewModelOutput
@@ -72,6 +72,16 @@ final class DefaultLNWelcomeViewModel: LNWelcomeViewModel {
             .asObservable()
     }
     
+    func showLNPadUI() {
+        self.route.showLNPadUI?()
+    }
+    
+    func showPFPersonalizeUI() {
+        let request = PFPersonalizeViewModelRequest()
+        let response = PFPersonalizeViewModelResponse()
+        self.route.showPFPersonalizeUI?(request, response)
+    }
+    
 }
 
 // MARK: Input ViewModel
@@ -83,22 +93,8 @@ extension DefaultLNWelcomeViewModel {
             .disposed(by: self.disposeBag)
     }
     
-    func doContinue() {
-        self.showPFPersonalizeUI()
-    }
-    
-}
-
-extension DefaultLNWelcomeViewModel {
-    
-    func showLNPadUI() {
-        self.route.showLNPadUI?()
-    }
-    
-    func showPFPersonalizeUI() {
-        let request = PFPersonalizeViewModelRequest()
-        let response = PFPersonalizeViewModelResponse()
-        self.route.showPFPersonalizeUI?(request, response)
+    func willShowLNPadUI() {
+        self.showLNPadUI()
     }
     
 }

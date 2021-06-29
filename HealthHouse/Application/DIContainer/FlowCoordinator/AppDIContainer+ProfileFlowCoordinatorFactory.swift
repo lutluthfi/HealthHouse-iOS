@@ -41,7 +41,9 @@ extension AppDIContainer {
     
     private func makePFPreviewViewModel(request: PFPreviewViewModelRequest,
                                         route: PFPreviewViewModelRoute) -> PFPreviewViewModel {
-        return DefaultPFPreviewViewModel(request: request, route: route)
+        return DefaultPFPreviewViewModel(request: request,
+                                         route: route,
+                                         fetchCurrentProfileUseCase: self.makeFetchCurrentProfileUseCase())
     }
     
 }
