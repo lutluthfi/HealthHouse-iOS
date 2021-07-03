@@ -56,7 +56,7 @@ extension CreateUpdateActivityUseCaseTests {
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalActivityStorage: Failed to execute insertIntoCoreData() caused by Profile coreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalActivityStorage: Failed to execute insertIntoRealm() caused by Profile coreID is not available")
         }
     }
     

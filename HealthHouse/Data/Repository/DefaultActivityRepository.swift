@@ -23,7 +23,7 @@ extension DefaultActivityRepository: ActivityRepository {
     func fetchAllActivity(in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .realm:
-            return self.localActivityStorage.fetchAllInCoreData()
+            return self.localActivityStorage.fetchAllInRealm()
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity()",
@@ -39,7 +39,7 @@ extension DefaultActivityRepository: ActivityRepository {
                           in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .realm:
-            return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile)
+            return self.localActivityStorage.fetchAllInRealm(ownedBy: profile)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:)",
@@ -56,7 +56,7 @@ extension DefaultActivityRepository: ActivityRepository {
                           in storagePoint: StoragePoint) -> Single<[Activity]> {
         switch storagePoint {
         case .realm:
-            return self.localActivityStorage.fetchAllInCoreData(ownedBy: profile, onDoDate: doDate)
+            return self.localActivityStorage.fetchAllInRealm(ownedBy: profile, onDoDate: doDate)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "fetchAllActivity(ownedBy:, onDoDate:)",
@@ -72,7 +72,7 @@ extension DefaultActivityRepository: ActivityRepository {
                               into storagePoint: StoragePoint) -> Single<Activity> {
         switch storagePoint {
         case .realm:
-            return self.localActivityStorage.insertIntoCoreData(activity)
+            return self.localActivityStorage.insertIntoRealm(activity)
         case .remote:
             return StoragePoint.makeRemoteStorageNotSupported(class: ActivityRepository.self,
                                                               function: "insertUpdateActivity()",

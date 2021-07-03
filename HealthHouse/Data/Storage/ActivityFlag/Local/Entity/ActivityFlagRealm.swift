@@ -45,12 +45,12 @@ extension ActivityFlagRealm {
         let flagRealms = self.flagsIDs.compactMap({
             self.realm?.object(ofType: FlagRealm.self, forPrimaryKey: $0)
         })
-        let flatDomains = Array(flagRealms).toDomain()
+        let flagDomains = Array(flagRealms).toDomain()
         return ActivityFlag(realmID: self.ID,
                             createdAt: self.createdAt,
                             updatedAt: self.updatedAt,
                             activity: activityDomain,
-                            flags: flatDomains)
+                            flags: flagDomains)
     }
     
 }

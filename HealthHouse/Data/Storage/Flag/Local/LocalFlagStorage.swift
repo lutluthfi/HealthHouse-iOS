@@ -26,13 +26,13 @@ class DefaultLocalFlagStorage: LocalFlagStorage {
 // MARK: RealmFlagStorage
 extension DefaultLocalFlagStorage {
     
-    func fetchAllInCoreData() -> Single<[Flag]> {
+    func fetchAllInRealm() -> Single<[Flag]> {
         let objects = self.realmManager.realm.objects(FlagRealm.self)
         let domains = Array(objects).toDomain()
         return .just(domains)
     }
     
-    func insertIntoCoreData(_ flag: Flag) -> Single<Flag> {
+    func insertIntoRealm(_ flag: Flag) -> Single<Flag> {
         let object = flag.toRealm()
         return .create { [unowned self] (observer) in
             do {
@@ -47,7 +47,7 @@ extension DefaultLocalFlagStorage {
         }
     }
     
-    func removeInCoreData(_ flag: Flag) -> Single<Flag> {
+    func removeInRealm(_ flag: Flag) -> Single<Flag> {
         let object = flag.toRealm()
         return .create { [unowned self] (observer) in
             do {

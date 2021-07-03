@@ -17,7 +17,7 @@ struct Allergy: EntityDomain {
     let updatedAt: Int64
     
     let cause: String
-    let name: String
+    let effect: String
     
 }
 
@@ -26,7 +26,7 @@ extension Allergy: Equatable {
     static func == (lhs: Allergy, rhs: Allergy) -> Bool {
         return
             lhs.realmID == rhs.realmID &&
-            lhs.name == rhs.name
+            lhs.cause == rhs.cause
     }
     
 }

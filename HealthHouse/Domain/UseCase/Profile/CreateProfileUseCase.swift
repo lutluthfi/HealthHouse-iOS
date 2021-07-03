@@ -77,7 +77,8 @@ fileprivate extension Profile {
                        gender: request.gender,
                        lastName: request.lastName,
                        mobileNumbder: request.mobileNumber,
-                       photoBase64String: request.photo?.pngData()?.base64EncodedString())
+                       photoBase64String: request.photo?.pngData()?.base64EncodedString(),
+                       allergies: [])
     }
     
 }

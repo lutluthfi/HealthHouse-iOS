@@ -9,10 +9,10 @@ import RxSwift
 
 protocol RealmFlagStorage {
     
-    func fetchAllInCoreData() -> Single<[Flag]>
+    func fetchAllInRealm() -> Single<[Flag]>
     
-    func insertIntoCoreData(_ flag: Flag) -> Single<Flag>
+    func insertIntoRealm(_ flag: Flag) -> Single<Flag>
     
-    func removeInCoreData(_ flag: Flag) -> Single<Flag>
+    func removeInRealm(_ flag: Flag) -> Single<Flag>
     
 }

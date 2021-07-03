@@ -209,7 +209,7 @@ extension LocalActivityStorageTests {
                                 .toBlocking(timeout: timeout)
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute removeInCoreData() caused by coreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalActivityStorage: Failed to execute removeInRealm() caused by coreID is not available")
         }
     }
     

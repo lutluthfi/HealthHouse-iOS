@@ -195,7 +195,7 @@ extension LocalActivityFlagStorageTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute removeInCoreData(activity:) caused by activityCoreID is not available")
+                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute removeInRealm(activity:) caused by activityCoreID is not available")
         }
     }
     
@@ -210,7 +210,7 @@ extension LocalActivityFlagStorageTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute removeInCoreData(activity:) caused by activityCoreID is not found")
+                           "CoreDataStorageError [DELETE] -> LocalActivityFlagStorage: Failed to execute removeInRealm(activity:) caused by activityCoreID is not found")
         }
     }
     

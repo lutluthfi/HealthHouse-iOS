@@ -13,6 +13,11 @@ extension AppDIContainer: RepositoryFactory {
         return DefaultActivityRepository(localActivityStorage: self.localActivityStorage)
     }
     
+    func makeAllergyRepository() -> AllergyRepository {
+        return DefaultAllergyRepository(localAllergyStorage: self.localAllergyStorage,
+                                        localProfileStorage: self.localProfileStorage)
+    }
+    
     func makeAppConfigRepository() -> AppConfigRepository {
         return DefaultAppCofigRepository(localAppConfigStorage: self.localAppConfigStorage)
     }

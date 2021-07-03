@@ -13,11 +13,11 @@ protocol LocalActivityStorage: RealmActivityStorage {
 }
 
 // MARK: DefaultLocalActivityStorage
-class DefaultLocalActivityStorage: LocalActivityStorage {
+final class DefaultLocalActivityStorage: LocalActivityStorage {
     
     let realmManager: RealmManagerShared
     
-    public init(realmManager: RealmManagerShared = RealmManager.sharedInstance()) {
+    init(realmManager: RealmManagerShared) {
         self.realmManager = realmManager
     }
     
@@ -26,20 +26,20 @@ class DefaultLocalActivityStorage: LocalActivityStorage {
 // MARK: RealmActivityStorage
 extension DefaultLocalActivityStorage {
     
-    func fetchAllInCoreData() -> Single<[Activity]> {
+    func fetchAllInRealm() -> Single<[Activity]> {
         let objects = self.realmManager.realm.objects(ActivityRealm.self)
         let domains = Array(objects).toDomain()
         return .just(domains)
     }
     
-    func fetchAllInCoreData(ownedBy profile: Profile) -> Single<[Activity]> {
+    func fetchAllInRealm(ownedBy profile: Profile) -> Single<[Activity]> {
         let predicate = NSPredicate(format: "profileID = %@", profile.realmID)
         let objects = self.realmManager.realm.objects(ActivityRealm.self).filter(predicate)
         let domains = Array(objects).toDomain()
         return .just(domains)
     }
     
-    func fetchAllInCoreData(ownedBy profile: Profile,
+    func fetchAllInRealm(ownedBy profile: Profile,
                             onDoDate doDate: Date) -> Single<[Activity]> {
         let predicate = NSPredicate(format: "profileID = %@", profile.realmID)
         let objects = self.realmManager.realm.objects(ActivityRealm.self).filter(predicate)
@@ -48,7 +48,7 @@ extension DefaultLocalActivityStorage {
         return .just(domains)
     }
     
-    func insertIntoCoreData(_ activity: Activity) -> Single<Activity> {
+    func insertIntoRealm(_ activity: Activity) -> Single<Activity> {
         let object = activity.toRealm()
         return .create { [unowned self] (observer) in
             do {
@@ -63,7 +63,7 @@ extension DefaultLocalActivityStorage {
         }
     }
     
-    func removeInCoreData(_ activity: Activity) -> Single<Activity> {
+    func removeInRealm(_ activity: Activity) -> Single<Activity> {
         let object = activity.toRealm()
         return .create { [unowned self] (observer) in
             do {

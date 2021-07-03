@@ -52,7 +52,7 @@ extension LocalFlagStorageTests {
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoCoreData() caused by Flag is already created")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoRealm() caused by Flag is already created")
         }
     }
     
@@ -68,7 +68,7 @@ extension LocalFlagStorageTests {
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoCoreData() caused by flagCoreID is already exist")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoRealm() caused by flagCoreID is already exist")
         }
     }
     
@@ -103,7 +103,7 @@ extension LocalFlagStorageTests {
                                 .toBlocking()
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
-            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalFlagStorage: Failed to execute removeInCoreData() caused by coreID is not available")
+            XCTAssertEqual(error.localizedDescription, "CoreDataStorageError [DELETE] -> LocalFlagStorage: Failed to execute removeInRealm() caused by coreID is not available")
         }
     }
     

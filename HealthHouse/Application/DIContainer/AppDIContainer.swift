@@ -29,8 +29,9 @@ final class AppDIContainer {
     }
     lazy var realmManager: RealmManagerShared = RealmManager.sharedInstance(config: self.realmConfiguration)
     
-    lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage()
+    lazy var localActivityStorage: LocalActivityStorage = DefaultLocalActivityStorage(realmManager: RealmManager.sharedInstance())
     lazy var localActivityFlagStorage: LocalActivityFlagStorage = DefaultLocalActivityFlagStorage()
+    lazy var localAllergyStorage: LocalAllergyStorage = DefaultLocalAllergyStorage(realmManager: RealmManager.sharedInstance())
     lazy var localAppConfigStorage: LocalAppConfigStorage = DefaultLocalAppConfigStorage()
     lazy var localFlagStorage: LocalFlagStorage = DefaultLocalFlagStorage()
     lazy var localProfileStorage: LocalProfileStorage = DefaultLocalProfileStorage(realmManager: self.realmManager)

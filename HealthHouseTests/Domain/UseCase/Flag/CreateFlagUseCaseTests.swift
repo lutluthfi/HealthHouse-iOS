@@ -53,7 +53,7 @@ extension CreateFlagUseCaseTests {
                                 .single()) { (error) in
             XCTAssertTrue(error is CoreDataStorageError)
             XCTAssertEqual(error.localizedDescription,
-                           "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoCoreData() caused by flagCoreID is already exist")
+                           "CoreDataStorageError [SAVE] -> LocalFlagStorage: Failed to execute insertIntoRealm() caused by flagCoreID is already exist")
         }
     }
     

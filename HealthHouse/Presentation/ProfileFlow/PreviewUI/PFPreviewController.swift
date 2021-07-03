@@ -79,7 +79,7 @@ extension PFPreviewController {
             .compactMap({ $0 })
             .withLatestFrom(sections) { profile, sections -> [SectionDomain<RowDomain>] in
                 var _sections = sections
-                let allergyRows = profile.allergy.map({ RowDomain(identify: "allergy-\($0)", value: $0) })
+                let allergyRows = profile.allergies.map({ RowDomain(identify: "allergy-\($0)", value: $0) })
                 _sections[1].items = allergyRows
                 return _sections
             }
