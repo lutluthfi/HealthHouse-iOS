@@ -38,7 +38,7 @@ final class FLCreateController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.bindCreateBarButtonItem(barButtonItem: self._view.createBarButtonItem)
+        self.bind(createBarButtonItemTap: self._view.createBarButtonItem.rx.tap)
         self.bindSectionsToTableView(sections: self._view.sections, tableView: self._view.tableView)
         self.bindTableViewItemDeselected(tableView: self._view.tableView)
         self.bindTableViewItemSelected(tableView: self._view.tableView)
@@ -63,8 +63,8 @@ final class FLCreateController: UITableViewController {
 // MARK: BindCreateBarButtonItem
 extension FLCreateController {
     
-    func bindCreateBarButtonItem(barButtonItem: UIBarButtonItem) {
-        barButtonItem.rx.tap
+    func bind(createBarButtonItemTap controlEvent: ControlEvent<()>) {
+        controlEvent
             .withLatestFrom(self._fieldValues)
             .filter({ $0.1 != nil })
             .do(onNext: { [unowned self] (fieldValues) in
@@ -73,7 +73,9 @@ extension FLCreateController {
                 self.viewModel.doCreate(hexcolor: hexcolor, name: name)
             })
             .bind(onNext: { [unowned self] (_) in
-                self.dismiss(animated: true)
+                self.dismiss(animated: true) { [unowned self] in
+                    self.viewModel.doDismiss()
+                }
             })
             .disposed(by: self.disposeBag)
     }

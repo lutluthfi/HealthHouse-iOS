@@ -101,10 +101,10 @@ extension DefaultFLListViewModel {
         self.doFetchCurrentProfileUseCase()
             .compactMap({ $0.profile })
             .flatMap(self.doFetchAllFlaguseCase(ownedBy:))
-            .map({ $0.flags.map({ SelectableDomain(identify: $0.name,
-                                                   selected: selectedFlags.contains($0),
-                                                   value: $0) }) })
-            .bind(to: self.showedFlags)
+            .map({ $0.flags.toSelectableItems(selectedFlags: selectedFlags) })
+            .bind(onNext: { flags in
+                self.showedFlags.accept(flags)
+            })
             .disposed(by: self.disposeBag)
     }
     
@@ -123,6 +123,12 @@ extension DefaultFLListViewModel {
     func presentLBCreateUI() {
         let request = FLCreateViewModelRequest()
         let response = FLCreateViewModelResponse()
+        response
+            .viewDidDismiss
+            .bind { [unowned self] in
+                self.viewWillAppear()
+            }
+            .disposed(by: self.disposeBag)
         self.route.presentLBCreateUI?(request, response)
     }
     

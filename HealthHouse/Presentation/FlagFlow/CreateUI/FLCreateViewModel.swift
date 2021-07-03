@@ -17,6 +17,7 @@ enum FLCreateViewModelResult {
 
 // MARK: FLCreateViewModelResponse
 public struct FLCreateViewModelResponse {
+    let viewDidDismiss = PublishRelay<Void>()
 }
 
 // MARK: FLCreateViewModelRequest
@@ -31,6 +32,7 @@ public struct FLCreateViewModelRoute {
 protocol FLCreateViewModelInput {
     func viewDidLoad()
     func doCreate(hexcolor: String, name: String)
+    func doDismiss()
 }
 
 // MARK: FLCreateViewModelOutput
@@ -78,7 +80,7 @@ extension DefaultFLCreateViewModel {
     }
     
     func doCreate(hexcolor: String, name: String) {
-        let request = CreateFlagUseCaseRequest(realmID: nil, hexcolor: hexcolor, name: name)
+        let request = CreateFlagUseCaseRequest(hexcolor: hexcolor, name: name)
         self.createUpdateFlagUseCase
             .execute(request)
             .subscribe(onSuccess: { [unowned self] (response) in
@@ -93,6 +95,10 @@ extension DefaultFLCreateViewModel {
                 self.result.accept(result)
             })
             .disposed(by: self.disposeBag)
+    }
+    
+    func doDismiss() {
+        self.response.viewDidDismiss.accept(void)
     }
     
 }

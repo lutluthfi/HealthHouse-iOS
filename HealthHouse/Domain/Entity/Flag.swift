@@ -38,3 +38,19 @@ extension Flag: IdentifiableType {
     }
     
 }
+
+extension Flag {
+    
+    func toSelectableItem(selected: Bool) -> SelectableDomain<Flag> {
+        return SelectableDomain(identify: self.name, selected: selected, value: self)
+    }
+    
+}
+
+extension Array where Element == Flag {
+    
+    func toSelectableItems(selectedFlags: [Flag]) -> [SelectableDomain<Flag>] {
+        return self.map({ $0.toSelectableItem(selected: selectedFlags.contains($0)) })
+    }
+    
+}

@@ -41,10 +41,10 @@ extension FlagRealm {
     
     func toDomain() -> Flag {
         return Flag(realmID: self.ID,
-                          createdAt: self.createdAt,
-                          updatedAt: self.updatedAt,
-                          hexcolor: self.hexcolor,
-                          name: self.name)
+                    createdAt: self.createdAt,
+                    updatedAt: self.updatedAt,
+                    hexcolor: self.hexcolor,
+                    name: self.name)
     }
     
 }

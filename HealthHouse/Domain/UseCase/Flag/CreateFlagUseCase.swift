@@ -30,7 +30,6 @@ struct CreateFlagUseCaseResponse {
 
 struct CreateFlagUseCaseRequest {
     
-    let realmID: FlagID?
     let hexcolor: String
     let name: String
     
@@ -68,7 +67,7 @@ fileprivate extension Flag {
     
     static func make(from request: CreateFlagUseCaseRequest) -> Flag {
         let now = Date().toInt64()
-        return Flag(realmID: request.realmID.orMakePrimaryKey,
+        return Flag(realmID: request.name.uppercased(),
                     createdAt: now,
                     updatedAt: now,
                     hexcolor: request.hexcolor,

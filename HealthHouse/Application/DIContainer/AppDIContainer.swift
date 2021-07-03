@@ -48,7 +48,7 @@ final class AppDIContainer {
                                          gender: .male,
                                          lastName: "House",
                                          mobileNumber: "+6285216863058",
-                                         photo: nil)
+                                         photo: UIImage(named: "image.placeholder"))
             .flatMap(self.executeSetCurrentProfileUseCase(profile:))
             .flatMap({ profile -> Single<Activity> in
                 let now = Date()

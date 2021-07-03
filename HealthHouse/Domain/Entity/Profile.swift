@@ -15,6 +15,11 @@ struct Profile: EntityDomain {
     let createdAt: Int64
     let updatedAt: Int64
     
+    var allergy: [String] {
+        return [UUID().uuidString,
+                UUID().uuidString,
+                UUID().uuidString]
+    }
     let dateOfBirth: Int64
     let firstName: String
     let gender: Gender

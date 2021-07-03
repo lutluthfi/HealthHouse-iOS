@@ -35,12 +35,17 @@ final class DefaultPFPreviewView: UIView, PFPreviewView {
     lazy var tableView: UITableView = {
         let tableView = UITableView(frame: UIScreen.main.fixedCoordinateSpace.bounds, style: .grouped)
         tableView.keyboardDismissMode = .onDrag
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultTableCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "SubtitleTableCell")
         return tableView
     }()
 
     // MARK: PFPreviewViewVariable
     lazy var sections: Observable<[SectionDomain<RowDomain>]> = {
-        let sections = [SectionDomain(footer: nil, header: "Name", items: [RowDomain.photoWithName])]
+        let allergyRows: [RowDomain] = []
+        let allergySection = SectionDomain(footer: nil, header: "allergy", items: allergyRows)
+        let nameSection = SectionDomain(footer: nil, header: "photo-with-name", items: [RowDomain.photoWithName])
+        let sections = [nameSection, allergySection]
         return .just(sections)
     }()
     

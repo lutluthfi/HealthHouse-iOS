@@ -75,7 +75,14 @@ extension PFPreviewController {
               showedProfileViewModel profile: PublishRelay<Profile?>,
               toTableView tableView: UITableView) {
         let dataSource = self.makeTableDataSource(profile: profile)
-        sections
+        profile
+            .compactMap({ $0 })
+            .withLatestFrom(sections) { profile, sections -> [SectionDomain<RowDomain>] in
+                var _sections = sections
+                let allergyRows = profile.allergy.map({ RowDomain(identify: "allergy-\($0)", value: $0) })
+                _sections[1].items = allergyRows
+                return _sections
+            }
             .asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
@@ -84,23 +91,33 @@ extension PFPreviewController {
     func bind(showedProfileViewModel profile: PublishRelay<Profile?>, toTableCell cell: UITableViewCell) {
         profile
             .asDriver(onErrorJustReturn: nil)
+            .compactMap({ $0 })
             .drive(onNext: { [unowned cell] (profile) in
-                cell.textLabel?.text = profile?.fullName
+                cell.textLabel?.text = profile.fullName
+                if let photoBase64String = profile.photoBase64String,
+                   let photoData = Data(base64Encoded: photoBase64String){
+                    cell.imageView?.image = UIImage(data: photoData)
+                }
             })
             .disposed(by: self.disposeBag)
     }
     
     private func makeTableDataSource(profile: PublishRelay<Profile?>) -> RxTableViewSectionedAnimatedDataSource<SectionDomain<RowDomain>> {
         .init { [unowned profile] (dataSource, tableView, indexPath, item) -> UITableViewCell in
-            switch item {
-            case .photoWithName:
+            if item == .photoWithName {
                 let reuseIdentifier = "SubtitleTableCell"
                 let cell = UITableViewCell(style: .subtitle, reuseIdentifier: reuseIdentifier)
                 cell.selectionStyle = .none
                 self.bind(showedProfileViewModel: profile, toTableCell: cell)
                 return cell
-            default:
-                fatalError("Cannot dequeueReusableCell")
+            } else if item.identify.contains("allergy-") {
+                let reuseIdentifier = "DefaultTableCell"
+                let cell = UITableViewCell(style: .default, reuseIdentifier: reuseIdentifier)
+                cell.selectionStyle = .none
+                cell.textLabel?.text = item.value as? String
+                return cell
+            } else {
+                return UITableViewCell()
             }
         }
     }
