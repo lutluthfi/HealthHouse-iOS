@@ -75,17 +75,21 @@ extension PFPreviewController {
               showedProfileViewModel profile: PublishRelay<Profile?>,
               toTableView tableView: UITableView) {
         let dataSource = self.makeTableDataSource(profile: profile)
-        profile
-            .compactMap({ $0 })
-            .withLatestFrom(sections) { profile, sections -> [SectionDomain<RowDomain>] in
-                var _sections = sections
-                let allergyRows = profile.allergies.map({ RowDomain(identify: "allergy-\($0)", value: $0) })
-                _sections[1].items = allergyRows
-                return _sections
-            }
+        sections
             .asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: self.disposeBag)
+//        profile
+//            .compactMap({ $0 })
+//            .withLatestFrom(sections) { profile, sections -> [SectionDomain<RowDomain>] in
+//                var _sections = sections
+//                let allergyRows = profile.allergies.map({ RowDomain(identify: "allergy-\($0)", value: $0) })
+//                _sections[1].items = allergyRows
+//                return _sections
+//            }
+//            .asDriver(onErrorJustReturn: [])
+//            .drive(tableView.rx.items(dataSource: dataSource))
+//            .disposed(by: self.disposeBag)
     }
     
     func bind(showedProfileViewModel profile: PublishRelay<Profile?>, toTableCell cell: UITableViewCell) {

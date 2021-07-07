@@ -5,6 +5,7 @@
 //  Created by Arif Luthfiansyah on 01/04/21.
 //  Copyright (c) 2021 All rights reserved.
 
+import HealthKit
 import RxCocoa
 import RxSwift
 import UIKit
@@ -14,7 +15,7 @@ final class LNPadController: UITabBarController {
 
     // MARK: DI Variable
     let disposeBag = DisposeBag()
-    lazy var padView: LNPadView = DefaultLNPadView()
+    lazy var _view: LNPadView = DefaultLNPadView()
     var viewModel: LNPadViewModel!
 
     // MARK: Common Variable
@@ -34,7 +35,7 @@ final class LNPadController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.padView.viewDidLoad(view: self.view)
+        self._view.viewDidLoad(view: self.view)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,7 +47,7 @@ final class LNPadController: UITabBarController {
                 self.selectedIndex = 0
             })
             .disposed(by: self.disposeBag)
-        self.padView.viewWillAppear(view: self.view,
+        self._view.viewWillAppear(view: self.view,
                                     navigationController: self.navigationController,
                                     navigationItem: self.navigationItem,
                                     tabBarController: self.tabBarController)
@@ -54,13 +55,44 @@ final class LNPadController: UITabBarController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.padView.viewDidAppear(view: self.view)
+        self._view.viewDidAppear(view: self.view)
+        guard let dateOfBirth = HKObjectType.characteristicType(forIdentifier: .dateOfBirth),
+              let bloodType = HKObjectType.characteristicType(forIdentifier: .bloodType),
+              let biologicalSex = HKObjectType.characteristicType(forIdentifier: .biologicalSex),
+              let bodyMassIndex = HKObjectType.quantityType(forIdentifier: .bodyMassIndex),
+              let height = HKObjectType.quantityType(forIdentifier: .height),
+              let bodyMass = HKObjectType.quantityType(forIdentifier: .bodyMass),
+              let activeEnergy = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned) else {
+            return
+        }
+        let healthKitTypesToWrite: Set<HKSampleType> = [bodyMassIndex,
+                                                        activeEnergy,
+                                                        HKObjectType.workoutType()]
+        
+        let healthKitTypesToRead: Set<HKObjectType> = [dateOfBirth,
+                                                       bloodType,
+                                                       biologicalSex,
+                                                       bodyMassIndex,
+                                                       height,
+                                                       bodyMass,
+                                                       HKObjectType.workoutType()]
+        HKHealthStore().requestAuthorization(toShare: healthKitTypesToWrite, read: healthKitTypesToRead) { authorized, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            if authorized {
+                print("Authorized")
+            } else {
+                print("Not authorized")
+            }
+        }
         self.viewModel.viewDidAppear()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.padView.viewWillDisappear()
+        self._view.viewWillDisappear()
     }
     
 }

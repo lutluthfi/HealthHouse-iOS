@@ -77,14 +77,12 @@ extension DefaultPFPreviewViewModel {
     }
     
     func viewDidAppear() {
-        self.loadingState.accept(.willShow)
         self.fetchCurrentProfileUseCase
             .execute(FetchCurrentProfileUseCaseRequest())
             .filter({ $0.profile != nil })
             .compactMap({ $0.profile })
-            .subscribe(onSuccess: { [weak self] (profile) in
-                self?.loadingState.accept(.willHide)
-                self?.showedProfile.accept(profile)
+            .subscribe(onSuccess: { [unowned self] (profile) in
+                self.showedProfile.accept(profile)
             })
             .disposed(by: self.diposeBag)
     }
